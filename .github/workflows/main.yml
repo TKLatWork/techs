@@ -1,0 +1,13 @@
+on:
+  push:
+    branches:
+    - main
+    - release/*
+jobs:
+  demo:
+    name: Demo
+    runs-on: windows-latest
+    steps:
+    - name: hw
+      run: echo "HeW"
+      
