@@ -1,15 +1,15 @@
-package me.domainService.server.common.service;
+package me.domainService.server.repoImpls;
 
-import me.domainService.server.common.model.Env;
-import me.domainService.server.common.model.User;
+import me.domainService.application.domain.Env;
+import me.domainService.application.repo.EnvRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
 @Service
-public class EnvService {
+public class EnvRepoImpl implements EnvRepo {
 
-    Map<String, Env> envMap = Map.of(
+    final Map<String, Env> envMap = Map.of(
         "DEV", new Env(){{
             setName("DEV");
             setStatus(STATUS_IDLE);

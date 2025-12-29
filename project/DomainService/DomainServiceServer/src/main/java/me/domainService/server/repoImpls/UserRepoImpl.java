@@ -1,14 +1,15 @@
-package me.domainService.server.common.service;
+package me.domainService.server.repoImpls;
 
-import me.domainService.server.common.model.User;
+import me.domainService.application.domain.User;
+import me.domainService.application.repo.UserRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
 @Service
-public class UserService {
+public class UserRepoImpl implements UserRepo {
 
-    Map<String, User> envMap = Map.of(
+    final Map<String, User> envMap = Map.of(
         "ADMIN", new User(){{
             setName("ADMIN");
             setRole("User");
@@ -20,10 +21,7 @@ public class UserService {
     );
 
     public User get(String name){
-        User user = new User();
-        user.setName(name);
-        user.setRole("User");
-        return user;
+        return envMap.get(name);
     }
 
 }

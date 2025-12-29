@@ -1,4 +1,4 @@
-package me.domainService.server.common.model;
+package me.domainService.application.domain;
 
 import lombok.Data;
 
