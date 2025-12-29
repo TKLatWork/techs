@@ -17,7 +17,6 @@
 	<modules>
         <module>DomainServiceServer</module>
         <module>application</module>
-        <module>infra</module>
     </modules>
 
 	<properties>
