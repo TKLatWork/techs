@@ -1,4 +1,4 @@
-package me.domainService.application.domain;
+package me.domainService.application.entity;
 
 import lombok.Data;
 

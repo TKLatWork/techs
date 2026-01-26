@@ -1,6 +1,6 @@
 package me.domainService.application.repo;
 
-import me.domainService.application.domain.User;
+import me.domainService.application.entity.User;
 
 
 public interface UserRepo {

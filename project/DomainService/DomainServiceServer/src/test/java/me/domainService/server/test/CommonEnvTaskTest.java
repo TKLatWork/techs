@@ -2,7 +2,7 @@ package me.domainService.server.test;
 
 
 import lombok.extern.slf4j.Slf4j;
-import me.domainService.application.domain.Env;
+import me.domainService.application.entity.Env;
 import me.domainService.application.repo.EnvRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,19 +32,12 @@ public class CommonEnvTaskTest {
         Env envBefore = envRepo.get("DEV");
         assertEquals(Env.STATUS_IDLE, envBefore.getStatus());
 
-        // book env for user ADMIN on DEV
-        mockMvc.perform(get("/envTask/bookEnv/ADMIN/DEV"))
-                .andExpect(status().isOk());
-
-        // 断言状态变为 Booked
-        Env envAfterBook = envRepo.get("DEV");
-        assertEquals(Env.STATUS_BOOKED, envAfterBook.getStatus());
 
         // run task TASK1 on DEV
         mockMvc.perform(get("/envTask/runTask/ADMIN/TASK1/DEV"))
                 .andExpect(status().isOk());
 
-        // 断言状态变为 Running
+        // assert work log contains entry for TASK1
         Env envAfterRun = envRepo.get("DEV");
         assertEquals(1, envAfterRun.getWorks().stream().filter(s -> {
             return s.contains("TASK1");

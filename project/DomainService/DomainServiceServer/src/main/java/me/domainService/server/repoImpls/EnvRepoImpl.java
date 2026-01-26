@@ -1,6 +1,6 @@
 package me.domainService.server.repoImpls;
 
-import me.domainService.application.domain.Env;
+import me.domainService.application.entity.Env;
 import me.domainService.application.repo.EnvRepo;
 import org.springframework.stereotype.Service;
 

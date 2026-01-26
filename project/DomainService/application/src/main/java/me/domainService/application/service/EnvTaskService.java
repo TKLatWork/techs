@@ -14,12 +14,6 @@ public class EnvTaskService {
     EnvRepo envRepo;
     TaskRepo taskRepo;
 
-    public void bookEnv(String userName, String envName){
-        var user = userRepo.get(userName);
-        var env = envRepo.get(envName);
-        env.bookBy(user);
-    }
-
     public void runTask(String userName, String envName, String taskName){
         var task = taskRepo.get(taskName);
         var env = envRepo.get(envName);

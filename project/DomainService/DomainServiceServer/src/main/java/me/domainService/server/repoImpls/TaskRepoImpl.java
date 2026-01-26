@@ -1,6 +1,6 @@
 package me.domainService.server.repoImpls;
 
-import me.domainService.application.domain.Task;
+import me.domainService.application.entity.Task;
 import me.domainService.application.repo.TaskRepo;
 import org.springframework.stereotype.Service;
 

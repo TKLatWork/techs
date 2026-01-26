@@ -15,11 +15,6 @@ public class EnvTaskCtrl {
 
     private EnvTaskService envTaskService;
 
-    @RequestMapping("/bookEnv/{userName}/{envName}")
-    public void bookEnv(@PathVariable String userName, @PathVariable String envName) {
-        log.info("Request book env: {} for user: {}", envName, userName);
-        envTaskService.bookEnv(userName, envName);
-    }
 
     @RequestMapping("/runTask/{userName}/{taskName}/{envName}")
     public void runTask(@PathVariable String userName, @PathVariable String taskName, @PathVariable String envName) {

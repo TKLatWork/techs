@@ -13,11 +13,6 @@
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
-        <dependency>
-            <groupId>me.domainService</groupId>
-            <artifactId>infra</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
         <!-- spring -->
         <dependency>
             <groupId>org.springframework</groupId>
