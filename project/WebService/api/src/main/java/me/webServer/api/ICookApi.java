@@ -7,7 +7,7 @@ import me.webServer.api.model.Response;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/cook")
+@RequestMapping("/api/cook/v1")
 public interface ICookApi {
 
     @PostMapping("/submit")
