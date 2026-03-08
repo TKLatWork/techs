@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>me.domainService</groupId>
-		<artifactId>DomainService</artifactId>
+		<groupId>me.webService</groupId>
+		<artifactId>parent</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>DomainServiceServer</artifactId>
+	<artifactId>server</artifactId>
 
 	<properties>
 
@@ -55,8 +55,6 @@
 	</dependencies>
 
 	<build>
-		<plugins>
-		</plugins>
 	</build>
 
 </project>
