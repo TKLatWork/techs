@@ -10,13 +10,19 @@
 
     <!-- Add modules to aggregate child modules -->
     <modules>
+        <module>task-domain</module>
         <module>task-api</module>
+        <module>task-application</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <!-- spring -->
+        <spring.boot.version>3.5.12</spring.boot.version>
+        <!-- util -->
+        <lombok.version>1.18.26</lombok.version>
     </properties>
 
     <dependencies>
@@ -26,4 +32,3 @@
 
 
 </project>
-

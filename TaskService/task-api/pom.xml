@@ -11,15 +11,19 @@
 
     <artifactId>task-api</artifactId>
     <packaging>jar</packaging>
-
-    <name>TaskAPI</name>
-    <description>Task API module</description>
+    <version>${project.parent.version}</version>
 
     <properties>
-        <maven.compiler.release>17</maven.compiler.release>
+        <!-- OpenAPI Generator and Spring Boot 2 properties -->
+        <openapi.generator.version>6.6.0</openapi.generator.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>me.task</groupId>
+            <artifactId>task-domain</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
         <!-- JUnit for a small test (scope test) -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -33,6 +37,12 @@
             <version>5.10.0</version>
             <scope>test</scope>
         </dependency>
+        <!-- Optional: Spring Web dependency matching Spring Boot 2 so generated server stubs compile against correct Spring version -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -42,6 +52,65 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.1.2</version>
             </plugin>
+
+            <!-- OpenAPI Generator: generate Spring (spring-boot) server stubs targeting Spring Boot 2 -->
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>${openapi.generator.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-sources-openapi</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <!-- input spec: put your OpenAPI definition at src/main/resources/task-api.yaml -->
+                            <inputSpec>${project.basedir}/src/main/resources/task-api.yaml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <library>spring-boot</library>
+                            <output>${project.build.directory}/generated-sources/openapi</output>
+                            <apiPackage>me.task.api.generated.api</apiPackage>
+                            <modelPackage>me.task.api.generated.model</modelPackage>
+                            <invokerPackage>me.task.api.generated.invoker</invokerPackage>
+                            <configOptions>
+                                <interfaceOnly>true</interfaceOnly>
+                                <dateLibrary>java8</dateLibrary>
+                            </configOptions>
+                            <additionalProperties>
+                                <!-- instruct generator to target Spring Boot 2.x -->
+                                <springBootVersion>${spring.boot.version}</springBootVersion>
+                                <useTags>true</useTags>
+                            </additionalProperties>
+                            <!-- Use external config file to hold mappings and other generator options -->
+                            <configFile>${project.basedir}/src/main/resources/task-api-config.json</configFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Ensure generated sources are added to the compile path -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>add-generated-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/openapi/src/main/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 </project>
