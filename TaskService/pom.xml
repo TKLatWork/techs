@@ -22,13 +22,39 @@
         <!-- spring -->
         <spring.boot.version>3.5.12</spring.boot.version>
         <!-- util -->
-        <lombok.version>1.18.26</lombok.version>
+        <lombok.version>1.18.44</lombok.version>
     </properties>
 
     <dependencies>
         <!-- No runtime dependencies in this plain POM. Add dependencies here as needed. -->
     </dependencies>
 
+    <build>
+        <plugins>
+            <!-- Enforce JDK 17 at build time and provide clear error message if not present -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>enforce-java</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>[17,)</version>
+                                </requireJavaVersion>
+                            </rules>
+                            <fail>true</fail>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 
 </project>
