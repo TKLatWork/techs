@@ -1,0 +1,18 @@
+{
+  "importMappings": {
+    "Health": "me.task.domain.Health"
+  },
+  "typeMappings": {
+    "date-time": "java.time.OffsetDateTime",
+    "OffsetDateTime": "java.time.OffsetDateTime"
+  },
+  "configOptions": {
+    "interfaceOnly": "true",
+    "dateLibrary": "java8"
+  },
+  "additionalProperties": {
+    "springBootVersion": "2.7.10",
+    "useTags": true
+  }
+}
+

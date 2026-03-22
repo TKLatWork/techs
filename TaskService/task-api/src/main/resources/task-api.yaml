@@ -1,0 +1,29 @@
+openapi: 3.1.2
+info:
+  title: Task API
+  version: 1.0.0
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+components:
+  schemas:
+    Health:
+      type: object
+      x-java-type: me.task.domain.Health
+      properties:
+        status:
+          type: string
+        version:
+          type: string
+        checkedAt:
+          type: string
+          format: date-time
+      required: [status, version, checkedAt]
