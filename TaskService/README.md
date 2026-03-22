@@ -1,13 +1,8 @@
 # A Task API
 
-    1. Typescript based scripting 
-    1.1 DSL support
-    2 repo/branch based task storage
-    3 template based task definition
-    4 support context/workspace/log
+    [Overall view](./TaskServiceIdea.drawio)
 
-## With Jenkins
+## Logs
 
-    >SharedLib as code base
-    >Need a API facade
+    0.0.1 - API Layer
     
