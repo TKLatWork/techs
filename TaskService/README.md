@@ -8,7 +8,13 @@
     - task-api module for API definition
     - task-application module to host api definitions
 
-## Logs
+## Logs/Why
 
-    0.0.1 - API Layer
+   - DDD to isolate domain code
+   - API module to isolate API/DTO/OpenAPI
+   - 
     
+
+## Dependency
+
+    [Domain] > [API] > [Application]
