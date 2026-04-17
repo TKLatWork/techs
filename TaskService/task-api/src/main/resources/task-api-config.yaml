@@ -1,0 +1,13 @@
+apiPackage: me.task.api.generated.api
+modelPackage: me.task.api.generated.model
+importMappings:
+  Health: me.task.domain.domain.Health
+typeMappings:
+  date-time: java.time.OffsetDateTime
+  OffsetDateTime: java.time.OffsetDateTime
+configOptions:
+  interfaceOnly: true
+  dateLibrary: java8
+additionalProperties:
+  springBootVersion: ${spring.boot.version}
+  useTags: true
