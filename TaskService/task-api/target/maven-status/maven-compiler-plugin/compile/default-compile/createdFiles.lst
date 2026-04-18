@@ -1,0 +1,9 @@
+me\task\api\generated\api\ApiUtil.class
+me\task\api\TaskApiSample.class
+me\task\api\generated\api\DefaultApiController.class
+me\task\api\generated\api\DefaultApi.class
+org\openapitools\OpenApiGeneratorApplication.class
+me\task\api\generated\model\Health.class
+org\openapitools\RFC3339DateFormat.class
+org\openapitools\configuration\SpringDocConfiguration.class
+org\openapitools\configuration\HomeController.class
