@@ -46,7 +46,7 @@ public class ClientConnectionAPIImpl implements ClientConnectionAPI {
             
             // Check if target environment is already booked
             if (bookedEnvironments.containsKey(connectRequest.getTargetEnv())) {
-                return ResponseEntity.conflict().body(
+                return ResponseEntity.status(409).body(
                     new ClientConnectionModels.ApiResponse<>(false, 
                         "Target environment '" + connectRequest.getTargetEnv() + "' is already booked", null)
                 );
