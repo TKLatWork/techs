@@ -1,0 +1,82 @@
+{
+  "workflow": "speckit",
+  "specName": "002-project-structure",
+  "branch": "002-project-structure",
+  "selectedAt": "2026-05-31T12:54:45.500Z",
+  "currentStep": "tasks",
+  "status": "tasking",
+  "history": [
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "complete",
+      "by": "extension",
+      "at": "2026-05-31T14:05:02.202Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "start",
+      "from": {
+        "step": "specify",
+        "substep": null
+      },
+      "by": "extension",
+      "at": "2026-05-31T14:05:02.203Z"
+    },
+    {
+      "step": "plan",
+      "substep": null,
+      "kind": "complete",
+      "by": "extension",
+      "at": "2026-06-04T14:12:47.383Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "start",
+      "from": {
+        "step": "plan",
+        "substep": null
+      },
+      "by": "extension",
+      "at": "2026-06-04T14:12:47.385Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "complete",
+      "by": "extension",
+      "at": "2026-06-04T14:14:59.025Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "start",
+      "from": {
+        "step": null,
+        "substep": null
+      },
+      "by": "extension",
+      "at": "2026-06-04T14:15:06.799Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "complete",
+      "by": "extension",
+      "at": "2026-06-04T14:17:02.333Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "start",
+      "from": {
+        "step": null,
+        "substep": null
+      },
+      "by": "extension",
+      "at": "2026-06-04T14:17:03.350Z"
+    }
+  ]
+}

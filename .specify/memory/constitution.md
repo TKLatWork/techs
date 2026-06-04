@@ -1,31 +1,23 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: N/A → 1.0.0 (Initial constitution)
-Bump rationale: MAJOR - First ratification of project constitution
+Version change: 1.0.0 → 1.1.0
+Bump rationale: MINOR - New principle added (Canonical-Driven Documentation)
 
-Modified principles: N/A (new document)
+Modified principles: None
 
 Added sections:
-- Core Principles: I. Test-First (NON-NEGOTIABLE)
-- Additional Constraints: Technology Agnostic Development
-- Development Workflow: Quality Gates & Review Process
-- Governance: Amendment procedure, versioning policy, compliance review
+- Core Principles: II. Canonical-Driven Documentation (NON-NEGOTIABLE)
 
-Removed sections:
-- Principle placeholders II-V (reduced from 5 to 1 principle per user request)
-- Section 2 placeholder (replaced with concrete constraints)
-- Section 3 placeholder (replaced with concrete workflow)
+Removed sections: None
 
 Templates requiring updates:
 - .specify/templates/plan-template.md: ✅ No changes needed (Constitution Check section is generic)
-- .specify/templates/spec-template.md: ✅ No changes needed (spec aligns with test-first via acceptance scenarios)
-- .specify/templates/tasks-template.md: ✅ No changes needed (already supports TDD workflow)
-- .specify/templates/commands/*.md: ⚠ Pending manual review for constitution references
+- .specify/templates/spec-template.md: ✅ No changes needed (spec aligns with documentation via user scenarios)
+- .specify/templates/tasks-template.md: ✅ No changes needed (already supports documentation tasks in Polish phase)
+- .specify/templates/commands/*.md: ✅ No command templates exist
 
-Follow-up TODOs:
-- TODO(TECH_STACK): Technology stack not specified - to be defined in first feature plan
-- TODO(REVIEW_PROCESS): Code review requirements not specified - to be defined as project scales
+Follow-up TODOs: None
 -->
 
 # Techs Constitution
@@ -48,6 +40,26 @@ Non-negotiable rules:
 
 **Rationale**: Test-first development ensures code is designed for testability, prevents regression, and serves as living documentation of expected behavior.
 
+### II. Canonical-Driven Documentation (NON-NEGOTIABLE)
+
+All code changes MUST comply with Canonical-Driven Development (CDD) as enforced by DocGuard. Documentation is the source of truth for design intent and implementation state.
+
+Non-negotiable rules:
+- Canonical docs in `docs-canonical/` represent design intent and are READ-ONLY
+- Implementation docs in `docs-implementation/` MUST reflect the current codebase state
+- All deviations from canonical docs MUST be logged in `DRIFT-LOG.md`
+- `npx docguard guard` MUST pass before any commit is merged
+- All changes MUST include a `CHANGELOG.md` entry
+- Schema or data model changes MUST update `DATA-MODEL.md`
+
+Documentation workflow:
+1. Run `npx docguard guard` before starting work to understand compliance state
+2. Run `npx docguard fix --format prompt` after making changes to identify issues
+3. Resolve all reported issues before committing
+4. Run `npx docguard guard` again to verify compliance
+
+**Rationale**: Documentation drift erodes team alignment and introduces hidden complexity. CDD ensures design intent remains authoritative and implementation state is always verifiable.
+
 ## Additional Constraints
 
 ### Technology Agnostic Development
@@ -69,7 +81,8 @@ Every feature MUST pass these gates before merging:
 1. **Specification Gate**: Feature spec exists with user scenarios, functional requirements, and measurable success criteria
 2. **Plan Gate**: Technical plan exists with constitution compliance check passed
 3. **Test Gate**: All tests pass, coverage meets or exceeds baseline
-4. **Review Gate**: Code reviewed by at least one team member (or self-review documented for solo projects)
+4. **Documentation Gate**: `npx docguard guard` passes with no errors, `CHANGELOG.md` updated, drift logged if applicable
+5. **Review Gate**: Code reviewed by at least one team member (or self-review documented for solo projects)
 
 **Rationale**: Quality gates prevent incomplete or unverified work from reaching the main branch.
 
@@ -100,4 +113,4 @@ All PRs and code reviews MUST verify constitution compliance. Violations MUST be
 - Resolved before merging, OR
 - Explicitly documented in the Complexity Tracking section of the plan with justification
 
-**Version**: 1.0.0 | **Ratified**: 2026-05-31 | **Last Amended**: 2026-05-31
+**Version**: 1.1.0 | **Ratified**: 2026-05-31 | **Last Amended**: 2026-05-31
