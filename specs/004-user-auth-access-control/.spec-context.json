@@ -1,0 +1,28 @@
+{
+  "workflow": "speckit",
+  "specName": "004-user-auth-access-control",
+  "branch": "004-user-auth-access-control",
+  "selectedAt": "2026-06-06T15:47:51.291Z",
+  "currentStep": "tasks",
+  "status": "tasking",
+  "history": [
+    {
+      "step": "specify",
+      "substep": null,
+      "kind": "complete",
+      "by": "extension",
+      "at": "2026-06-06T20:24:50.608Z"
+    },
+    {
+      "step": "tasks",
+      "substep": null,
+      "kind": "start",
+      "from": {
+        "step": "specify",
+        "substep": null
+      },
+      "by": "extension",
+      "at": "2026-06-06T20:24:50.610Z"
+    }
+  ]
+}

@@ -40,7 +40,26 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+### Pre-Design Check
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| TDD (I) | | Test frameworks specified for all three layers (domain unit, API E2E, web E2E)? Tests will precede implementation? |
+| CDD Compliance (II) | | Canonical docs reviewed? Drift logged if deviating? |
+| Technology Justified | | All technologies in research.md with rationale? |
+| Specification Gate | | Spec exists with user scenarios, FRs, success criteria? |
+| Feature-Based Structure (III) | | Code organized by feature in all modules? Shared packages defined? |
+| DDD Code Rules (IV) | | Entities/value objects classified? Repositories as interfaces? |
+
+### Post-Design Re-Check
+
+| Gate | Status | Notes |
+|------|--------|-------|
+| TDD (I) | | Test locations and frameworks defined for all three layers (domain unit, API E2E, web E2E)? |
+| CDD Compliance (II) | | DATA-MODEL.md / ARCHITECTURE.md updated? Drift logged? |
+| Plan Gate | | Technical plan exists with constitution compliance check? |
+| Feature-Based Structure (III) | | Cross-feature refs use public contracts? App module flat/shared? |
+| DDD Code Rules (IV) | | Domain services stateless? No infrastructure in domain module? |
 
 ## Project Structure
 

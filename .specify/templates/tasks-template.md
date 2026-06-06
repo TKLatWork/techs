@@ -9,7 +9,7 @@ description: "Task list template for feature implementation"
 
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
+**Tests**: The examples below include test tasks organized by the three-layer testing pyramid (TDD Principle I): domain unit tests, API E2E/integration tests, and web E2E/browser tests. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
@@ -83,9 +83,11 @@ Examples of foundational tasks (adjust based on your project):
 ### Tests for User Story 1 (OPTIONAL - only if tests requested) ⚠️
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
+> **Three-Layer Testing**: Domain (unit) → API (E2E/integration) → Web (E2E/browser)
 
-- [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T010 [P] [US1] Domain unit test for [business rule] in domain/src/test/.../[name]Test.java
+- [ ] T011 [P] [US1] API E2E test for [endpoint] in app/src/test/.../[name]Test.java
+- [ ] T012 [P] [US1] Web E2E test for [user journey] in web/src/features/[feature]/__tests__/[name].test.tsx
 
 ### Implementation for User Story 1
 
@@ -108,8 +110,11 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Tests for User Story 2 (OPTIONAL - only if tests requested) ⚠️
 
-- [ ] T018 [P] [US2] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T019 [P] [US2] Integration test for [user journey] in tests/integration/test_[name].py
+> **Three-Layer Testing**: Domain (unit) → API (E2E/integration) → Web (E2E/browser)
+
+- [ ] T018 [P] [US2] Domain unit test for [business rule] in domain/src/test/.../[name]Test.java
+- [ ] T019 [P] [US2] API E2E test for [endpoint] in app/src/test/.../[name]Test.java
+- [ ] T020 [P] [US2] Web E2E test for [user journey] in web/src/features/[feature]/__tests__/[name].test.tsx
 
 ### Implementation for User Story 2
 
@@ -130,8 +135,11 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Tests for User Story 3 (OPTIONAL - only if tests requested) ⚠️
 
-- [ ] T024 [P] [US3] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T025 [P] [US3] Integration test for [user journey] in tests/integration/test_[name].py
+> **Three-Layer Testing**: Domain (unit) → API (E2E/integration) → Web (E2E/browser)
+
+- [ ] T024 [P] [US3] Domain unit test for [business rule] in domain/src/test/.../[name]Test.java
+- [ ] T025 [P] [US3] API E2E test for [endpoint] in app/src/test/.../[name]Test.java
+- [ ] T026 [P] [US3] Web E2E test for [user journey] in web/src/features/[feature]/__tests__/[name].test.tsx
 
 ### Implementation for User Story 3
 
@@ -180,6 +188,7 @@ Examples of foundational tasks (adjust based on your project):
 ### Within Each User Story
 
 - Tests (if included) MUST be written and FAIL before implementation
+- Tests follow three-layer order: domain unit → API E2E → web E2E
 - Models before services
 - Services before endpoints
 - Core implementation before integration
@@ -199,9 +208,10 @@ Examples of foundational tasks (adjust based on your project):
 ## Parallel Example: User Story 1
 
 ```bash
-# Launch all tests for User Story 1 together (if tests requested):
-Task: "Contract test for [endpoint] in tests/contract/test_[name].py"
-Task: "Integration test for [user journey] in tests/integration/test_[name].py"
+# Launch all tests for User Story 1 together (three-layer, if tests requested):
+Task: "Domain unit test for [business rule] in domain/src/test/.../[name]Test.java"
+Task: "API E2E test for [endpoint] in app/src/test/.../[name]Test.java"
+Task: "Web E2E test for [user journey] in web/src/features/[feature]/__tests__/[name].test.tsx"
 
 # Launch all models for User Story 1 together:
 Task: "Create [Entity1] model in src/models/[entity1].py"
@@ -246,7 +256,7 @@ With multiple developers:
 - [P] tasks = different files, no dependencies
 - [Story] label maps task to specific user story for traceability
 - Each user story should be independently completable and testable
-- Verify tests fail before implementing
+- Verify tests fail before implementing (three layers: domain unit, API E2E, web E2E)
 - Commit after each task or logical group
 - Stop at any checkpoint to validate story independently
 - Avoid: vague tasks, same file conflicts, cross-story dependencies that break independence
