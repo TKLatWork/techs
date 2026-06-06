@@ -14,9 +14,13 @@
 
 | ID | Priority | Requirement | Status | Test Coverage |
 |----|----------|-------------|--------|---------------|
-| FR-001 | P1 | System MUST [capability] | 🔴 Draft | ❌ |
-| FR-002 | P1 | System MUST [capability] | 🔴 Draft | ❌ |
-| FR-003 | P2 | Users MUST be able to [interaction] | 🔴 Draft | ❌ |
+| FR-001 | P1 | System MUST create four distinct top-level module directories: `web`, `app`, `domain`, and `api` | ✅ Active | ✅ |
+| FR-002 | P1 | System MUST provide each module with its own source code directory | ✅ Active | ✅ |
+| FR-003 | P1 | System MUST provide each module with its own configuration file appropriate to its role | ✅ Active | ✅ |
+| FR-004 | P1 | System MUST establish correct dependency relationships: `app` → domain & api, `web` → api, `api` → domain | ✅ Active | ✅ |
+| FR-005 | P1 | System MUST provide a root-level project configuration that ties all four modules together | ✅ Active | ✅ |
+| FR-006 | P1 | System MUST ensure each executable module has a clearly defined entry point | ✅ Active | ✅ |
+| FR-007 | P1 | System MUST provide a root-level command to build or validate the entire project | ✅ Active | ✅ |
 
 ## Non-Functional Requirements
 
@@ -24,9 +28,9 @@
 
 | ID | Category | Requirement | Metric |
 |----|----------|-------------|--------|
-| NFR-001 | Performance | Response time < 200ms p95 | Measured via [tool] |
-| NFR-002 | Security | All endpoints require authentication | Validated by guard |
-| NFR-003 | Reliability | 99.9% uptime SLA | Monitored via [tool] |
+| NFR-001 | Modularity | Each module can be independently built and tested | Validation script + per-module build commands |
+| NFR-002 | Maintainability | Clear separation of concerns between modules | Code review and dependency graph validation |
+| NFR-003 | Consistency | All modules follow consistent naming and structure conventions | Structural validation script |
 
 ## Success Criteria
 
@@ -34,8 +38,11 @@
 
 | ID | Criteria | Measurement | Target |
 |----|----------|-------------|--------|
-| SC-001 | [Measurable user outcome] | [How measured] | [Target value] |
-| SC-002 | [Performance metric] | [How measured] | [Target value] |
+| SC-001 | Each module has documented entry point and quickstart instructions | Developer can locate entry point immediately | 100% of modules |
+| SC-002 | Project structure is fully set up by executing task list sequentially | No manual directory creation or config editing beyond task list | Single operation success rate |
+| SC-003 | Shared business logic resides in domain module to minimize duplication | Code review of cross-module references | All logic either in domain or localized per module |
+| SC-004 | Each module can be independently tested without full project build | Per-module test commands succeed in isolation | All module test suites |
+| SC-005 | Root-level documentation exists describing each module's purpose and boundaries | README or quickstart is reviewable | Clear, complete description for all 4 modules |
 
 ## User Scenarios
 

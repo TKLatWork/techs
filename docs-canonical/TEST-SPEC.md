@@ -45,7 +45,7 @@ No source files exist yet. This map will be populated as implementation begins.
 | `domain/src/main/java/com/techs/domain/model/ProjectInfo.java` | `domain/src/test/java/com/techs/domain/ProjectInfoTest.java` | N/A | Active |
 | `api/src/main/java/com/techs/api/model/UserDto.java` | `api/src/test/java/com/techs/api/UserDtoTest.java` | N/A | Active |
 | `app/src/main/java/com/techs/app/service/ProjectService.java` | `app/src/test/java/com/techs/app/ProjectServiceTest.java` | N/A | Active |
-| `web/src/components/StatusBadge.tsx` | `web/src/__tests__/StatusBadge.test.tsx` | N/A | Active |
+| `web/src/components/StatusBadge.tsx` | `web\src\__tests__\StatusBadge.test.tsx` | N/A | Active |
 | `web/src/services/userService.ts` | N/A | N/A | Active |
 
 ## Critical User Journeys (E2E Required)

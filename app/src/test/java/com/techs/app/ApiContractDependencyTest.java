@@ -6,6 +6,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests that app module correctly depends on API contract module.
+ * @req FR-004 — Verify app depends on API (web → api → domain ← app)
+ */
 class ApiContractDependencyTest {
 
     @Test

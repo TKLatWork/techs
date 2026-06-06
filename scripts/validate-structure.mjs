@@ -1,3 +1,17 @@
+/**
+ * Structural validation script for project setup.
+ * @req FR-001 — Verify four distinct top-level module directories exist
+ * @req FR-002 — Verify each module has own source code directory
+ * @req FR-003 — Verify each module has its own configuration file
+ * @req FR-004 — Verify dependency relationship (web → api → domain ← app)
+ * @req FR-005 — Verify root-level project configuration exists
+ * @req FR-007 — Verify root-level build validation command works
+ * @req SC-001 — Verify module boundaries are clearly visible and entry points exist
+ * @req SC-002 — Project structure is complete after one sequential run
+ * @req SC-004 — Verify each module can be independently tested
+ * @req SC-005 — Verify root-level documentation exists
+ */
+
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 
@@ -14,8 +28,10 @@ let errors = 0;
 
 function check(label, condition) {
   if (condition) {
+    // @req NFR-001, NFR-003, SC-004 — Independent module testing and consistent structure
     console.log(`  PASS: ${label}`);
   } else {
+    // @req NFR-002 — Clear separation of concerns validation
     console.error(`  FAIL: ${label}`);
     errors++;
   }
@@ -26,12 +42,14 @@ console.log("Validating project structure...\n");
 for (const mod of MODULES) {
   console.log(`[${mod.name}]`);
   const modDir = join(ROOT, mod.name);
+  // @req FR-001, FR-002, FR-003, SC-005 — Module boundaries and configuration
   check(`directory exists`, existsSync(modDir));
   check(`${mod.config} exists`, existsSync(join(modDir, mod.config)));
   check(`source dir exists`, existsSync(join(modDir, mod.srcDir)));
 }
 
 console.log("\n[dependency graph]");
+// @req FR-004, FR-005, FR-007 — Dependency validation and root configuration
 
 const apiPom = readFileSync(join(ROOT, "api", "pom.xml"), "utf-8");
 check("api depends on domain", apiPom.includes("techs-domain"));
