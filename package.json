@@ -1,0 +1,14 @@
+{
+  "name": "techs",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "web"
+  ],
+  "scripts": {
+    "build": "npm --workspace web run build",
+    "test": "npm --workspace web run test",
+    "dev": "npm --workspace web run dev",
+    "validate": "node scripts/validate-structure.mjs"
+  }
+}

@@ -42,7 +42,11 @@ No source files exist yet. This map will be populated as implementation begins.
 
 | Source File | Unit Test | Integration Test | Status |
 |------------|-----------|-----------------|--------|
-| TBD | TBD | TBD | Pending implementation |
+| `domain/src/main/java/com/techs/domain/model/ProjectInfo.java` | `domain/src/test/java/com/techs/domain/ProjectInfoTest.java` | N/A | Active |
+| `api/src/main/java/com/techs/api/model/UserDto.java` | `api/src/test/java/com/techs/api/UserDtoTest.java` | N/A | Active |
+| `app/src/main/java/com/techs/app/service/ProjectService.java` | `app/src/test/java/com/techs/app/ProjectServiceTest.java` | N/A | Active |
+| `web/src/components/StatusBadge.tsx` | `web/src/__tests__/StatusBadge.test.tsx` | N/A | Active |
+| `web/src/services/userService.ts` | N/A | N/A | Active |
 
 ## Critical User Journeys (E2E Required)
 
@@ -56,10 +60,11 @@ No source files exist yet. This map will be populated as implementation begins.
 
 | Module | Command | Description |
 |--------|---------|-------------|
-| web | `npm test` (in web/) | Run frontend unit tests via Vitest |
-| app | `mvn test` (in app/) | Run backend unit + integration tests via Maven |
-| domain | `mvn test` (in domain/) | Run domain library unit tests via Maven |
-| Root | TBD | Run all module tests from project root |
+| domain | `mvn -pl domain test` | Run domain library unit tests via Maven |
+| api | `mvn -pl api test` | Run API contract unit tests via Maven |
+| app | `mvn -pl app test` | Run backend unit + integration tests via Maven |
+| web | `npm --workspace web run test` | Run frontend unit tests via Vitest |
+| Root (Java) | `mvn test` | Run all Java module tests from project root |
 
 ## Recommended Test Patterns
 

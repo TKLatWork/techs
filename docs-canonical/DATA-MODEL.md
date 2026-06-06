@@ -23,7 +23,7 @@
 | Entity | Storage | Primary Key | Description |
 |--------|---------|-------------|-------------|
 | Project | In-memory / config | projectId (String) | Top-level container holding module references and shared settings |
-| Module | In-memory / config | moduleId (String) | Self-contained unit (web, app, domain) with source dir, config, entry point |
+| Module | In-memory / config | moduleId (String) | Self-contained unit (web, app, domain, api) with source dir, config, entry point |
 
 The project has no database entities yet. The data model will expand as features introduce persistence requirements.
 
@@ -41,8 +41,8 @@ The project has no database entities yet. The data model will expand as features
 
 | Field | Type | Required | Default | Constraints | Description |
 |-------|------|----------|---------|-------------|-------------|
-| moduleId | String | Yes | — | Unique within project | Identifier: "web", "app", or "domain" |
-| type | Enum | Yes | — | WEB, APP, DOMAIN | Module role classification |
+| moduleId | String | Yes | — | Unique within project | Identifier: "web", "app", "domain", or "api" |
+| type | Enum | Yes | — | WEB, APP, DOMAIN, API | Module role classification |
 | sourceDir | String | Yes | — | Non-empty | Path to module source directory |
 | configFile | String | Yes | — | File must exist | Path to module configuration file |
 | entryPoint | String | Yes | — | File must exist | Path to module entry point |
@@ -53,8 +53,10 @@ The project has no database entities yet. The data model will expand as features
 | From | To | Type | FK/Reference | Cascade |
 |------|-----|------|-------------|---------|
 | Project | Module | 1:many | modules list | N/A (in-memory) |
-| Module (web) | Module (domain) | many:1 | dependencies list | N/A |
+| Module (api) | Module (domain) | many:1 | dependencies list | N/A |
 | Module (app) | Module (domain) | many:1 | dependencies list | N/A |
+| Module (app) | Module (api) | many:1 | dependencies list | N/A |
+| Module (web) | Module (api) | many:1 | dependencies list | N/A |
 
 ## Indexes
 
