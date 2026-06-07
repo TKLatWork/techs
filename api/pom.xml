@@ -56,7 +56,7 @@
                 <configuration>
                     <jsonLibrary>jackson2</jsonLibrary>
                     <classPatterns>
-                        <classPattern>com.techs.api.model.**</classPattern>
+                        <classPattern>com.techs.api.**.model.**</classPattern>
                     </classPatterns>
                     <outputKind>module</outputKind>
                     <outputFileType>implementationFile</outputFileType>

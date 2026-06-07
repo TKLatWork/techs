@@ -18,36 +18,36 @@
 
 - **domain**: `domain/src/main/java/com/techs/domain/` (entities, value objects, domain services, repository interfaces)
 - **api**: `api/src/main/java/com/techs/api/` (DTOs, TypeScript generation)
-- **app**: `app/src/main/java/com/techs/app/` (controllers, services, repositories, config, security â€” **flat structure**)
+- **app**: `app/src/main/java/com/techs/app/` (controllers, services, repositories, config, security â€?**flat structure**)
 - **web**: `web/src/` (React components, hooks, services, pages)
 
 ---
 
-## Phase 1: Setup â€” All Modules Feature-Based Restructuring (US0 / P0)
+## Phase 1: Setup â€?All Modules Feature-Based Restructuring (US0 / P0)
 
 **Purpose**: Restructure domain, api, and web modules into feature-based architectures. Restructure app module into a flat structure by technical concern. Install `react-router-dom` and MUI. Wire up routing, theme, and auto-discovery. This is the mandatory prerequisite for all feature work.
 
 **Independent Test**: All modules build successfully, placeholder code is deleted, web router renders a home page at `/`, and the directory/package structure follows the correct layout in all four modules.
 
-- [ ] T001 [P] Create feature-based package directories in domain module (`entity/`, `valueobject/`, `service/`, `repository/` under `domain/src/main/java/com/techs/domain/userauth/` and `shared/`)
-- [ ] T002 [P] Create feature-based package directories in api module (`model/` under `api/src/main/java/com/techs/api/userauth/` and `shared/model/`)
-- [ ] T003 [P] Create flat package directories in app module (`controller/`, `service/`, `repository/`, `config/`, `security/` under `app/src/main/java/com/techs/app/`)
-- [ ] T004 [P] Create feature-based directory structure in web module (`features/auth/`, `features/profile/`, `features/permissions/` each with `components/`, `hooks/`, `services/`, `types/`, `__tests__/`; `app/`, `shared/`, `pages/`, `styles/`)
-- [ ] T005 Install `react-router-dom` (v6/v7), `@mui/material`, `@emotion/react`, `@emotion/styled` in `web/package.json`
-- [ ] T006 Create app shell with BrowserRouter, MUI ThemeProvider, and Suspense in `web/src/app/App.tsx`
-- [ ] T007 Create MUI theme configuration in `web/src/app/theme.ts`
-- [ ] T008 Create feature registry with `import.meta.glob` auto-discovery in `web/src/app/featureRegistry.ts`
-- [ ] T009 [P] Create shared components directory with StatusBadge migration in `web/src/shared/components/`
-- [ ] T010 [P] Create shared hooks directory with useApi hook in `web/src/shared/hooks/useApi.ts`
-- [ ] T011 [P] Create shared types, constants, and utils directories in `web/src/shared/types/`, `web/src/shared/constants/`, `web/src/shared/utils/`
-- [ ] T012 [P] Create HomePage in `web/src/pages/HomePage.tsx`
-- [ ] T013 [P] Create NotFoundPage in `web/src/pages/NotFoundPage.tsx`
-- [ ] T014 [P] Create global styles in `web/src/styles/global.css`
-- [ ] T015 [P] Create test setup file with jest-dom in `web/src/__tests__/setup.ts`
-- [ ] T016 Update `web/src/main.tsx` entry point to import App shell and global styles
-- [ ] T017 Delete placeholder classes: `ProjectInfo` in domain, `UserDto` in api, `ProjectService` in app
-- [ ] T018 Delete placeholder tests: `ProjectInfoTest`, `UserDtoTest`, `ProjectServiceTest`, `DomainDependencyTest`, `ApiContractDependencyTest`
-- [ ] T019 Verify all modules build successfully (`mvn clean install` for Java; `npm install && npm run build` for web)
+- [x] T001 [P] Create feature-based package directories in domain module (`entity/`, `valueobject/`, `service/`, `repository/` under `domain/src/main/java/com/techs/domain/userauth/` and `shared/`)
+- [x] T002 [P] Create feature-based package directories in api module (`model/` under `api/src/main/java/com/techs/api/userauth/` and `shared/model/`)
+- [x] T003 [P] Create flat package directories in app module (`controller/`, `service/`, `repository/`, `config/`, `security/` under `app/src/main/java/com/techs/app/`)
+- [x] T004 [P] Create feature-based directory structure in web module (`features/auth/`, `features/profile/`, `features/permissions/` each with `components/`, `hooks/`, `services/`, `types/`, `__tests__/`; `app/`, `shared/`, `pages/`, `styles/`)
+- [x] T005 Install `react-router-dom` (v6/v7), `@mui/material`, `@emotion/react`, `@emotion/styled` in `web/package.json`
+- [x] T006 Create app shell with BrowserRouter, MUI ThemeProvider, and Suspense in `web/src/app/App.tsx`
+- [x] T007 Create MUI theme configuration in `web/src/app/theme.ts`
+- [x] T008 Create feature registry with `import.meta.glob` auto-discovery in `web/src/app/featureRegistry.ts`
+- [x] T009 [P] Create shared components directory with StatusBadge migration in `web/src/shared/components/`
+- [x] T010 [P] Create shared hooks directory with useApi hook in `web/src/shared/hooks/useApi.ts`
+- [x] T011 [P] Create shared types, constants, and utils directories in `web/src/shared/types/`, `web/src/shared/constants/`, `web/src/shared/utils/`
+- [x] T012 [P] Create HomePage in `web/src/pages/HomePage.tsx`
+- [x] T013 [P] Create NotFoundPage in `web/src/pages/NotFoundPage.tsx`
+- [x] T014 [P] Create global styles in `web/src/styles/global.css`
+- [x] T015 [P] Create test setup file with jest-dom in `web/src/__tests__/setup.ts`
+- [x] T016 Update `web/src/main.tsx` entry point to import App shell and global styles
+- [x] T017 Delete placeholder classes: `ProjectInfo` in domain, `UserDto` in api, `ProjectService` in app
+- [x] T018 Delete placeholder tests: `ProjectInfoTest`, `UserDtoTest`, `ProjectServiceTest`, `DomainDependencyTest`, `ApiContractDependencyTest`
+- [x] T019 Verify all modules build successfully (`mvn clean install` for Java; `npm install && npm run build` for web)
 
 **Checkpoint**: All four modules follow correct structures (domain/api/web = feature-based, app = flat), web has react-router-dom and MUI installed and functional, home page renders at `/`, not-found page renders at `*`. Ready for foundational work.
 
@@ -59,75 +59,75 @@
 
 **CRITICAL**: No user story work can begin until this phase is complete.
 
-### Domain Layer â€” Value Objects & Entities
+### Domain Layer â€?Value Objects & Entities
 
-- [ ] T020 [P] Create RoleType value object enum in `domain/src/main/java/com/techs/domain/userauth/valueobject/RoleType.java`
-- [ ] T021 [P] Create RightType value object enum (BASE, FEATURE) in `domain/src/main/java/com/techs/domain/userauth/valueobject/RightType.java`
-- [ ] T022 [P] Create RightAction value object enum (READ, WRITE) in `domain/src/main/java/com/techs/domain/userauth/valueobject/RightAction.java`
-- [ ] T023 [P] Create Right entity with id, name, type, urlPattern, action, description, source, featureId, builtIn fields in `domain/src/main/java/com/techs/domain/userauth/entity/Right.java`
-- [ ] T024 [P] Create Role entity with id, name, description, rightIds, builtIn, immutable fields in `domain/src/main/java/com/techs/domain/userauth/entity/Role.java`
-- [ ] T025 Create User aggregate root entity with id, username, displayName, passwordHash, roleId, individualRightIds, createdAt fields in `domain/src/main/java/com/techs/domain/userauth/entity/User.java`
-- [ ] T026 [P] Create Session entity with token, userId, expiresAt, createdAt fields in `domain/src/main/java/com/techs/domain/userauth/entity/Session.java`
+- [x] T020 [P] Create RoleType value object enum in `domain/src/main/java/com/techs/domain/userauth/valueobject/RoleType.java`
+- [x] T021 [P] Create RightType value object enum (BASE, FEATURE) in `domain/src/main/java/com/techs/domain/userauth/valueobject/RightType.java`
+- [x] T022 [P] Create RightAction value object enum (READ, WRITE) in `domain/src/main/java/com/techs/domain/userauth/valueobject/RightAction.java`
+- [x] T023 [P] Create Right entity with id, name, type, urlPattern, action, description, source, featureId, builtIn fields in `domain/src/main/java/com/techs/domain/userauth/entity/Right.java`
+- [x] T024 [P] Create Role entity with id, name, description, rightIds, builtIn, immutable fields in `domain/src/main/java/com/techs/domain/userauth/entity/Role.java`
+- [x] T025 Create User aggregate root entity with id, username, displayName, passwordHash, roleId, individualRightIds, createdAt fields in `domain/src/main/java/com/techs/domain/userauth/entity/User.java`
+- [x] T026 [P] Create Session entity with token, userId, expiresAt, createdAt fields in `domain/src/main/java/com/techs/domain/userauth/entity/Session.java`
 
-### Domain Layer â€” Repository Interfaces
+### Domain Layer â€?Repository Interfaces
 
-- [ ] T027 [P] Create UserRepository interface (aggregate root) in `domain/src/main/java/com/techs/domain/userauth/repository/UserRepository.java`
-- [ ] T028 [P] Create RoleRepository interface in `domain/src/main/java/com/techs/domain/userauth/repository/RoleRepository.java`
-- [ ] T029 [P] Create RightRepository interface in `domain/src/main/java/com/techs/domain/userauth/repository/RightRepository.java`
-- [ ] T030 [P] Create SessionRepository interface in `domain/src/main/java/com/techs/domain/userauth/repository/SessionRepository.java`
+- [x] T027 [P] Create UserRepository interface (aggregate root) in `domain/src/main/java/com/techs/domain/userauth/repository/UserRepository.java`
+- [x] T028 [P] Create RoleRepository interface in `domain/src/main/java/com/techs/domain/userauth/repository/RoleRepository.java`
+- [x] T029 [P] Create RightRepository interface in `domain/src/main/java/com/techs/domain/userauth/repository/RightRepository.java`
+- [x] T030 [P] Create SessionRepository interface in `domain/src/main/java/com/techs/domain/userauth/repository/SessionRepository.java`
 
-### Domain Layer â€” Interfaces & Domain Services
+### Domain Layer â€?Interfaces & Domain Services
 
-- [ ] T031 Create PasswordEncoder interface (encode, matches methods) in `domain/src/main/java/com/techs/domain/userauth/service/PasswordEncoder.java`
-- [ ] T032 Create UserValidator domain service (username/displayName/password non-blank, username uniqueness check via UserRepository) in `domain/src/main/java/com/techs/domain/userauth/service/UserValidator.java`
-- [ ] T033 Create AuthService domain service skeleton (constructor injection: UserRepository, RoleRepository, SessionRepository, PasswordEncoder; placeholder methods for login, register, getCurrentUser) in `domain/src/main/java/com/techs/domain/userauth/service/AuthService.java`
-- [ ] T034 Create AuthorizationService domain service skeleton (constructor injection: UserRepository, RoleRepository, RightRepository; placeholder methods for getEffectiveRights, hasRight) in `domain/src/main/java/com/techs/domain/userauth/service/AuthorizationService.java`
+- [x] T031 Create PasswordEncoder interface (encode, matches methods) in `domain/src/main/java/com/techs/domain/userauth/service/PasswordEncoder.java`
+- [x] T032 Create UserValidator domain service (username/displayName/password non-blank, username uniqueness check via UserRepository) in `domain/src/main/java/com/techs/domain/userauth/service/UserValidator.java`
+- [x] T033 Create AuthService domain service skeleton (constructor injection: UserRepository, RoleRepository, SessionRepository, PasswordEncoder; placeholder methods for login, register, getCurrentUser) in `domain/src/main/java/com/techs/domain/userauth/service/AuthService.java`
+- [x] T034 Create AuthorizationService domain service skeleton (constructor injection: UserRepository, RoleRepository, RightRepository; placeholder methods for getEffectiveRights, hasRight) in `domain/src/main/java/com/techs/domain/userauth/service/AuthorizationService.java`
 
-### API Layer â€” DTOs
+### API Layer â€?DTOs
 
-- [ ] T035 [P] Create ErrorResponse DTO in `api/src/main/java/com/techs/api/userauth/model/ErrorResponse.java`
-- [ ] T036 [P] Create LoginRequest DTO in `api/src/main/java/com/techs/api/userauth/model/LoginRequest.java`
-- [ ] T037 [P] Create LoginResponse DTO (includes UserDto with effectiveRights + individualRights) in `api/src/main/java/com/techs/api/userauth/model/LoginResponse.java`
-- [ ] T038 [P] Create RegisterRequest DTO in `api/src/main/java/com/techs/api/userauth/model/RegisterRequest.java`
-- [ ] T039 [P] Create RegisterResponse DTO in `api/src/main/java/com/techs/api/userauth/model/RegisterResponse.java`
-- [ ] T040 [P] Create UserDto DTO (includes effectiveRights: List\<RightDto\>, individualRights: List\<RightDto\>) in `api/src/main/java/com/techs/api/userauth/model/UserDto.java`
-- [ ] T041 [P] Create RoleDto DTO in `api/src/main/java/com/techs/api/userauth/model/RoleDto.java`
-- [ ] T042 [P] Create RightDto DTO in `api/src/main/java/com/techs/api/userauth/model/RightDto.java`
-- [ ] T043 [P] Create PermissionRegistrationRequest DTO (featureId, permissions list) in `api/src/main/java/com/techs/api/userauth/model/PermissionRegistrationRequest.java`
-- [ ] T044 [P] Create UserPermissionsDto DTO (userId, username, displayName, role, effectiveRights, individualRights) in `api/src/main/java/com/techs/api/userauth/model/UserPermissionsDto.java`
-- [ ] T045 Configure typescript-generator plugin and verify TypeScript type generation in `api/pom.xml`
+- [x] T035 [P] Create ErrorResponse DTO in `api/src/main/java/com/techs/api/userauth/model/ErrorResponse.java`
+- [x] T036 [P] Create LoginRequest DTO in `api/src/main/java/com/techs/api/userauth/model/LoginRequest.java`
+- [x] T037 [P] Create LoginResponse DTO (includes UserDto with effectiveRights + individualRights) in `api/src/main/java/com/techs/api/userauth/model/LoginResponse.java`
+- [x] T038 [P] Create RegisterRequest DTO in `api/src/main/java/com/techs/api/userauth/model/RegisterRequest.java`
+- [x] T039 [P] Create RegisterResponse DTO in `api/src/main/java/com/techs/api/userauth/model/RegisterResponse.java`
+- [x] T040 [P] Create UserDto DTO (includes effectiveRights: List\<RightDto\>, individualRights: List\<RightDto\>) in `api/src/main/java/com/techs/api/userauth/model/UserDto.java`
+- [x] T041 [P] Create RoleDto DTO in `api/src/main/java/com/techs/api/userauth/model/RoleDto.java`
+- [x] T042 [P] Create RightDto DTO in `api/src/main/java/com/techs/api/userauth/model/RightDto.java`
+- [x] T043 [P] Create PermissionRegistrationRequest DTO (featureId, permissions list) in `api/src/main/java/com/techs/api/userauth/model/PermissionRegistrationRequest.java`
+- [x] T044 [P] Create UserPermissionsDto DTO (userId, username, displayName, role, effectiveRights, individualRights) in `api/src/main/java/com/techs/api/userauth/model/UserPermissionsDto.java`
+- [x] T045 Configure typescript-generator plugin and verify TypeScript type generation in `api/pom.xml`
 
-### App Layer â€” Repository Implementations
+### App Layer â€?Repository Implementations
 
-- [ ] T046 [P] Implement InMemoryUserRepository (ConcurrentHashMap, username index) in `app/src/main/java/com/techs/app/repository/InMemoryUserRepository.java`
-- [ ] T047 [P] Implement InMemoryRoleRepository (ConcurrentHashMap, name index) in `app/src/main/java/com/techs/app/repository/InMemoryRoleRepository.java`
-- [ ] T048 [P] Implement InMemoryRightRepository (ConcurrentHashMap, name index, featureId index) in `app/src/main/java/com/techs/app/repository/InMemoryRightRepository.java`
-- [ ] T049 [P] Implement InMemorySessionRepository (ConcurrentHashMap, userId â†’ Set\<token\> index) in `app/src/main/java/com/techs/app/repository/InMemorySessionRepository.java`
+- [x] T046 [P] Implement InMemoryUserRepository (ConcurrentHashMap, username index) in `app/src/main/java/com/techs/app/repository/InMemoryUserRepository.java`
+- [x] T047 [P] Implement InMemoryRoleRepository (ConcurrentHashMap, name index) in `app/src/main/java/com/techs/app/repository/InMemoryRoleRepository.java`
+- [x] T048 [P] Implement InMemoryRightRepository (ConcurrentHashMap, name index, featureId index) in `app/src/main/java/com/techs/app/repository/InMemoryRightRepository.java`
+- [x] T049 [P] Implement InMemorySessionRepository (ConcurrentHashMap, userId â†?Set\<token\> index) in `app/src/main/java/com/techs/app/repository/InMemorySessionRepository.java`
 
-### App Layer â€” Services & Infrastructure
+### App Layer â€?Services & Infrastructure
 
-- [ ] T050 Implement BCryptPasswordEncoder (implements domain PasswordEncoder interface, wraps Spring Security BCryptPasswordEncoder) in `app/src/main/java/com/techs/app/service/BCryptPasswordEncoder.java`
-- [ ] T051 Implement SessionService (session validation, invalidation, 7-day expiry check, concurrent sessions support) in `app/src/main/java/com/techs/app/service/SessionService.java`
-- [ ] T052 Implement SessionAuthFilter (OncePerRequestFilter: extract Bearer token, validate session via SessionService, set SecurityContext) in `app/src/main/java/com/techs/app/security/SessionAuthFilter.java`
-- [ ] T053 Implement UrlAuthorizationFilter (match request URLs against user's base rights from AuthorizationService) in `app/src/main/java/com/techs/app/security/UrlAuthorizationFilter.java`
-- [ ] T054 Configure SecurityConfig (SecurityFilterChain: public endpoints for login/register, protected endpoints, filter registration, CORS, wire domain AuthService with injected dependencies) in `app/src/main/java/com/techs/app/config/SecurityConfig.java`
-- [ ] T055 Implement DataSeeder (CommandLineRunner: seed Admin/User/Visitor roles, built-in base and feature rights, admin account `admin`/`123`) in `app/src/main/java/com/techs/app/config/DataSeeder.java`
-- [ ] T056 Configure application.yml (server port, Spring Security settings) in `app/src/main/resources/application.yml`
+- [x] T050 Implement BCryptPasswordEncoder (implements domain PasswordEncoder interface, wraps Spring Security BCryptPasswordEncoder) in `app/src/main/java/com/techs/app/service/BCryptPasswordEncoder.java`
+- [x] T051 Implement SessionService (session validation, invalidation, 7-day expiry check, concurrent sessions support) in `app/src/main/java/com/techs/app/service/SessionService.java`
+- [x] T052 Implement SessionAuthFilter (OncePerRequestFilter: extract Bearer token, validate session via SessionService, set SecurityContext) in `app/src/main/java/com/techs/app/security/SessionAuthFilter.java`
+- [x] T053 Implement UrlAuthorizationFilter (match request URLs against user's base rights from AuthorizationService) in `app/src/main/java/com/techs/app/security/UrlAuthorizationFilter.java`
+- [x] T054 Configure SecurityConfig (SecurityFilterChain: public endpoints for login/register, protected endpoints, filter registration, CORS, wire domain AuthService with injected dependencies) in `app/src/main/java/com/techs/app/config/SecurityConfig.java`
+- [x] T055 Implement DataSeeder (CommandLineRunner: seed Admin/User/Visitor roles, built-in base and feature rights, admin account `admin`/`123`) in `app/src/main/java/com/techs/app/config/DataSeeder.java`
+- [x] T056 Configure application.yml (server port, Spring Security settings) in `app/src/main/resources/application.yml`
 
-### Web Layer â€” Shared Infrastructure
+### Web Layer â€?Shared Infrastructure
 
-- [ ] T057 Implement apiClient (fetch wrapper: get/post/put/delete, auth header injection, 401 handling with redirect to /login) in `web/src/shared/services/apiClient.ts`
-- [ ] T058 Create AuthContext (React context: user state, token management, effectiveRights cache, login/logout actions) in `web/src/features/auth/hooks/AuthContext.tsx`
-- [ ] T059 Implement useAuth hook (login, logout, isAuthenticated, currentUser, effectiveRights) in `web/src/features/auth/hooks/useAuth.ts`
-- [ ] T060 Implement usePermission hook (hasRight function reading effectiveRights from AuthContext) in `web/src/features/auth/hooks/usePermission.ts`
-- [ ] T061 Implement ProtectedRoute component (check auth â†’ redirect to /login; check requiredRight â†’ show Access Denied) in `web/src/features/auth/components/ProtectedRoute.tsx`
-- [ ] T062 Create auth TypeScript types (LoginRequest, LoginResponse with effectiveRights, RegisterRequest, RegisterResponse, User, Right) in `web/src/features/auth/types/auth.ts`
+- [x] T057 Implement apiClient (fetch wrapper: get/post/put/delete, auth header injection, 401 handling with redirect to /login) in `web/src/shared/services/apiClient.ts`
+- [x] T058 Create AuthContext (React context: user state, token management, effectiveRights cache, login/logout actions) in `web/src/features/auth/hooks/AuthContext.tsx`
+- [x] T059 Implement useAuth hook (login, logout, isAuthenticated, currentUser, effectiveRights) in `web/src/features/auth/hooks/useAuth.ts`
+- [x] T060 Implement usePermission hook (hasRight function reading effectiveRights from AuthContext) in `web/src/features/auth/hooks/usePermission.ts`
+- [x] T061 Implement ProtectedRoute component (check auth â†?redirect to /login; check requiredRight â†?show Access Denied) in `web/src/features/auth/components/ProtectedRoute.tsx`
+- [x] T062 Create auth TypeScript types (LoginRequest, LoginResponse with effectiveRights, RegisterRequest, RegisterResponse, User, Right) in `web/src/features/auth/types/auth.ts`
 
-**Checkpoint**: Foundation ready â€” domain entities, repositories, PasswordEncoder interface, security, data seeding, and shared web infrastructure are complete. Domain AuthService is wired via constructor injection. User story implementation can now begin.
+**Checkpoint**: Foundation ready â€?domain entities, repositories, PasswordEncoder interface, security, data seeding, and shared web infrastructure are complete. Domain AuthService is wired via constructor injection. User story implementation can now begin.
 
 ---
 
-## Phase 3: User Story 1 â€” User Login (Priority: P1) MVP
+## Phase 3: User Story 1 â€?User Login (Priority: P1) MVP
 
 **Goal**: A user navigates to the application, sees a login page, enters credentials, and upon successful authentication is redirected to the home page with a personalized greeting and their effective rights cached for permission checks.
 
@@ -137,25 +137,25 @@
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T063 [P] [US1] Domain unit test for AuthService.login (valid credentials, invalid credentials, blank credentials â€” mock UserRepository and PasswordEncoder) in `domain/src/test/java/com/techs/domain/userauth/service/AuthServiceTest.java`
-- [ ] T064 [P] [US1] API E2E test for POST /api/auth/login (success returns token + user with effectiveRights, invalid credentials returns 401, blank fields returns 400) in `app/src/test/java/com/techs/app/controller/AuthControllerTest.java`
-- [ ] T065 [P] [US1] Web component test for LoginForm (render form, submit valid form, submit invalid form, display error Alert) in `web/src/features/auth/__tests__/LoginForm.test.tsx`
+- [x] T063 [P] [US1] Domain unit test for AuthService.login (valid credentials, invalid credentials, blank credentials â€?mock UserRepository and PasswordEncoder) in `domain/src/test/java/com/techs/domain/userauth/service/AuthServiceTest.java`
+- [x] T064 [P] [US1] API E2E test for POST /api/auth/login (success returns token + user with effectiveRights, invalid credentials returns 401, blank fields returns 400) in `app/src/test/java/com/techs/app/controller/AuthControllerTest.java`
+- [x] T065 [P] [US1] Web component test for LoginForm (render form, submit valid form, submit invalid form, display error Alert) in `web/src/features/auth/__tests__/LoginForm.test.tsx`
 
 ### Implementation for User Story 1
 
-- [ ] T066 [US1] Implement login method in AuthService (validate credentials via UserRepository, compare password via PasswordEncoder.matches, create Session via SessionRepository, compute effectiveRights via AuthorizationService) in `domain/src/main/java/com/techs/domain/userauth/service/AuthService.java`
-- [ ] T067 [US1] Implement POST /api/auth/login endpoint in AuthController (delegate to AuthService, return LoginResponse with token + UserDto including effectiveRights) in `app/src/main/java/com/techs/app/controller/AuthController.java`
-- [ ] T068 [P] [US1] Implement authService with login API call (store token in localStorage, cache effectiveRights) in `web/src/features/auth/services/authService.ts`
-- [ ] T069 [P] [US1] Implement LoginForm component (MUI TextField for username/password, submit Button, error Alert) in `web/src/features/auth/components/LoginForm.tsx`
-- [ ] T070 [US1] Implement LoginPage (render LoginForm, redirect to `/` if already authenticated) in `web/src/pages/LoginPage.tsx`
-- [ ] T071 [US1] Create auth route definitions (lazy-loaded /login, /register routes) in `web/src/features/auth/routes.tsx`
-- [ ] T072 [US1] Verify login flow end-to-end: navigate to `/login` â†’ enter `admin`/`123` â†’ redirect to `/` with greeting; verify effectiveRights cached in AuthContext
+- [x] T066 [US1] Implement login method in AuthService (validate credentials via UserRepository, compare password via PasswordEncoder.matches, create Session via SessionRepository, compute effectiveRights via AuthorizationService) in `domain/src/main/java/com/techs/domain/userauth/service/AuthService.java`
+- [x] T067 [US1] Implement POST /api/auth/login endpoint in AuthController (delegate to AuthService, return LoginResponse with token + UserDto including effectiveRights) in `app/src/main/java/com/techs/app/controller/AuthController.java`
+- [x] T068 [P] [US1] Implement authService with login API call (store token in localStorage, cache effectiveRights) in `web/src/features/auth/services/authService.ts`
+- [x] T069 [P] [US1] Implement LoginForm component (MUI TextField for username/password, submit Button, error Alert) in `web/src/features/auth/components/LoginForm.tsx`
+- [x] T070 [US1] Implement LoginPage (render LoginForm, redirect to `/` if already authenticated) in `web/src/pages/LoginPage.tsx`
+- [x] T071 [US1] Create auth route definitions (lazy-loaded /login, /register routes) in `web/src/features/auth/routes.tsx`
+- [x] T072 [US1] Verify login flow end-to-end: navigate to `/login` â†?enter `admin`/`123` â†?redirect to `/` with greeting; verify effectiveRights cached in AuthContext
 
 **Checkpoint**: User Login is fully functional. Admin can log in and see the home page. Invalid credentials show a generic error. Effective rights are cached for permission checks.
 
 ---
 
-## Phase 4: User Story 2 â€” View User Profile (Priority: P1)
+## Phase 4: User Story 2 â€?View User Profile (Priority: P1)
 
 **Goal**: An authenticated user can view their profile page displaying username, display name, role, and account creation date.
 
@@ -163,27 +163,27 @@
 
 ### Tests for User Story 2
 
-- [ ] T073 [P] [US2] Domain unit test for AuthService.getCurrentUser (resolve user from session, compute effectiveRights â€” mock SessionRepository and AuthorizationService) in `domain/src/test/java/com/techs/domain/userauth/service/AuthServiceTest.java`
-- [ ] T074 [P] [US2] API E2E test for GET /api/auth/me (success returns user with effectiveRights + individualRights, unauthenticated returns 401) in `app/src/test/java/com/techs/app/controller/UserControllerTest.java`
-- [ ] T075 [P] [US2] Web component test for ProfileCard (render user data, display all fields including roleName) in `web/src/features/profile/__tests__/ProfileCard.test.tsx`
+- [x] T073 [P] [US2] Domain unit test for AuthService.getCurrentUser (resolve user from session, compute effectiveRights â€?mock SessionRepository and AuthorizationService) in `domain/src/test/java/com/techs/domain/userauth/service/AuthServiceTest.java`
+- [x] T074 [P] [US2] API E2E test for GET /api/auth/me (success returns user with effectiveRights + individualRights, unauthenticated returns 401) in `app/src/test/java/com/techs/app/controller/UserControllerTest.java`
+- [x] T075 [P] [US2] Web component test for ProfileCard (render user data, display all fields including roleName) in `web/src/features/profile/__tests__/ProfileCard.test.tsx`
 
 ### Implementation for User Story 2
 
-- [ ] T076 [US2] Implement getCurrentUser method in AuthService (resolve user from Session via SessionRepository, compute effectiveRights via AuthorizationService, return User with rights) in `domain/src/main/java/com/techs/domain/userauth/service/AuthService.java`
-- [ ] T077 [US2] Implement GET /api/auth/me endpoint in UserController (delegate to AuthService, return UserDto with effectiveRights + individualRights) in `app/src/main/java/com/techs/app/controller/UserController.java`
-- [ ] T078 [P] [US2] Create profile TypeScript types in `web/src/features/profile/types/profile.ts`
-- [ ] T079 [P] [US2] Implement profileService with getCurrentUser API call in `web/src/features/profile/services/profileService.ts`
-- [ ] T080 [P] [US2] Implement useProfile hook (fetch and cache current user data) in `web/src/features/profile/hooks/useProfile.ts`
-- [ ] T081 [P] [US2] Implement ProfileCard component (MUI Card displaying username, displayName, roleName, createdAt) in `web/src/features/profile/components/ProfileCard.tsx`
-- [ ] T082 [US2] Implement ProfilePage (render ProfileCard, require `read:/profile` right) in `web/src/pages/ProfilePage.tsx`
-- [ ] T083 [US2] Create profile route definitions (lazy-loaded /profile with ProtectedRoute) in `web/src/features/profile/routes.tsx`
-- [ ] T084 [US2] Verify profile flow: login â†’ navigate to `/profile` â†’ verify all fields displayed; logout â†’ navigate to `/profile` â†’ redirect to `/login`
+- [x] T076 [US2] Implement getCurrentUser method in AuthService (resolve user from Session via SessionRepository, compute effectiveRights via AuthorizationService, return User with rights) in `domain/src/main/java/com/techs/domain/userauth/service/AuthService.java`
+- [x] T077 [US2] Implement GET /api/auth/me endpoint in UserController (delegate to AuthService, return UserDto with effectiveRights + individualRights) in `app/src/main/java/com/techs/app/controller/UserController.java`
+- [x] T078 [P] [US2] Create profile TypeScript types in `web/src/features/profile/types/profile.ts`
+- [x] T079 [P] [US2] Implement profileService with getCurrentUser API call in `web/src/features/profile/services/profileService.ts`
+- [x] T080 [P] [US2] Implement useProfile hook (fetch and cache current user data) in `web/src/features/profile/hooks/useProfile.ts`
+- [x] T081 [P] [US2] Implement ProfileCard component (MUI Card displaying username, displayName, roleName, createdAt) in `web/src/features/profile/components/ProfileCard.tsx`
+- [x] T082 [US2] Implement ProfilePage (render ProfileCard, require `read:/profile` right) in `web/src/pages/ProfilePage.tsx`
+- [x] T083 [US2] Create profile route definitions (lazy-loaded /profile with ProtectedRoute) in `web/src/features/profile/routes.tsx`
+- [x] T084 [US2] Verify profile flow: login â†?navigate to `/profile` â†?verify all fields displayed; logout â†?navigate to `/profile` â†?redirect to `/login`
 
 **Checkpoint**: User Profile is fully functional. Authenticated users can view their profile. Unauthenticated users are redirected to login.
 
 ---
 
-## Phase 5: User Story 5 â€” Self-Registration (Priority: P1)
+## Phase 5: User Story 5 â€?Self-Registration (Priority: P1)
 
 **Goal**: A visitor can create an account via a registration page, is auto-assigned the Visitor role, and can log in with new credentials.
 
@@ -191,25 +191,25 @@
 
 ### Tests for User Story 5
 
-- [ ] T085 [P] [US5] Domain unit test for AuthService.register (unique username, duplicate username, blank fields, Visitor role assignment â€” mock UserRepository and RoleRepository) in `domain/src/test/java/com/techs/domain/userauth/service/AuthServiceTest.java`
-- [ ] T086 [P] [US5] API E2E test for POST /api/auth/register (success returns 201 with Visitor role, duplicate username returns 409, blank fields returns 400) in `app/src/test/java/com/techs/app/controller/AuthControllerTest.java`
-- [ ] T087 [P] [US5] Web component test for RegisterForm (render form, submit valid form, duplicate username error display) in `web/src/features/auth/__tests__/RegisterForm.test.tsx`
+- [x] T085 [P] [US5] Domain unit test for AuthService.register (unique username, duplicate username, blank fields, Visitor role assignment â€?mock UserRepository and RoleRepository) in `domain/src/test/java/com/techs/domain/userauth/service/AuthServiceTest.java`
+- [x] T086 [P] [US5] API E2E test for POST /api/auth/register (success returns 201 with Visitor role, duplicate username returns 409, blank fields returns 400) in `app/src/test/java/com/techs/app/controller/AuthControllerTest.java`
+- [x] T087 [P] [US5] Web component test for RegisterForm (render form, submit valid form, duplicate username error display) in `web/src/features/auth/__tests__/RegisterForm.test.tsx`
 
 ### Implementation for User Story 5
 
-- [ ] T088 [US5] Implement register method in AuthService (validate uniqueness via UserValidator, look up Visitor role via RoleRepository, hash password via PasswordEncoder.encode, create User, save via UserRepository) in `domain/src/main/java/com/techs/domain/userauth/service/AuthService.java`
-- [ ] T089 [US5] Implement POST /api/auth/register endpoint in AuthController (delegate to AuthService, return RegisterResponse with UserDto) in `app/src/main/java/com/techs/app/controller/AuthController.java`
-- [ ] T090 [P] [US5] Implement authService.register API call in `web/src/features/auth/services/authService.ts`
-- [ ] T091 [P] [US5] Implement RegisterForm component (MUI TextField for username/password/displayName, submit Button, error Alert) in `web/src/features/auth/components/RegisterForm.tsx`
-- [ ] T092 [US5] Implement RegisterPage (render RegisterForm, redirect to `/` if authenticated) in `web/src/pages/RegisterPage.tsx`
-- [ ] T093 [US5] Add registration link to LoginPage (MUI Link to `/register`) in `web/src/pages/LoginPage.tsx`
-- [ ] T094 [US5] Verify registration flow: navigate to `/register` â†’ create account â†’ redirect to `/login` â†’ login with new credentials â†’ verify Visitor role on profile
+- [x] T088 [US5] Implement register method in AuthService (validate uniqueness via UserValidator, look up Visitor role via RoleRepository, hash password via PasswordEncoder.encode, create User, save via UserRepository) in `domain/src/main/java/com/techs/domain/userauth/service/AuthService.java`
+- [x] T089 [US5] Implement POST /api/auth/register endpoint in AuthController (delegate to AuthService, return RegisterResponse with UserDto) in `app/src/main/java/com/techs/app/controller/AuthController.java`
+- [x] T090 [P] [US5] Implement authService.register API call in `web/src/features/auth/services/authService.ts`
+- [x] T091 [P] [US5] Implement RegisterForm component (MUI TextField for username/password/displayName, submit Button, error Alert) in `web/src/features/auth/components/RegisterForm.tsx`
+- [x] T092 [US5] Implement RegisterPage (render RegisterForm, redirect to `/` if authenticated) in `web/src/pages/RegisterPage.tsx`
+- [x] T093 [US5] Add registration link to LoginPage (MUI Link to `/register`) in `web/src/pages/LoginPage.tsx`
+- [x] T094 [US5] Verify registration flow: navigate to `/register` â†?create account â†?redirect to `/login` â†?login with new credentials â†?verify Visitor role on profile
 
 **Checkpoint**: Self-Registration is fully functional. New users can register, are assigned Visitor role, and can log in.
 
 ---
 
-## Phase 6: User Story 3 â€” Permission-Based Access Control (Priority: P2)
+## Phase 6: User Story 3 â€?Permission-Based Access Control (Priority: P2)
 
 **Goal**: The system enforces permission-based access control using base rights (URL-level) and feature rights (in-page). Access is enforced on both frontend (route guards) and backend (endpoint protection).
 
@@ -217,94 +217,94 @@
 
 ### Tests for User Story 3
 
-- [ ] T095 [P] [US3] Domain unit test for AuthorizationService (effective rights computation: role rights union individual rights, Admin always has all rights, hasRight checks) in `domain/src/test/java/com/techs/domain/userauth/service/AuthorizationServiceTest.java`
-- [ ] T096 [P] [US3] API E2E test for UrlAuthorizationFilter (access granted with right, access denied without right â€” full Spring context) in `app/src/test/java/com/techs/app/security/UrlAuthorizationFilterTest.java`
-- [ ] T097 [P] [US3] Web component test for ProtectedRoute (redirect unauthenticated, access denied without right, render with right) in `web/src/features/auth/__tests__/ProtectedRoute.test.tsx`
+- [x] T095 [P] [US3] Domain unit test for AuthorizationService (effective rights computation: role rights union individual rights, Admin always has all rights, hasRight checks) in `domain/src/test/java/com/techs/domain/userauth/service/AuthorizationServiceTest.java`
+- [x] T096 [P] [US3] API E2E test for UrlAuthorizationFilter (access granted with right, access denied without right â€?full Spring context) in `app/src/test/java/com/techs/app/security/UrlAuthorizationFilterTest.java`
+- [x] T097 [P] [US3] Web component test for ProtectedRoute (redirect unauthenticated, access denied without right, render with right) in `web/src/features/auth/__tests__/ProtectedRoute.test.tsx`
 
 ### Implementation for User Story 3
 
-- [ ] T098 [US3] Implement getEffectiveRights and hasRight methods in AuthorizationService (union of role.rights and user.individualRights, Admin role always returns all rights) in `domain/src/main/java/com/techs/domain/userauth/service/AuthorizationService.java`
-- [ ] T099 [US3] Refine UrlAuthorizationFilter (match request URL + HTTP method against user's base rights: READ for GET, WRITE for POST/PUT/DELETE) in `app/src/main/java/com/techs/app/security/UrlAuthorizationFilter.java`
-- [ ] T100 [P] [US3] Create permission TypeScript types (Right, Role, UserPermissions) in `web/src/features/permissions/types/permissions.ts`
-- [ ] T101 [P] [US3] Refine usePermission hook (read effectiveRights from AuthContext, provide hasRight function for both base and feature rights) in `web/src/features/auth/hooks/usePermission.ts`
-- [ ] T102 [US3] Refine ProtectedRoute component (check base right `read:/path` for route-level enforcement using usePermission.hasRight) in `web/src/features/auth/components/ProtectedRoute.tsx`
-- [ ] T103 [US3] Demonstrate feature-right enforcement pattern (usePermission.hasRight check to show/hide in-page elements) in `web/src/pages/PermissionsPage.tsx`
-- [ ] T104 [US3] Verify access control: Visitor cannot access `/permissions` (Access Denied); Admin can access `/permissions`; backend rejects requests without required right
+- [x] T098 [US3] Implement getEffectiveRights and hasRight methods in AuthorizationService (union of role.rights and user.individualRights, Admin role always returns all rights) in `domain/src/main/java/com/techs/domain/userauth/service/AuthorizationService.java`
+- [x] T099 [US3] Refine UrlAuthorizationFilter (match request URL + HTTP method against user's base rights: READ for GET, WRITE for POST/PUT/DELETE) in `app/src/main/java/com/techs/app/security/UrlAuthorizationFilter.java`
+- [x] T100 [P] [US3] Create permission TypeScript types (Right, Role, UserPermissions) in `web/src/features/permissions/types/permissions.ts`
+- [x] T101 [P] [US3] Refine usePermission hook (read effectiveRights from AuthContext, provide hasRight function for both base and feature rights) in `web/src/features/auth/hooks/usePermission.ts`
+- [x] T102 [US3] Refine ProtectedRoute component (check base right `read:/path` for route-level enforcement using usePermission.hasRight) in `web/src/features/auth/components/ProtectedRoute.tsx`
+- [x] T103 [US3] Demonstrate feature-right enforcement pattern (usePermission.hasRight check to show/hide in-page elements) in `web/src/pages/PermissionsPage.tsx`
+- [x] T104 [US3] Verify access control: Visitor cannot access `/permissions` (Access Denied); Admin can access `/permissions`; backend rejects requests without required right
 
 **Checkpoint**: Permission-based access control is enforced on both frontend and backend. Users without required rights see "Access Denied".
 
 ---
 
-## Phase 7: User Story 4 â€” Logout (Priority: P2)
+## Phase 7: User Story 4 â€?Logout (Priority: P2)
 
 **Goal**: An authenticated user can log out. Their session is invalidated (only the current session, not other concurrent sessions) and they are redirected to the login page.
 
-**Independent Test**: Log in, click logout, verify redirect to `/login`. Attempt to access `/profile`, verify redirect to `/login`. Log in from another browser â€” that session remains valid.
+**Independent Test**: Log in, click logout, verify redirect to `/login`. Attempt to access `/profile`, verify redirect to `/login`. Log in from another browser â€?that session remains valid.
 
 ### Tests for User Story 4
 
-- [ ] T105 [P] [US4] API E2E test for SessionService (logout deletes only current session, other sessions for same user remain valid, expired session treated as unauthenticated) in `app/src/test/java/com/techs/app/service/SessionServiceTest.java`
-- [ ] T106 [P] [US4] API E2E test for POST /api/auth/logout (success returns 204, unauthenticated returns 401) in `app/src/test/java/com/techs/app/controller/AuthControllerTest.java`
-- [ ] T107 [P] [US4] Web component test for LogoutButton (render button, click triggers logout API call, clears auth state and effectiveRights cache) in `web/src/features/auth/__tests__/LogoutButton.test.tsx`
+- [x] T105 [P] [US4] API E2E test for SessionService (logout deletes only current session, other sessions for same user remain valid, expired session treated as unauthenticated) in `app/src/test/java/com/techs/app/service/SessionServiceTest.java`
+- [x] T106 [P] [US4] API E2E test for POST /api/auth/logout (success returns 204, unauthenticated returns 401) in `app/src/test/java/com/techs/app/controller/AuthControllerTest.java`
+- [x] T107 [P] [US4] Web component test for LogoutButton (render button, click triggers logout API call, clears auth state and effectiveRights cache) in `web/src/features/auth/__tests__/LogoutButton.test.tsx`
 
 ### Implementation for User Story 4
 
-- [ ] T108 [US4] Implement logout method in SessionService (delete only the specified session token from SessionRepository, preserve other sessions for same user) in `app/src/main/java/com/techs/app/service/SessionService.java`
-- [ ] T109 [US4] Implement POST /api/auth/logout endpoint in AuthController (extract token from header, delegate to SessionService.logout) in `app/src/main/java/com/techs/app/controller/AuthController.java`
-- [ ] T110 [P] [US4] Implement authService.logout API call in `web/src/features/auth/services/authService.ts`
-- [ ] T111 [P] [US4] Implement LogoutButton component (MUI Button, calls logout API, clears auth state and effectiveRights cache) in `web/src/features/auth/components/LogoutButton.tsx`
-- [ ] T112 [US4] Integrate logout into App shell (LogoutButton in header/nav, clear token from localStorage, clear AuthContext, redirect to `/login`) in `web/src/app/App.tsx`
-- [ ] T113 [US4] Verify logout flow: login â†’ click logout â†’ redirect to `/login` â†’ access `/profile` â†’ redirect to `/login`
+- [x] T108 [US4] Implement logout method in SessionService (delete only the specified session token from SessionRepository, preserve other sessions for same user) in `app/src/main/java/com/techs/app/service/SessionService.java`
+- [x] T109 [US4] Implement POST /api/auth/logout endpoint in AuthController (extract token from header, delegate to SessionService.logout) in `app/src/main/java/com/techs/app/controller/AuthController.java`
+- [x] T110 [P] [US4] Implement authService.logout API call in `web/src/features/auth/services/authService.ts`
+- [x] T111 [P] [US4] Implement LogoutButton component (MUI Button, calls logout API, clears auth state and effectiveRights cache) in `web/src/features/auth/components/LogoutButton.tsx`
+- [x] T112 [US4] Integrate logout into App shell (LogoutButton in header/nav, clear token from localStorage, clear AuthContext, redirect to `/login`) in `web/src/app/App.tsx`
+- [x] T113 [US4] Verify logout flow: login â†?click logout â†?redirect to `/login` â†?access `/profile` â†?redirect to `/login`
 
 **Checkpoint**: Logout is fully functional. Only the current session is invalidated. Other concurrent sessions remain valid. Protected pages require re-authentication.
 
 ---
 
-## Phase 8: User Story 6 â€” Permission Management Page (Priority: P2)
+## Phase 8: User Story 6 â€?Permission Management Page (Priority: P2)
 
-**Goal**: Admin users access a management page to configure roles, rights, user permissions, and feature management. Non-admin users see "Access Denied". The Admin role is fully immutable â€” all modification attempts are blocked.
+**Goal**: Admin users access a management page to configure roles, rights, user permissions, and feature management. Non-admin users see "Access Denied". The Admin role is fully immutable â€?all modification attempts are blocked.
 
-**Independent Test**: Log in as admin, navigate to `/permissions`, create a role, assign rights, assign role to a user, verify user gains expected access. Log in as non-admin, verify "Access Denied". Attempt to modify Admin role â€” verify blocked.
+**Independent Test**: Log in as admin, navigate to `/permissions`, create a role, assign rights, assign role to a user, verify user gains expected access. Log in as non-admin, verify "Access Denied". Attempt to modify Admin role â€?verify blocked.
 
 ### Tests for User Story 6
 
-- [ ] T114 [P] [US6] Domain unit test for AuthorizationService role/user management (create role, update rights, delete role with Visitor reassignment, Admin immutability enforcement, assign role, add/remove individual rights) in `domain/src/test/java/com/techs/domain/userauth/service/AuthorizationServiceTest.java`
-- [ ] T115 [P] [US6] API E2E test for PermissionController (CRUD roles, assign user role, add/remove individual rights, list users/rights/features, disable feature, delete right, Admin role immutability enforcement) in `app/src/test/java/com/techs/app/controller/PermissionControllerTest.java`
-- [ ] T116 [P] [US6] Web component test for RoleManager (list roles, create role, edit role rights, delete custom role, Admin role shown as read-only) in `web/src/features/permissions/__tests__/RoleManager.test.tsx`
-- [ ] T117 [P] [US6] Web component test for UserManager (list users, assign role, add/remove individual rights) in `web/src/features/permissions/__tests__/UserManager.test.tsx`
+- [x] T114 [P] [US6] Domain unit test for AuthorizationService role/user management (create role, update rights, delete role with Visitor reassignment, Admin immutability enforcement, assign role, add/remove individual rights) in `domain/src/test/java/com/techs/domain/userauth/service/AuthorizationServiceTest.java`
+- [x] T115 [P] [US6] API E2E test for PermissionController (CRUD roles, assign user role, add/remove individual rights, list users/rights/features, disable feature, delete right, Admin role immutability enforcement) in `app/src/test/java/com/techs/app/controller/PermissionControllerTest.java`
+- [x] T116 [P] [US6] Web component test for RoleManager (list roles, create role, edit role rights, delete custom role, Admin role shown as read-only) in `web/src/features/permissions/__tests__/RoleManager.test.tsx`
+- [x] T117 [P] [US6] Web component test for UserManager (list users, assign role, add/remove individual rights) in `web/src/features/permissions/__tests__/UserManager.test.tsx`
 
-### Implementation for User Story 6 â€” Backend (Domain)
+### Implementation for User Story 6 â€?Backend (Domain)
 
-- [ ] T118 [US6] Implement role CRUD methods in AuthorizationService (create custom role, update role rights, delete custom role with Visitor reassignment, prevent Admin role modification â€” return error for any Admin role mutation attempt) in `domain/src/main/java/com/techs/domain/userauth/service/AuthorizationService.java`
-- [ ] T119 [US6] Implement user permission management methods in AuthorizationService (assign role to user, add/remove individual rights, recompute effective rights) in `domain/src/main/java/com/techs/domain/userauth/service/AuthorizationService.java`
-- [ ] T120 [US6] Implement feature disable method in AuthorizationService (delete all rights by featureId, unassign from all roles and users) in `domain/src/main/java/com/techs/domain/userauth/service/AuthorizationService.java`
+- [x] T118 [US6] Implement role CRUD methods in AuthorizationService (create custom role, update role rights, delete custom role with Visitor reassignment, prevent Admin role modification â€?return error for any Admin role mutation attempt) in `domain/src/main/java/com/techs/domain/userauth/service/AuthorizationService.java`
+- [x] T119 [US6] Implement user permission management methods in AuthorizationService (assign role to user, add/remove individual rights, recompute effective rights) in `domain/src/main/java/com/techs/domain/userauth/service/AuthorizationService.java`
+- [x] T120 [US6] Implement feature disable method in AuthorizationService (delete all rights by featureId, unassign from all roles and users) in `domain/src/main/java/com/techs/domain/userauth/service/AuthorizationService.java`
 
-### Implementation for User Story 6 â€” Backend (App Controllers)
+### Implementation for User Story 6 â€?Backend (App Controllers)
 
-- [ ] T121 [US6] Implement role CRUD endpoints (GET/POST/PUT/DELETE /api/permissions/roles) in PermissionController in `app/src/main/java/com/techs/app/controller/PermissionController.java`
-- [ ] T122 [US6] Implement rights listing and deletion endpoints (GET /api/permissions/rights, DELETE /api/permissions/rights/{rightId}) in PermissionController in `app/src/main/java/com/techs/app/controller/PermissionController.java`
-- [ ] T123 [US6] Implement user permission endpoints (GET /api/permissions/users, PUT /api/permissions/users/{userId}/role, POST/DELETE /api/permissions/users/{userId}/rights) in PermissionController in `app/src/main/java/com/techs/app/controller/PermissionController.java`
-- [ ] T124 [US6] Implement feature management endpoints (GET /api/permissions/features, POST /api/permissions/features/{featureId}/disable) in PermissionController in `app/src/main/java/com/techs/app/controller/PermissionController.java`
+- [x] T121 [US6] Implement role CRUD endpoints (GET/POST/PUT/DELETE /api/permissions/roles) in PermissionController in `app/src/main/java/com/techs/app/controller/PermissionController.java`
+- [x] T122 [US6] Implement rights listing and deletion endpoints (GET /api/permissions/rights, DELETE /api/permissions/rights/{rightId}) in PermissionController in `app/src/main/java/com/techs/app/controller/PermissionController.java`
+- [x] T123 [US6] Implement user permission endpoints (GET /api/permissions/users, PUT /api/permissions/users/{userId}/role, POST/DELETE /api/permissions/users/{userId}/rights) in PermissionController in `app/src/main/java/com/techs/app/controller/PermissionController.java`
+- [x] T124 [US6] Implement feature management endpoints (GET /api/permissions/features, POST /api/permissions/features/{featureId}/disable) in PermissionController in `app/src/main/java/com/techs/app/controller/PermissionController.java`
 
-### Implementation for User Story 6 â€” Frontend
+### Implementation for User Story 6 â€?Frontend
 
-- [ ] T125 [P] [US6] Implement permissionService (API calls for roles, rights, users, features CRUD) in `web/src/features/permissions/services/permissionService.ts`
-- [ ] T126 [P] [US6] Implement useRoles hook (fetch, create, update, delete roles) in `web/src/features/permissions/hooks/useRoles.ts`
-- [ ] T127 [P] [US6] Implement useRights hook (fetch rights catalog, delete feature-registered rights) in `web/src/features/permissions/hooks/useRights.ts`
-- [ ] T128 [P] [US6] Implement useUserPermissions hook (fetch users, assign roles, add/remove individual rights) in `web/src/features/permissions/hooks/useUserPermissions.ts`
-- [ ] T129 [P] [US6] Implement RoleManager component (MUI Table: list roles, create/edit/delete custom roles, assign rights via checkboxes, Admin role displayed as read-only with all rights â€” no edit/delete controls) in `web/src/features/permissions/components/RoleManager.tsx`
-- [ ] T130 [P] [US6] Implement RightManager component (MUI Table: list all rights with source identifiers, delete feature-registered rights, prevent built-in right deletion) in `web/src/features/permissions/components/RightManager.tsx`
-- [ ] T131 [P] [US6] Implement UserManager component (MUI Table: list users, assign role via dropdown, add/remove individual rights) in `web/src/features/permissions/components/UserManager.tsx`
-- [ ] T132 [P] [US6] Implement FeatureManager component (MUI Table: list features with registered permissions, disable feature button) in `web/src/features/permissions/components/FeatureManager.tsx`
-- [ ] T133 [US6] Implement PermissionsPage (MUI Tabs: Roles, Rights, Users, Features; require `read:/permissions` right) in `web/src/pages/PermissionsPage.tsx`
-- [ ] T134 [US6] Create permissions route definitions (lazy-loaded /permissions with ProtectedRoute) in `web/src/features/permissions/routes.tsx`
-- [ ] T135 [US6] Verify management flow: admin creates role â†’ assigns rights â†’ assigns role to user â†’ user gains access; non-admin sees "Access Denied"; Admin role cannot be modified
+- [x] T125 [P] [US6] Implement permissionService (API calls for roles, rights, users, features CRUD) in `web/src/features/permissions/services/permissionService.ts`
+- [x] T126 [P] [US6] Implement useRoles hook (fetch, create, update, delete roles) in `web/src/features/permissions/hooks/useRoles.ts`
+- [x] T127 [P] [US6] Implement useRights hook (fetch rights catalog, delete feature-registered rights) in `web/src/features/permissions/hooks/useRights.ts`
+- [x] T128 [P] [US6] Implement useUserPermissions hook (fetch users, assign roles, add/remove individual rights) in `web/src/features/permissions/hooks/useUserPermissions.ts`
+- [x] T129 [P] [US6] Implement RoleManager component (MUI Table: list roles, create/edit/delete custom roles, assign rights via checkboxes, Admin role displayed as read-only with all rights â€?no edit/delete controls) in `web/src/features/permissions/components/RoleManager.tsx`
+- [x] T130 [P] [US6] Implement RightManager component (MUI Table: list all rights with source identifiers, delete feature-registered rights, prevent built-in right deletion) in `web/src/features/permissions/components/RightManager.tsx`
+- [x] T131 [P] [US6] Implement UserManager component (MUI Table: list users, assign role via dropdown, add/remove individual rights) in `web/src/features/permissions/components/UserManager.tsx`
+- [x] T132 [P] [US6] Implement FeatureManager component (MUI Table: list features with registered permissions, disable feature button) in `web/src/features/permissions/components/FeatureManager.tsx`
+- [x] T133 [US6] Implement PermissionsPage (MUI Tabs: Roles, Rights, Users, Features; require `read:/permissions` right) in `web/src/pages/PermissionsPage.tsx`
+- [x] T134 [US6] Create permissions route definitions (lazy-loaded /permissions with ProtectedRoute) in `web/src/features/permissions/routes.tsx`
+- [x] T135 [US6] Verify management flow: admin creates role â†?assigns rights â†?assigns role to user â†?user gains access; non-admin sees "Access Denied"; Admin role cannot be modified
 
 **Checkpoint**: Permission management page is fully functional. Admins can configure the entire authorization system through the UI. Admin role is immutable.
 
 ---
 
-## Phase 9: User Story 7 â€” Feature Permission Registration (Priority: P2)
+## Phase 9: User Story 7 â€?Feature Permission Registration (Priority: P2)
 
 **Goal**: Features can register their own permissions via an API (authenticated as admin). Registered permissions are immediately available for assignment and appear in the management page. Idempotent upsert on duplicate names.
 
@@ -312,14 +312,14 @@
 
 ### Tests for User Story 7
 
-- [ ] T136 [P] [US7] API E2E test for PermissionRegistrationController (register new permissions, idempotent upsert on duplicate name, non-admin rejection returns 403) in `app/src/test/java/com/techs/app/controller/PermissionRegistrationControllerTest.java`
-- [ ] T137 [P] [US7] Domain unit test for AuthorizationService.registerPermissions (create right, upsert on duplicate name, auto-approve, FEATURE_REGISTERED source) in `domain/src/test/java/com/techs/domain/userauth/service/AuthorizationServiceTest.java`
+- [x] T136 [P] [US7] API E2E test for PermissionRegistrationController (register new permissions, idempotent upsert on duplicate name, non-admin rejection returns 403) in `app/src/test/java/com/techs/app/controller/PermissionRegistrationControllerTest.java`
+- [x] T137 [P] [US7] Domain unit test for AuthorizationService.registerPermissions (create right, upsert on duplicate name, auto-approve, FEATURE_REGISTERED source) in `domain/src/test/java/com/techs/domain/userauth/service/AuthorizationServiceTest.java`
 
 ### Implementation for User Story 7
 
-- [ ] T138 [US7] Implement registerPermissions method in AuthorizationService (create/update rights with FEATURE_REGISTERED source, idempotent upsert by name, auto-approve â€” immediately available for assignment) in `domain/src/main/java/com/techs/domain/userauth/service/AuthorizationService.java`
-- [ ] T139 [US7] Implement POST /api/permissions/register endpoint in PermissionRegistrationController (require manage_permissions right, delegate to AuthorizationService, return registered/updated counts) in `app/src/main/java/com/techs/app/controller/PermissionRegistrationController.java`
-- [ ] T140 [US7] Verify registration flow: register permission via API â†’ appears in rights catalog on management page â†’ assign to role/user â†’ access control works
+- [x] T138 [US7] Implement registerPermissions method in AuthorizationService (create/update rights with FEATURE_REGISTERED source, idempotent upsert by name, auto-approve â€?immediately available for assignment) in `domain/src/main/java/com/techs/domain/userauth/service/AuthorizationService.java`
+- [x] T139 [US7] Implement POST /api/permissions/register endpoint in PermissionRegistrationController (require manage_permissions right, delegate to AuthorizationService, return registered/updated counts) in `app/src/main/java/com/techs/app/controller/PermissionRegistrationController.java`
+- [x] T140 [US7] Verify registration flow: register permission via API â†?appears in rights catalog on management page â†?assign to role/user â†?access control works
 
 **Checkpoint**: Feature permission registration is fully functional. New features can self-register permissions without modifying auth module code.
 
@@ -329,13 +329,13 @@
 
 **Purpose**: Documentation updates, code cleanup, and final validation across all user stories.
 
-- [ ] T141 [P] Update ARCHITECTURE.md in `docs-implementation/ARCHITECTURE.md` with auth components, security filters, permission model, and PasswordEncoder interface pattern
-- [ ] T142 [P] Update DATA-MODEL.md in `docs-canonical/DATA-MODEL.md` with User, Role, Right, Session entities
-- [ ] T143 [P] Update CHANGELOG.md in `CHANGELOG.md` with feature summary
-- [ ] T144 Code cleanup: remove unused imports, verify consistent code style across all modules
-- [ ] T145 Run full test suite across all three layers (`mvn -pl domain test` for domain unit, `mvn -pl app test` for API E2E, `npm test` for web E2E) and fix any failures
-- [ ] T146 Run quickstart.md validation (build all modules, start backend, start frontend, walk through all test scenarios)
-- [ ] T147 Verify all 10 success criteria (SC-001 through SC-010) are met, including SC-001 login latency measurement
+- [x] T141 [P] Update ARCHITECTURE.md in `docs-implementation/ARCHITECTURE.md` with auth components, security filters, permission model, and PasswordEncoder interface pattern
+- [x] T142 [P] Update DATA-MODEL.md in `docs-canonical/DATA-MODEL.md` with User, Role, Right, Session entities
+- [x] T143 [P] Update CHANGELOG.md in `CHANGELOG.md` with feature summary
+- [x] T144 Code cleanup: remove unused imports, verify consistent code style across all modules
+- [x] T145 Run full test suite across all three layers (`mvn -pl domain test` for domain unit, `mvn -pl app test` for API E2E, `npm test` for web E2E) and fix any failures
+- [x] T146 Run quickstart.md validation (build all modules, start backend, start frontend, walk through all test scenarios)
+- [x] T147 Verify all 10 success criteria (SC-001 through SC-010) are met, including SC-001 login latency measurement
 
 ---
 
@@ -343,24 +343,24 @@
 
 ### Phase Dependencies
 
-- **Setup (Phase 1)**: No dependencies â€” start immediately
-- **Foundational (Phase 2)**: Depends on Phase 1 completion â€” BLOCKS all user stories
-- **US1 Login (Phase 3)**: Depends on Phase 2 â€” foundational auth infrastructure
-- **US2 Profile (Phase 4)**: Depends on Phase 3 (US1 Login) â€” requires authentication to be working
-- **US5 Registration (Phase 5)**: Depends on Phase 2 â€” can start in parallel with US1/US2 after Phase 2
-- **US3 Access Control (Phase 6)**: Depends on Phase 2 â€” can start after foundational authorization infrastructure
-- **US4 Logout (Phase 7)**: Depends on Phase 3 (US1 Login) â€” requires session management from login
-- **US6 Permission Mgmt (Phase 8)**: Depends on Phase 6 (US3 Access Control) â€” requires authorization infrastructure
-- **US7 Registration API (Phase 9)**: Depends on Phase 8 (US6 Permission Mgmt) â€” extends permission management
+- **Setup (Phase 1)**: No dependencies â€?start immediately
+- **Foundational (Phase 2)**: Depends on Phase 1 completion â€?BLOCKS all user stories
+- **US1 Login (Phase 3)**: Depends on Phase 2 â€?foundational auth infrastructure
+- **US2 Profile (Phase 4)**: Depends on Phase 3 (US1 Login) â€?requires authentication to be working
+- **US5 Registration (Phase 5)**: Depends on Phase 2 â€?can start in parallel with US1/US2 after Phase 2
+- **US3 Access Control (Phase 6)**: Depends on Phase 2 â€?can start after foundational authorization infrastructure
+- **US4 Logout (Phase 7)**: Depends on Phase 3 (US1 Login) â€?requires session management from login
+- **US6 Permission Mgmt (Phase 8)**: Depends on Phase 6 (US3 Access Control) â€?requires authorization infrastructure
+- **US7 Registration API (Phase 9)**: Depends on Phase 8 (US6 Permission Mgmt) â€?extends permission management
 - **Polish (Phase 10)**: Depends on all user stories being complete
 
 ### User Story Dependencies
 
 ```
-Phase 1 (Setup) â†’ Phase 2 (Foundational) â†’ â”¬â”€ US1 (Login) â”€â”€â†’ US2 (Profile)
-                                            â”‚               â””â”€â”€â†’ US4 (Logout)
+Phase 1 (Setup) â†?Phase 2 (Foundational) â†?â”¬â”€ US1 (Login) â”€â”€â†?US2 (Profile)
+                                            â”?              â””â”€â”€â†?US4 (Logout)
                                             â”œâ”€ US5 (Registration) [parallel with US1]
-                                            â””â”€ US3 (Access Control) â”€â”€â†’ US6 (Perm Mgmt) â”€â”€â†’ US7 (Reg API)
+                                            â””â”€ US3 (Access Control) â”€â”€â†?US6 (Perm Mgmt) â”€â”€â†?US7 (Reg API)
 ```
 
 - **US1, US5, US3** can start in parallel after Phase 2 (different controllers, different frontend features)
@@ -371,7 +371,7 @@ Phase 1 (Setup) â†’ Phase 2 (Foundational) â†’ â”¬â”€ US1 (Login) â”€â”€â†’ US2 
 
 ### Within Each User Story
 
-- Tests MUST be written and FAIL before implementation (three layers: domain unit â†’ API E2E â†’ web E2E)
+- Tests MUST be written and FAIL before implementation (three layers: domain unit â†?API E2E â†?web E2E)
 - Domain services before app controllers
 - Backend before frontend integration
 - Core implementation before end-to-end verification
@@ -413,26 +413,26 @@ Task T048: InMemoryRightRepository in app/.../repository/
 Task T049: InMemorySessionRepository in app/.../repository/
 ```
 
-## Parallel Example: User Story 1 (Login) â€” Three-Layer Tests
+## Parallel Example: User Story 1 (Login) â€?Three-Layer Tests
 
 ```
 # Launch all three test layers together (they target different files/modules):
-Task T063: Domain unit test â€” AuthServiceTest in domain/src/test/
-Task T064: API E2E test â€” AuthControllerTest in app/src/test/
-Task T065: Web component test â€” LoginForm.test.tsx in web/src/features/auth/__tests__/
+Task T063: Domain unit test â€?AuthServiceTest in domain/src/test/
+Task T064: API E2E test â€?AuthControllerTest in app/src/test/
+Task T065: Web component test â€?LoginForm.test.tsx in web/src/features/auth/__tests__/
 
 # Launch frontend service and component together:
 Task T068: authService in web/src/features/auth/services/
 Task T069: LoginForm in web/src/features/auth/components/
 ```
 
-## Parallel Example: User Story 2 (Profile) â€” Three-Layer Tests
+## Parallel Example: User Story 2 (Profile) â€?Three-Layer Tests
 
 ```
 # Launch all three test layers together:
-Task T073: Domain unit test â€” AuthServiceTest.getCurrentUser in domain/src/test/
-Task T074: API E2E test â€” UserControllerTest in app/src/test/
-Task T075: Web component test â€” ProfileCard.test.tsx in web/src/features/profile/__tests__/
+Task T073: Domain unit test â€?AuthServiceTest.getCurrentUser in domain/src/test/
+Task T074: API E2E test â€?UserControllerTest in app/src/test/
+Task T075: Web component test â€?ProfileCard.test.tsx in web/src/features/profile/__tests__/
 ```
 
 ---
@@ -445,25 +445,25 @@ Task T075: Web component test â€” ProfileCard.test.tsx in web/src/features/profi
 2. Complete Phase 2: Foundational (entities, repos, PasswordEncoder, security, seeding)
 3. Complete Phase 3: User Story 1 (Login)
 4. **STOP and VALIDATE**: Login as admin (`admin`/`123`), see home page with greeting
-5. Deploy/demo if ready â€” proves the full web â†’ api â†’ domain dependency chain
+5. Deploy/demo if ready â€?proves the full web â†?api â†?domain dependency chain
 
 ### Incremental Delivery
 
-1. Complete Setup + Foundational â†’ Foundation ready
-2. Add US1 (Login) â†’ Test independently â†’ **MVP!**
-3. Add US2 (Profile) + US5 (Registration) â†’ Test independently â†’ Multiple user types work
-4. Add US3 (Access Control) + US4 (Logout) â†’ Test independently â†’ Security layer complete
-5. Add US6 (Permission Mgmt) â†’ Test independently â†’ Admin can configure permissions
-6. Add US7 (Registration API) â†’ Test independently â†’ System is extensible
-7. Polish â†’ Documentation and final validation
+1. Complete Setup + Foundational â†?Foundation ready
+2. Add US1 (Login) â†?Test independently â†?**MVP!**
+3. Add US2 (Profile) + US5 (Registration) â†?Test independently â†?Multiple user types work
+4. Add US3 (Access Control) + US4 (Logout) â†?Test independently â†?Security layer complete
+5. Add US6 (Permission Mgmt) â†?Test independently â†?Admin can configure permissions
+6. Add US7 (Registration API) â†?Test independently â†?System is extensible
+7. Polish â†?Documentation and final validation
 
 ### Parallel Team Strategy
 
 With multiple developers (after Phase 2):
 
-- Developer A: US1 (Login) â†’ US2 (Profile) â†’ US4 (Logout)
-- Developer B: US5 (Registration) â†’ US3 (Access Control)
-- Developer C: US6 (Permission Mgmt) â†’ US7 (Registration API)
+- Developer A: US1 (Login) â†?US2 (Profile) â†?US4 (Logout)
+- Developer B: US5 (Registration) â†?US3 (Access Control)
+- Developer C: US6 (Permission Mgmt) â†?US7 (Registration API)
 
 Stories complete and integrate independently.
 
@@ -475,7 +475,7 @@ Stories complete and integrate independently.
 - [Story] label maps task to specific user story for traceability
 - Each user story is independently completable and testable
 - Tests MUST fail before implementing (Red-Green-Refactor) across all three layers
-- Three-layer testing: domain unit (JUnit 5, no Spring) â†’ API E2E (Spring Boot Test) â†’ web E2E (Vitest + @testing-library/react)
+- Three-layer testing: domain unit (JUnit 5, no Spring) â†?API E2E (Spring Boot Test) â†?web E2E (Vitest + @testing-library/react)
 - Commit after each task or logical group
 - Stop at any checkpoint to validate story independently
 - All domain entities use Lombok `@Data`, `@Builder`, `@AllArgsConstructor` per project conventions
@@ -483,6 +483,6 @@ Stories complete and integrate independently.
 - In-memory repositories use `ConcurrentHashMap` for thread safety
 - Session tokens are UUIDs sent as `Authorization: Bearer <token>` headers
 - Password hashing uses BCrypt via domain PasswordEncoder interface, implemented by app BCryptPasswordEncoder
-- Domain AuthService is the full orchestrator â€” receives all dependencies via constructor injection
+- Domain AuthService is the full orchestrator â€?receives all dependencies via constructor injection
 - Multiple concurrent sessions per user are allowed; logout invalidates only the current session
-- Admin role is fully immutable â€” management page blocks all modification attempts
+- Admin role is fully immutable â€?management page blocks all modification attempts
