@@ -1,0 +1,9 @@
+{
+  "workflow": "speckit",
+  "specName": "005-react-helloworld-setup",
+  "branch": "005-react-helloworld-setup",
+  "selectedAt": "2026-06-22T16:35:00.108Z",
+  "currentStep": "specify",
+  "status": "draft",
+  "history": []
+}
