@@ -26,8 +26,8 @@
 
 **Purpose**: Verify prerequisites and create directory structure
 
-- [ ] T001 Verify Node.js version is v22.x or higher by running `node --version` and confirming output shows v22.17.1 or compatible v22.x version
-- [ ] T002 Create `docs/template/` directory structure at repository root for architecture documentation templates
+- [X] T001 Verify Node.js version is v22.x or higher by running `node --version` and confirming output shows v22.17.1 or compatible v22.x version
+- [X] T002 Create `docs/template/` directory structure at repository root for architecture documentation templates
 
 ---
 
@@ -37,10 +37,10 @@
 
 **CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T003 Scaffold Vite+React+TypeScript project under `web/` by running `npm create vite@latest web -- --template react-ts` from repository root
-- [ ] T004 Install MUI and Emotion dependencies in `web/` by running `npm install @mui/material @emotion/react @emotion/styled` from `web/` directory
-- [ ] T005 Install Playwright as dev dependency in `web/` by running `npm install -D @playwright/test` from `web/` directory, then run `npx playwright install` to download browser binaries
-- [ ] T006 Add `"test": "npx playwright test"` script to `web/package.json` scripts section alongside existing `dev`, `build`, and `preview` scripts
+- [X] T003 Scaffold Vite+React+TypeScript project under `web/` by running `npm create vite@latest web -- --template react-ts` from repository root
+- [X] T004 Install MUI and Emotion dependencies in `web/` by running `npm install @mui/material @emotion/react @emotion/styled` from `web/` directory
+- [X] T005 Install Playwright as dev dependency in `web/` by running `npm install -D @playwright/test` from `web/` directory, then run `npx playwright install` to download browser binaries
+- [X] T006 Add `"test": "npx playwright test"` script to `web/package.json` scripts section alongside existing `dev`, `build`, and `preview` scripts
 
 **Checkpoint**: Foundation ready — `web/` project exists with all dependencies installed, user story implementation can now begin
 
@@ -54,11 +54,11 @@
 
 ### Implementation for User Story 1
 
-- [ ] T007 [P] [US1] Replace default Vite template `web/src/App.tsx` with a Hello World component that imports and renders MUI components (e.g., `Typography`, `Box`, `Button` from `@mui/material`)
-- [ ] T008 [P] [US1] Update `web/src/main.tsx` to wrap the App component with MUI `ThemeProvider` and `CssBaseline` for default theming
-- [ ] T009 [US1] Remove default Vite template boilerplate files: delete `web/src/App.css` and `web/src/index.css`, clean up any unused assets in `web/public/`
-- [ ] T010 [US1] Verify dev server starts successfully by running `npm run dev` from `web/` and confirming `http://localhost:5173` renders the Hello World page with MUI components visible
-- [ ] T011 [US1] Verify production build completes with zero errors and zero TypeScript type errors by running `npm run build` from `web/`
+- [X] T007 [P] [US1] Replace default Vite template `web/src/App.tsx` with a Hello World component that imports and renders MUI components (e.g., `Typography`, `Box`, `Button` from `@mui/material`)
+- [X] T008 [P] [US1] Update `web/src/main.tsx` to wrap the App component with MUI `ThemeProvider` and `CssBaseline` for default theming
+- [X] T009 [US1] Remove default Vite template boilerplate files: delete `web/src/App.css` and `web/src/index.css`, clean up any unused assets in `web/public/`
+- [X] T010 [US1] Verify dev server starts successfully by running `npm run dev` from `web/` and confirming `http://localhost:5173` renders the Hello World page with MUI components visible
+- [X] T011 [US1] Verify production build completes with zero errors and zero TypeScript type errors by running `npm run build` from `web/`
 
 **Checkpoint**: At this point, User Story 1 is fully functional — a working React+TypeScript+MUI app under `web/` with dev server and clean build
 
@@ -72,9 +72,9 @@
 
 ### Implementation for User Story 2
 
-- [ ] T012 [P] [US2] Create `web/playwright.config.ts` with `testDir` set to `./e2e`, `webServer` configured with `command: "npm run dev"` and `url: "http://localhost:5173"`, and projects for Chromium, Firefox, and WebKit browsers
-- [ ] T013 [P] [US2] Create `web/e2e/` directory for Playwright test files
-- [ ] T014 [US2] Create sample e2e test at `web/e2e/hello.spec.ts` that navigates to the root URL and asserts the page contains "Hello World" text and that an MUI component is rendered (e.g., check for a Material UI button or typography element)
+- [X] T012 [P] [US2] Create `web/playwright.config.ts` with `testDir` set to `./e2e`, `webServer` configured with `command: "npm run dev"` and `url: "http://localhost:5173"`, and projects for Chromium, Firefox, and WebKit browsers
+- [X] T013 [P] [US2] Create `web/e2e/` directory for Playwright test files
+- [X] T014 [US2] Create sample e2e test at `web/e2e/hello.spec.ts` that navigates to the root URL and asserts the page contains "Hello World" text and that an MUI component is rendered (e.g., check for a Material UI button or typography element)
 - [ ] T015 [US2] Run `npm test` from `web/` and verify Playwright executes successfully with the sample test passing on all configured browsers
 
 **Checkpoint**: At this point, User Stories 1 AND 2 are both functional — the app renders correctly and e2e tests validate it
@@ -89,8 +89,8 @@
 
 ### Implementation for User Story 3
 
-- [ ] T016 [US3] Add `"engines": { "node": ">=22.0.0" }` field to `web/package.json` to enforce minimum Node.js version requirement
-- [ ] T017 [US3] Add `"check:node": "node -e \"const v=process.versions.node.split('.');if(parseInt(v[0])<22){console.error('Node.js v22+ required, found '+process.versions.node);process.exit(1)}\""` script to `web/package.json` scripts section for explicit version checking
+- [X] T016 [US3] Add `"engines": { "node": ">=22.0.0" }` field to `web/package.json` to enforce minimum Node.js version requirement
+- [X] T017 [US3] Add `"check:node": "node -e \"const v=process.versions.node.split('.');if(parseInt(v[0])<22){console.error('Node.js v22+ required, found '+process.versions.node);process.exit(1)}\""` script to `web/package.json` scripts section for explicit version checking
 
 **Checkpoint**: Node.js version compatibility is enforced at both the package manager level and via an explicit check script
 
@@ -104,8 +104,8 @@
 
 ### Implementation for User Story 4
 
-- [ ] T018 [P] [US4] Create Architecture doc template at `docs/template/architecture-template.md` with the following structure: `# Project Summary` section (placeholder for high-level overview), `# Modules` section containing a `## <name> module` subsection pattern, each module subsection having `### Module Summary`, `### Tech stack`, and `### Notes` sub-sections
-- [ ] T019 [US4] Create filled Architecture document at `docs/Architecture.md` using the template structure, documenting: Project Summary describing this as a React SPA, and Modules section covering the `web` frontend module (Module Summary: React SPA with Hello World page, Tech stack: React 19, TypeScript 6, Vite 8, MUI 9, Playwright, Notes: frontend-only, no backend integration) — ensure no feature-level details or implementation code is included
+- [X] T018 [P] [US4] Create Architecture doc template at `docs/template/architecture-template.md` with the following structure: `# Project Summary` section (placeholder for high-level overview), `# Modules` section containing a `## <name> module` subsection pattern, each module subsection having `### Module Summary`, `### Tech stack`, and `### Notes` sub-sections
+- [X] T019 [US4] Create filled Architecture document at `docs/Architecture.md` using the template structure, documenting: Project Summary describing this as a React SPA, and Modules section covering the `web` frontend module (Module Summary: React SPA with Hello World page, Tech stack: React 19, TypeScript 6, Vite 8, MUI 9, Playwright, Notes: frontend-only, no backend integration) — ensure no feature-level details or implementation code is included
 
 **Checkpoint**: Architecture documentation is complete and reviewable — template is reusable for future projects, filled doc describes this project's structure
 
@@ -116,8 +116,8 @@
 **Purpose**: Final validation and cleanup across all user stories
 
 - [ ] T020 Run quickstart.md validation end-to-end: `cd web && npm install && npx playwright install && npm run dev && npm run build && npm test` — confirm all commands succeed
-- [ ] T021 Verify `web/tsconfig.json` strict mode is enabled and no TypeScript type errors exist across the project by running `npx tsc --noEmit` from `web/`
-- [ ] T022 Final review: confirm `docs/Architecture.md` contains no feature details or implementation code, only high-level module and tech stack information
+- [X] T021 Verify `web/tsconfig.json` strict mode is enabled and no TypeScript type errors exist across the project by running `npx tsc --noEmit` from `web/`
+- [X] T022 Final review: confirm `docs/Architecture.md` contains no feature details or implementation code, only high-level module and tech stack information
 
 ---
 
