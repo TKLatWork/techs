@@ -1,4 +1,4 @@
-package com.jklib
+package com.jklib.ice
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput

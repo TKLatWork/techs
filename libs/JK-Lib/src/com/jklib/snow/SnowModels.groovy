@@ -1,4 +1,4 @@
-package com.jklib
+package com.jklib.snow
 
 class SnowModels implements Serializable {
 
@@ -115,6 +115,16 @@ class SnowModels implements Serializable {
             input.sysparm_limit = m.sysparm_limit as Integer
             input.sysparm_offset = m.sysparm_offset as Integer
             return input
+        }
+
+        Map toFilters() {
+            def filters = [:]
+            if (state) filters.state = state
+            if (category) filters.category = category
+            if (assignment_group) filters.assignment_group = assignment_group
+            if (sysparm_limit) filters.sysparm_limit = sysparm_limit
+            if (sysparm_offset) filters.sysparm_offset = sysparm_offset
+            return filters
         }
     }
 

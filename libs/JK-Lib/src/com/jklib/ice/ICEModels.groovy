@@ -1,4 +1,4 @@
-package com.jklib
+package com.jklib.ice
 
 class ICEModels implements Serializable {
 
@@ -99,6 +99,21 @@ class ICEModels implements Serializable {
             input.limit = m.limit as Integer
             input.cursor = m.cursor as String
             return input
+        }
+
+        Map toFilters() {
+            def filters = [:]
+            if (resource_id) filters.resource_id = resource_id
+            if (resource_type) filters.resource_type = resource_type
+            if (actor) filters.actor = actor
+            if (action) filters.action = action
+            if (change_source) filters.change_source = change_source
+            if (from) filters.from = from
+            if (to) filters.to = to
+            if (compliance_tag) filters.compliance_tag = compliance_tag
+            if (limit) filters.limit = limit
+            if (cursor) filters.cursor = cursor
+            return filters
         }
     }
 

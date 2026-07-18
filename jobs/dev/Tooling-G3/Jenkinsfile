@@ -1,15 +1,15 @@
 @Library('JK-Lib') _
 
 import groovy.json.JsonSlurper
-import com.jklib.G3Client
-import com.jklib.G3Models
+import com.jklib.g3.G3API
+import com.jklib.g3.G3JobSupport
 
 pipeline {
     agent any
 
     parameters {
         text(name: 'INPUT_JSON', description: 'JSON string with input parameters for the function', defaultValue: '{}')
-        choice(name: 'JOB_FUNCTION', choices: ['createReleasePackage', 'getReleasePackage', 'listReleasePackages', 'executeRelease', 'getExecutionStatus', 'rollbackRelease'], description: 'Function to call')
+        choice(name: 'JOB_FUNCTION', choices: G3JobSupport.FUNCTION_MAP.keySet().toList(), description: 'Function to call')
         choice(name: 'g3_env', choices: ['dev', 'qa', 'prod'], description: 'G3 API environment')
     }
 
@@ -18,11 +18,10 @@ pipeline {
             steps {
                 script {
                     def inputMap = new JsonSlurper().parseText(params.INPUT_JSON ?: '{}')
-                    def g3 = new G3Client(this, params.g3_env)
-                    def inputClass = G3Models.FUNCTION_MAP[params.JOB_FUNCTION]
-                    if (!inputClass) error("Unknown JOB_FUNCTION: ${params.JOB_FUNCTION}")
-                    def input = inputClass.fromMap(inputMap)
-                    def output = input.execute(g3)
+                    def g3 = new G3API(this, params.g3_env)
+                    def dispatch = G3JobSupport.FUNCTION_MAP[params.JOB_FUNCTION]
+                    if (!dispatch) error("Unknown JOB_FUNCTION: ${params.JOB_FUNCTION}")
+                    def output = dispatch(inputMap, g3)
                     writeReturnJson(200, 'success', output.toMap())
                 }
             }

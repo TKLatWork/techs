@@ -16,7 +16,7 @@ Read [Spec AGENTS.md](./spec/AGENTS.md) and [Jenkins-Job Spec](./../spec/Jenkins
 
 ### Structure
 
-Following ordered from top to bottom
+Following ordered from top to bottom of a Jenkinsfile
 
 1. Imports
 2. Config+Var: Parameters, Functional Config, non-functional config, Shared Runtime var root.
@@ -34,13 +34,16 @@ Following ordered from top to bottom
 ### Code ownership
 
 ##### Jenkinsfile
-- Pipeline code should be simple and only show the main flow.
-- If a stage only 1 line of script, make the whole stage a single line
+- Pipeline code should be simple and only show the main flow. Put others into Functions in job or shared-libs
+- If a stage only 1 line of script/main content, make the whole stage a single line
 - Stage condition line should be in separate line
-- Keep the stage boilerplate, the heading/tailing in one line when possible, leave space for main code
+- Keep the stage boilerplate(heading/tailing) in one line when possible, leave space for script/main code
 - Acceptalbe stage should less or around 15 lines
 - Prefer validation in Jenkins parameter definition.
 
 #### Shared-Libs
 - Config/Model/Const and functions that belongs to the shared libs should be hold in it.
-- Should provide model class for input and output unless the fields are less than 4
+- Should provide model class for output, hard typeing model, not map or array.
+- Should provide model class for input, hard typeing model, not map or array. May not apply when the fields are less than 4.
+- Should separate the API lib and the JobSupport lib and the Util/Model lib, avoid mixing each other, and the naming should also postfix with API/JobSupport/Util/Model.
+- Group libs files by their function scope by folder: shared/<API A>/<Domain B>.

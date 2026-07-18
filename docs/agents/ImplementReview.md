@@ -11,6 +11,7 @@ Reviews Jenkins job, shared-lib's code implementation with resource awarence. Ta
 ## Input
 - Corresponding Spec documents and codes
 - Resource that relates to the spec
+- optional: feedback from previous review
 
 ## Goal
 - Suggestions for abstraction/design pattern
@@ -19,10 +20,15 @@ Reviews Jenkins job, shared-lib's code implementation with resource awarence. Ta
 
 ## Review Checklist
 
-### 1. Functional pattern review
+- depends on the feedback/input, decide to run all or focuse some/one of them, first run and default to run all
+
+### 1. Rule Breaked
+- Base on the spec/requirements/rules, does it break any rule, adivce to fix
+
+### 2. Functional pattern review
 - Base on the spec/requirements, does it match some abstraction/design pattern
 
-### 2. Technical pattern review
+### 3. Technical pattern review
 - Base on the codes, do we have abstraction/design pattern or code improvement advice
 
 ## Output Format
