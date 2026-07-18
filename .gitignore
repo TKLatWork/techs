@@ -1,8 +1,0 @@
-.DS_Store
-Thumbs.db
-*.tmp
-*.swp
-.env
-.env.*
-!.env.example
-coverage/

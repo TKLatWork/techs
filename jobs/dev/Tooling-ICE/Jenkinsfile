@@ -1,0 +1,84 @@
+@Library('JK-Lib') _
+
+import groovy.json.JsonSlurper
+import com.jklib.ICEClient
+import com.jklib.ICEModels
+
+pipeline {
+    agent any
+
+    parameters {
+        text(name: 'INPUT_JSON', description: 'JSON string with input parameters for the function', defaultValue: '{}')
+        choice(name: 'JOB_FUNCTION', choices: ['createAuditEntry', 'getAuditRecord', 'listAuditRecords', 'getAuditSummary', 'exportAuditLog'], description: 'Function to call')
+        choice(name: 'ice_env', choices: ['dev', 'qa', 'prod'], description: 'ICE API environment')
+    }
+
+    stages {
+        stage('Execute') {
+            steps {
+                script {
+                    def inputMap = new JsonSlurper().parseText(params.INPUT_JSON ?: '{}')
+                    def ice = new ICEClient(this, params.ice_env)
+                    def result = null
+
+                    switch(params.JOB_FUNCTION) {
+                        case 'createAuditEntry':
+                            def input = ICEModels.CreateAuditEntryInput.fromMap(inputMap)
+                            result = ice.createAuditEntry(input.resource_id, input.resource_type, input.action, input.actor, input.change_source, input.details ?: [:], input.compliance_tags ?: [], input.change_request_id)
+                            def output = ICEModels.CreateAuditEntryOutput.fromApiResult(result)
+                            writeReturnJson(200, 'success', output.toMap())
+                            break
+                        case 'getAuditRecord':
+                            def input = ICEModels.GetAuditRecordInput.fromMap(inputMap)
+                            result = ice.getAuditRecord(input.audit_id)
+                            def output = ICEModels.GetAuditRecordOutput.fromApiResult(result)
+                            writeReturnJson(200, 'success', output.toMap())
+                            break
+                        case 'listAuditRecords':
+                            def input = ICEModels.ListAuditRecordsInput.fromMap(inputMap)
+                            def filters = [:]
+                            if (input.resource_id) filters.resource_id = input.resource_id
+                            if (input.resource_type) filters.resource_type = input.resource_type
+                            if (input.actor) filters.actor = input.actor
+                            if (input.action) filters.action = input.action
+                            if (input.change_source) filters.change_source = input.change_source
+                            if (input.from) filters.from = input.from
+                            if (input.to) filters.to = input.to
+                            if (input.compliance_tag) filters.compliance_tag = input.compliance_tag
+                            if (input.limit) filters.limit = input.limit
+                            if (input.cursor) filters.cursor = input.cursor
+                            result = ice.listAuditRecords(filters)
+                            def output = ICEModels.ListAuditRecordsOutput.fromApiResult(result)
+                            writeReturnJson(200, 'success', output.toMap())
+                            break
+                        case 'getAuditSummary':
+                            def input = ICEModels.GetAuditSummaryInput.fromMap(inputMap)
+                            result = ice.getAuditSummary(input.from, input.to, input.group_by, input.compliance_tag)
+                            def output = ICEModels.GetAuditSummaryOutput.fromApiResult(result)
+                            writeReturnJson(200, 'success', output.toMap())
+                            break
+                        case 'exportAuditLog':
+                            def input = ICEModels.ExportAuditLogInput.fromMap(inputMap)
+                            result = ice.exportAuditLog(input.from, input.to, input.format, input.resource_type, input.compliance_tag, input.async)
+                            def output = ICEModels.ExportAuditLogOutput.fromApiResult(result)
+                            writeReturnJson(200, 'success', output.toMap())
+                            break
+                        default:
+                            error("Unknown JOB_FUNCTION: ${params.JOB_FUNCTION}")
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        failure {
+            script {
+                writeReturnJson(500, "Tooling-ICE failed: ${currentBuild.result}")
+            }
+        }
+        always {
+            echo "Tooling-ICE completed at ${new Date()}"
+        }
+    }
+}
