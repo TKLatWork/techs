@@ -6,6 +6,12 @@
 ## Terminology
 <Terminology>
 
+## Requirements, What to do
+<What to do, what function this job provides>
+
+### Implement Note, 
+<How to do, how this job >
+
 ## Input
 <Main section of this resource>
 
