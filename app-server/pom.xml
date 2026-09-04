@@ -23,12 +23,12 @@
     </dependency>
     <dependency>
       <groupId>me.webapp</groupId>
-      <artifactId>service-hello</artifactId>
+      <artifactId>service-timezone</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>me.webapp</groupId>
-      <artifactId>web-hello</artifactId>
+      <artifactId>web-timezone</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>
