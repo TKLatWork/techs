@@ -1,21 +1,9 @@
-# Tooling Jenkins repository
+# Main AGENTS file
 
-# Terminology
-Resource: Documentation/info about util/api/knowledge that can be use for job/shared library and etc
+# AGENTS files
+> Each folder may have AGENTS.md or README.md, they are apply to that folder and its sub-folders
+> doc folder and files in it, applys to all same/low level folders
 
-# Summary
-- holds Jenkins Pipeline jobs
-- holds Jenkins Shared-libraries
-- holds Resources folders
-
-# Folder
-- docs: Gobal doc folder
-- jobs: Jenkins Pipeline jobs
-- libs: Jenkins Shared-libraries
-- resources: Resource folders
-
-# AGENTS
-- AGENT rule and skill are in docs and each AGENTS.md file in each folder, AGENTS.md should only apply to the scope of its folder
-
-# Skills
-- [Thinking]:(./Thinking.md)
+# Folders
+[doc](./doc)
+Root doc/skill folder
