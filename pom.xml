@@ -28,7 +28,7 @@
 
   <modules>
     <module>service-timezone</module>
-    <module>web-timezone</module>
+    <module>app-web</module>
     <module>app-server</module>
   </modules>
 

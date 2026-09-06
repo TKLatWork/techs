@@ -1,5 +1,5 @@
 {
-  "name": "web-timezone",
+  "name": "app-web",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -9,8 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^7.0.0",
+    "axios": "^1.8.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.5.0"
   },
   "devDependencies": {
     "@types/react": "^19.1.0",

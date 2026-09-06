@@ -14,7 +14,7 @@
   <packaging>jar</packaging>
 
   <name>app-server</name>
-  <description>Main server module, hosts service-* and web-* modules</description>
+  <description>Main server module, hosts service-* and app-web modules</description>
 
   <dependencies>
     <dependency>
@@ -28,7 +28,7 @@
     </dependency>
     <dependency>
       <groupId>me.webapp</groupId>
-      <artifactId>web-timezone</artifactId>
+      <artifactId>app-web</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

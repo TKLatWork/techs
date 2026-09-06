@@ -1,8 +1,9 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+// Single SPA entry, mounted at /web/; features are client routes under /web/<feature>
 export default defineConfig({
-  base: '/web/timezone/',
+  base: '/web/',
   plugins: [react()],
   server: {
     port: 5173,
