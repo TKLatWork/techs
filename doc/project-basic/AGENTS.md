@@ -2,6 +2,9 @@
 > Project Name: WebApp
 > project use maven as build tool, starts with a pom.xml on root
 
+# Spec/Doc support
+> for all modules, create a doc folder under it and follow: [Spec](../spec-driven/AGENTS.md)
+
 # Pattern
 This project is multi-module maven. It have following module pattern:
 

@@ -1,7 +1,7 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// Single SPA entry, mounted at /web/; features are client routes under /web/<feature>
 export default defineConfig({
   base: '/web/',
   plugins: [react()],
@@ -16,5 +16,9 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+  },
+  test: {
+    environment: 'jsdom',
+    setupFiles: './src/test/setup.ts',
   },
 })
