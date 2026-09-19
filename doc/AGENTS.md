@@ -1,5 +1,5 @@
 # Doc index
-> Version: 1.1.0
+> Version: 1.2.0
 > Updated: 2026-09-19
 
 # Purpose
@@ -9,7 +9,7 @@
 | Doc | Version | Topic |
 |---|---|---|
 | [Doc-manage](./rules/Doc-manage.md) | 1.0.0 | doc creation/management rules |
-| [Doc-diagram](./rules/Doc-diagram.md) | 1.0.0 | diagram standards for docs |
+| [Doc-represent](./rules/Doc-represent.md) | 2.0.0 | representation standards for docs (diagrams, tables, diffs) |
 
 # Templates
 | Template | Version | Use for |
@@ -25,3 +25,4 @@
 |---|---|---|
 | 1.0.0 | 2026-09-19 | Initial index: rules + templates |
 | 1.1.0 | 2026-09-19 | Added Doc-diagram row |
+| 1.2.0 | 2026-09-19 | Doc-diagram row renamed to Doc-represent 2.0.0 |

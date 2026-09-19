@@ -3,6 +3,17 @@ schema: spec-driven
 context: |
   Project docs live under doc/: management rules in doc/rules/Doc-manage.md, templates in doc/template/, index in doc/AGENTS.md.
   Every doc requires a version a.b.c header and a changelog table; keep wording lean, use lists/tables.
+  Representation standards (Mermaid diagrams, Markdown tables, text/diagram diff forms) live in doc/rules/Doc-represent.md - apply them in all docs and change artifacts.
+
+rules:
+  proposal:
+    - "Use standard tables (e.g. Item/Status/Notes) when tracking or comparing items, per doc/rules/Doc-represent.md"
+    - "Present changes with the standard diff forms: fenced diff blocks for text/code, Mermaid diagram diffs for diagrams"
+  specs:
+    - "Keep requirements and scenarios text-first; use Mermaid only when structure/flow/state is clearer than prose"
+    - "Present behavior changes with the standard diff forms (text diff or diagram diff), per doc/rules/Doc-represent.md"
+  tasks:
+    - "Track task progress with checkboxes; use standard tables for any item/status tracking beyond checkboxes"
 
 operations:
   apply:
