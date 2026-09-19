@@ -1,5 +1,18 @@
 schema: spec-driven
 
+context: |
+  Project docs live under doc/: management rules in doc/rules/Doc-manage.md, templates in doc/template/, index in doc/AGENTS.md.
+  Every doc requires a version a.b.c header and a changelog table; keep wording lean, use lists/tables.
+
+operations:
+  apply:
+    guidance:
+      - Before starting implementation, run git status; if the working tree has uncommitted changes, pause and ask the user to commit (or approve a baseline commit) first.
+      - After all tasks are complete and verified, propose a commit of the implementation with a message summarizing the change; do not leave the tree dirty when handing back.
+  archive:
+    guidance:
+      - Before archiving, confirm the implementation is committed; the archive move should be committed as its own follow-up commit.
+
 # Project context (optional)
 # This is shown to AI when creating artifacts.
 # Add your tech stack, conventions, style guides, domain knowledge, etc.
