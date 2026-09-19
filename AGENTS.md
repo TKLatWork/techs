@@ -4,3 +4,4 @@
 > Doc scoping: each folder's AGENTS.md applies to that folder and sub-folders; `doc/` applies project-wide.
 > All project docs/knowledge: see [doc index](./doc/AGENTS.md).
 > Creating/updating any doc: follow [Doc-manage rules](./doc/rules/Doc-manage.md).
+> Global: any Markdown file at any path, and any chat response, applies [Doc-represent](./doc/rules/Doc-represent.md) required forms + delivery check.

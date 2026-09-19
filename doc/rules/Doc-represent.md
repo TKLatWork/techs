@@ -1,10 +1,11 @@
 # Doc represent
-> Version: 2.0.0
+> Version: 3.0.0
 > Updated: 2026-09-19
 
 # Purpose
-> Standard representation for project docs - diagrams and tables - to make component/project review easier and consistent.
-> Applies to: any doc describing components, architecture, flows, states, or tracking/comparison of items.
+> Standard representation for project output - diagrams and tables - to make review easier and consistent.
+> Applies to (global): every Markdown file at any repo path (governed docs, change artifacts, ad-hoc reports/reviews/summaries) and agent chat responses.
+> Chat carve-out: chat responses follow the representation rules only - version header, changelog, template, and index rules stay scoped to `doc/` per `Doc-manage`.
 
 # Rule: Format
 > Mermaid only, in fenced ```mermaid blocks - renders in VS Code preview/GitHub, source stays reviewable
@@ -87,6 +88,16 @@ stateDiagram-v2
 > List: short unordered or sequential points
 > Items share fields and carry per-item state -> table; relationships matter -> diagram
 
+# Rule: Required forms
+> The representation choice is a requirement, not guidance. Triggers:
+> 3+ parallel items with per-item state -> table (required)
+> Structure/flow/state content -> diagram (required)
+> Presented set of changes -> diff form (required); added/removed/renamed elements -> diagram diff or before/after pair
+> Prose-only output matching a trigger = rule violation
+
+# Rule: Delivery check
+> Before delivering any Markdown artifact or chat response, verify: every triggered form is present, tables have header rows, changes are diffs not prose, Mermaid blocks render
+
 # Rule: Table format
 > Markdown tables only, header row required
 > One topic per table; lean cells - short phrases, no paragraphs
@@ -153,3 +164,4 @@ flowchart TD
 |---|---|---|
 | 1.0.0 | 2026-09-19 | Initial: Mermaid format rule + standard set (component, data flow, sequence, state) |
 | 2.0.0 | 2026-09-19 | Renamed Doc-diagram -> Doc-represent; added representation choice, table format + standard set, change/diff representation |
+| 3.0.0 | 2026-09-19 | Global scope (any Markdown file + chat, chat carve-out); added required forms + delivery check |

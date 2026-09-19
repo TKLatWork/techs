@@ -3,7 +3,7 @@ schema: spec-driven
 context: |
   Project docs live under doc/: management rules in doc/rules/Doc-manage.md, templates in doc/template/, index in doc/AGENTS.md.
   Every doc requires a version a.b.c header and a changelog table; keep wording lean, use lists/tables.
-  Representation standards (Mermaid diagrams, Markdown tables, text/diagram diff forms) live in doc/rules/Doc-represent.md - apply them in all docs and change artifacts.
+  Representation standards (Mermaid diagrams, Markdown tables, text/diagram diff forms) live in doc/rules/Doc-represent.md - global rule: apply them in all docs, change artifacts, any Markdown file at any path, and chat responses.
 
 rules:
   proposal:
