@@ -45,7 +45,7 @@
    - 消息文件结构：frontmatter（id / type / from / to / task / reply_to / ts）+ 正文
    - 任务状态机与 spec 目录约定（`doc/specs/<spec>/board/`）
 4. **一个端到端验证场景**：用户 @TeamLead 下达一个需要两个 worker 协作的小任务，观察协议是否走通
-5. **观测记录**：协议违反情况、消息往返次数、可行性结论（写入 `doc/skills/NOTES.md`）
+5. **观测记录**：协议违反情况、消息往返次数、可行性结论（写入 `doc/skills/chat-team/NOTES.md`）
 
 ### Out of scope
 
@@ -60,7 +60,7 @@
 - [ ] `@TeamLead` 在 VSCode Chat 中可被调用，且能成功调用至少一个 worker agent
 - [ ] 一次完整任务流转在 spec board 中留下可审计的消息链：分派 → 领取 → 结果 → 汇总
 - [ ] 消息文件符合协议 schema 的比例有记录（不要求 100%，要求可观测）
-- [ ] `doc/skills/NOTES.md` 给出结论：协议可行 / 需代码强制 / 不可行，及依据
+- [ ] `doc/skills/chat-team/NOTES.md` 给出结论：协议可行 / 需代码强制 / 不可行，及依据
 
 ## 6. 已决议（原开放问题）
 
@@ -86,11 +86,12 @@ techs/                                  # VS Code 工作区根
 │   ├── team-worker-research.agent.md
 │   └── team-worker-code.agent.md
 ├── doc/skills/                         # agent/team 规范文档（运行时只读）
-│   ├── AGENTS.md                       # 目录规则（每 skill 一个目录）
-│   ├── README.md                       # POC 入口与索引
-│   ├── requirements.md                 # 本文件（公共）
-│   ├── design.md                       # 协议与 agent 设计（公共）
-│   ├── NOTES.md                        # 运行观测与结论（公共）
+│   ├── AGENTS.md                       # 目录规则（顶层仅此文件）
+│   ├── chat-team/                      # skill：POC 总纲与公共文档
+│   │   ├── SKILL.md                    # 入口：概览 / 运行 / 重置
+│   │   ├── requirements.md             # 本文件
+│   │   ├── design.md                   # 协议与 agent 设计
+│   │   └── NOTES.md                    # 运行观测与结论
 │   ├── team-board/                     # skill：board 编排协议（串行基线）
 │   │   ├── SKILL.md
 │   │   ├── board-protocol.md           # 协议正本（含并行模式增量）

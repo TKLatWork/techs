@@ -85,7 +85,7 @@ branch: spec/<spec>/task-NNN  # 串行任务为 null
 
 ## 失败处理
 
-- **worker failed**：按协议正本重试规则（每任务 ≤1 次）。已知正本 v0.1 铁律 2 与「修订任务描述」存在矛盾（skills-audit 轮观测发现，该 spec 已删除，见 `doc/skills/NOTES.md`）：执行时采用「修订内容写入新 task.assign 消息正文，任务文件只重置 status」的方式。重试仍在原 worktree 内进行
+- **worker failed**：按协议正本重试规则（每任务 ≤1 次）。已知正本 v0.1 铁律 2 与「修订任务描述」存在矛盾（skills-audit 轮观测发现，该 spec 已删除，见 `doc/skills/chat-team/NOTES.md`）：执行时采用「修订内容写入新 task.assign 消息正文，任务文件只重置 status」的方式。重试仍在原 worktree 内进行
 - **worker 无响应/挂起**：通道超时后 TeamLead 写 `info` 消息，任务重置 `open`，可重建 worktree 重试一次；再失败上报用户
 - **通道无并行能力**：全流程退化为串行执行，隔离性与正确性不受影响
 

@@ -22,6 +22,6 @@ description: 主从 agent team 的文件 board 编排协议（串行基线）。
 | state.json 维护 | board-protocol.md「state.json」节（TeamLead 单点写） |
 | 并行执行 | `doc/skills/team-parallel/SKILL.md`（依赖本 skill） |
 
-## 相关公共文档（doc/skills/ 顶层）
+## 相关公共文档
 
-requirements.md（需求范围）· design.md（设计与线程模型）· NOTES.md（运行观测）· README.md（POC 入口）· AGENTS.md（目录规则）
+POC 总纲、需求范围（requirements.md）、设计与线程模型（design.md）、运行观测（NOTES.md）见 `doc/skills/chat-team/`；skills 目录规则见 `doc/skills/AGENTS.md`。

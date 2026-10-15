@@ -1,6 +1,6 @@
 # POC 观测记录
 
-> 协议与设计见 `doc/skills/design.md`；spec 运行目录见 `doc/specs/<spec>/`。指标定义见 design.md §9。
+> 协议与设计见同目录 `design.md` 与 `../team-board/board-protocol.md`；spec 运行目录见 `doc/specs/<spec>/`。指标定义见 design.md §9。
 
 ## 预检结果（design.md §7）
 

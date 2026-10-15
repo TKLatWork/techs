@@ -118,9 +118,8 @@ techs/                                # VS Code 工作区根
 │   ├── team-worker-research.agent.md
 │   └── team-worker-code.agent.md
 ├── doc/skills/                       # agent/team 规范（运行时所有 agent 只读）
-│   ├── AGENTS.md                     # 目录规则（每 skill 一个目录）
-│   ├── README.md                     # POC 入口与索引
-│   ├── requirements.md / design.md / NOTES.md   # 公共文档
+│   ├── AGENTS.md                     # 目录规则（顶层唯一文件）
+│   ├── chat-team/                    # skill：POC 总纲（SKILL.md + requirements / design / NOTES）
 │   ├── team-board/                   # skill：board 编排协议（串行基线）
 │   │   ├── SKILL.md
 │   │   ├── board-protocol.md         # 协议正本（含并行模式增量）
@@ -198,7 +197,7 @@ ts: <ISO8601>
 3. Chat 切到 Agent 模式，输入 `@` 确认 TeamLead 出现在列表。
 4. 冒烟：`@TeamLead ping`，确认它能调用任一 worker 并在 board 留下消息。
 
-任一步失败 → POC 阻塞，直接把「环境不支持 agents 工具」写入 `doc/skills/NOTES.md` 作为结论。
+任一步失败 → POC 阻塞，直接把「环境不支持 agents 工具」写入 `doc/skills/chat-team/NOTES.md` 作为结论。
 
 ## 8. 端到端验证场景
 
@@ -211,7 +210,7 @@ ts: <ISO8601>
 4. task.claim / task.result ← code
 5. TeamLead 汇总答复用户 + 更新 state.json 为 done
 
-## 9. 观测指标（记入 doc/skills/NOTES.md）
+## 9. 观测指标（记入 doc/skills/chat-team/NOTES.md）
 
 - schema 符合率：消息/任务文件字段完整、格式正确的比例
 - 状态机遵守率：status 流转是否按表执行、有无漏写消息
@@ -223,7 +222,7 @@ ts: <ISO8601>
 
 1. VS Code 打开仓库根 `techs/`（agent 定义直接被发现），完成 §7 预检。
 2. Chat → Agent 模式 → 发送 `@TeamLead <spec描述>`；TeamLead 自动创建 `doc/specs/<spec>/` 并初始化 board（tasks/、messages/、state.json、复制 view.html）。
-3. 观察 chat 简报与 spec board 的消息链，按 §9 指标记录到 `doc/skills/NOTES.md`。
+3. 观察 chat 简报与 spec board 的消息链，按 §9 指标记录到 `doc/skills/chat-team/NOTES.md`。
 4. 状态盘（可选）：`npx -y http-server doc\specs\<spec>\board -p 8787 -c-1` → <http://127.0.0.1:8787/view.html>，或 Live Preview 打开 `board/view.html`。
 5. 重跑/清空：删除对应 spec 目录 `Remove-Item -Recurse -Force doc\specs\<spec>`（规范文档不受影响）。
 
