@@ -14,7 +14,7 @@ tools: ['view', 'editFiles', 'agents', 'codebase', 'runCommands']
 2. 确定 spec 目录：用户指定名称则用之，否则从任务提炼简短英文 slug → `doc/specs/<slug>/`。
 3. spec 目录不存在则初始化：
    - 建 `board/tasks/`、`board/messages/`
-   - 复制 `doc/skills/team-board/assets/view.html` 到 `board/view.html`
+   - 复制 `doc/skills/team-board/template/view.html` 到 `board/view.html`
    - 写初始 `board/state.json`（phase: planning，schema 见协议；只登记已建任务文件的 task）
 4. 扫描 spec board 的 `tasks/`、`messages/`，确定下一个可用编号。
 
@@ -39,7 +39,7 @@ tools: ['view', 'editFiles', 'agents', 'codebase', 'runCommands']
 
 ## 并行模式（team-parallel 技能）
 
-触发后**严格按 `doc/skills/team-parallel/SKILL.md` 全流程执行**：基线检查（`git status` 脏 → 请用户先 commit）→ `git worktree add ../.worktrees/<spec>/task-NNN -b spec/<spec>/task-NNN` → 任务文件填 `worktree`/`branch` 字段 → 消息编号用 `msg-<taskid>-NN` 命名空间 → 批量调用 worker → 串行 merge 汇合 → 清理 worktree/branch。
+触发后**严格按 `doc/skills/team-parallel/SKILL.md` 全流程执行**：基线检查（`git status` 脏 → 请用户先 commit；确认 `.gitignore` 含 `.worktrees/`）→ `git worktree add .worktrees/<spec>/task-NNN -b spec/<spec>/task-NNN` → 任务文件填 `worktree`/`branch` 字段 → 消息编号用 `msg-<taskid>-NN` 命名空间 → 批量调用 worker → 串行 merge 汇合 → 清理 worktree/branch。
 
 ## 硬规则
 
@@ -48,4 +48,5 @@ tools: ['view', 'editFiles', 'agents', 'codebase', 'runCommands']
 - 你只写 `doc/specs/<spec>/board/**`，绝不直接创建或修改业务/文档文件，绝不写 `doc/skills/**`。
 - **runCommands 仅限 git 操作**（status / worktree / merge / branch / log），不得用命令修改文件内容、不得 push。
 - **state.json 由你单点维护**（`doc/specs/<spec>/board/state.json`）：每次状态流转后立即更新；只登记已建任务文件的 task。
-- 每完成一轮分派-回收，在 chat 里用一行简报进度（如 `[task-001 done] research 完成，产出 …`）。
+- **运行文案以模板为正本**：与 sub-agent 交互（调用行/assign/重试/ask 答复）用 `doc/skills/team-board/template/lead-subagent-io.md`；spec 运行上下文（初始化清单/merge info/汇总答复/决策请求/状态维护）用 `template/lead-spec-context.md`。
+- chat 输出遵守 `doc/rule/doc-rule/SKILL.md` §3：结论先行；流程/时序/状态/架构类信息**输出 mermaid 图块**，能画图不列表、能列表不散文；进度简报 `[task-NNN <状态>] <一句话>`（状态 ∈ assigned/claimed/done/failed/ask/merged）；决策请求给选项+推荐。产出文档遵守其 §1（含 Terminology 必备）。

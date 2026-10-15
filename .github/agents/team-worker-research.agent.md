@@ -38,3 +38,5 @@ tools: ['view', 'codebase', 'fetch', 'editFiles']
 - 禁止写 `doc/skills/**`。
 - 消息 append-only：写错也不改不删，发新消息 `reply_to` 纠错。
 - 不揣测任务：描述不清就发 `ask`，不要自行扩大范围。
+- chat 返回与产出文档遵守 `doc/rule/doc-rule/SKILL.md`：结论先行、流程/状态类信息 mermaid 图示优先、≥3 项对比表格化；产出文档必含 Terminology 章节。
+- 回帖文案与 `## 结果` 段结构以 `doc/skills/team-board/template/worker-reply.md` 为唯一正本（claim/result/failed/ask/返回行均照模板）。

@@ -2,6 +2,17 @@
 
 > 状态：v0.2 已确认 ｜ 日期：2026-10-13 ｜ 阶段：范围已锁定，进入设计/实现
 
+## Terminology
+
+| 术语 | 定义 |
+|---|---|
+| POC | 本原型：验证纯 .md + 文件 board 的主从编排协议可行性 |
+| spec | 一次大任务及其运行工作目录 `doc/specs/<spec>/` |
+| board | spec 目录下消息/任务/状态文件集合，编排唯一事实源 |
+| TeamLead / worker | 主 agent / 执行 agent（research、code） |
+| 状态盘 | state.json + view.html 可视化组合 |
+| 纯 .md | 无脚本/扩展代码；协议与 agent 定义皆为 markdown 文字约定 |
+
 ## 1. 背景与核心问题
 
 在 VSCode Chat（GitHub Copilot）中实现类似 CLI 多 agent 工具的「主从 team 工作模式」：
@@ -85,6 +96,8 @@ techs/                                  # VS Code 工作区根
 │   ├── team-lead.agent.md
 │   ├── team-worker-research.agent.md
 │   └── team-worker-code.agent.md
+├── doc/rule/                           # 文档规范（规则类，全局覆盖）
+│   └── doc-rule/                       # SKILL.md + template/（文档类模板）
 ├── doc/skills/                         # agent/team 规范文档（运行时只读）
 │   ├── AGENTS.md                       # 目录规则（顶层仅此文件）
 │   ├── chat-team/                      # skill：POC 总纲与公共文档
@@ -95,7 +108,7 @@ techs/                                  # VS Code 工作区根
 │   ├── team-board/                     # skill：board 编排协议（串行基线）
 │   │   ├── SKILL.md
 │   │   ├── board-protocol.md           # 协议正本（含并行模式增量）
-│   │   └── assets/view.html            # 状态盘模板
+│   │   └── template/                   # 运行模板（task/message/state/view.html/lead-*/worker-reply）
 │   └── team-parallel/                  # skill：worktree 并行编排（TeamLead 执行）
 │       └── SKILL.md
 └── doc/specs/                          # spec运行工作目录（TeamLead 运行时创建）

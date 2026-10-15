@@ -16,8 +16,11 @@
 |---|---|---|---|---|---|---|---|---|
 | 1 | 2026-10-13 | （chatTeam 旧布局，数据已清） | design §8 旧场景 | 6 | 6/6 | 是 | 无 | 前台+后台各 1 次调用；发现 R2/R3c 文档矛盾（已修） |
 | 2 | 2026-10-15 | skills-audit | design §8 spec 制场景 | 6 | 6/6 | 是（open→claimed→done ×2） | TeamLead 1 次（state.json 漂移，轮内自纠）；research 自报 2 条只读 shell | 两次调用均后台；msg-0005/0006 为真实秒级时间戳；spec 目录已于 2026-10-15 按要求删除（risks.md R1–R9/quickref.md 随之移除，关键发现已吸收进协议 v0.2 并行增量与 team-parallel SKILL.md） |
+| 3 | 2026-10-15 | parallel-demo | team-parallel 首跑：双 worktree 并行 + merge + 串行收尾 | 10（全局 6 + 命名空间 4） | 10/10 | 是（open→claimed→done ×3） | 无 | 双后台 task 真并行；msg-task-NNN 命名空间零撞号；merge --no-ff ×2 零冲突；board 写主副本未混入分支 commit；worktree 当轮在仓库外，轮后按方案 B 改仓库内 `.worktrees/` + .gitignore；spec 目录运行后由用户删除，模板三件套已吸收进 `team-board/template/`（patterns.md 等产物存于 git `22df466`） |
 
 ## 协议违反明细
+
+第 3 轮（parallel-demo）：零违反。正面观测：① 并行命名空间编号（msg-task-001-NN / msg-task-002-NN）与全局编号（msg-NNNN）双轨并行无冲突；② worker 严格把 board 写在主副本、产物 commit 在各自分支，merge 干净；③ task-003 遵守「禁止 commit」附加约束；④ reply_to 链完整（assign→claim→result 逐级回指）。
 
 第 2 轮（skills-audit）：
 

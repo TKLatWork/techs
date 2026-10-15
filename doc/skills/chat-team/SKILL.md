@@ -7,6 +7,14 @@ description: chatTeam 主从 agent team POC 总纲：需求范围、架构与协
 
 **PROTOTYPE — 验证「仅用 .md + 文件 board 能否可靠执行主从编排协议」，验证后删除或吸收。**
 
+## Terminology
+
+| 术语 | 定义 |
+|---|---|
+| spec | 一次大任务及其运行工作目录 `doc/specs/<spec>/` |
+| skill | 带 SKILL.md 入口的能力/规范单元（`doc/skills/` 下，规则见其 AGENTS.md） |
+| 状态盘 | spec board 下 state.json + view.html 组合 |
+
 ## 本目录文档
 
 | 文件 | 内容 |
@@ -20,9 +28,10 @@ description: chatTeam 主从 agent team POC 总纲：需求范围、架构与协
 | 位置 | 用途 |
 |---|---|
 | `.github/agents/*.agent.md` | agent 定义：TeamLead + research/code worker（VS Code 以仓库根为工作区直接发现） |
+| `doc/rule/doc-rule/` | **文档规范**（全局覆盖）：结构/风格/Terminology 必备/版本管理 + chat 展示格式 + template/ 文档模板 |
 | `doc/skills/AGENTS.md` | skills 目录规则（顶层唯一文件） |
 | `doc/skills/chat-team/` | 本 skill：POC 总纲与公共文档 |
-| `doc/skills/team-board/` | skill：board 编排协议（正本 board-protocol.md + 状态盘模板 assets/view.html） |
+| `doc/skills/team-board/` | skill：board 编排协议（正本 board-protocol.md + template/ 运行模板：schema、view.html 状态盘、运行文案） |
 | `doc/skills/team-parallel/` | skill：worktree 并行编排（依赖 team-board） |
 | `doc/specs/<spec>/` | spec 运行工作目录（TeamLead 初始化，含 board/ 与任务产物） |
 

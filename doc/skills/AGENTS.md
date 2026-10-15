@@ -13,5 +13,7 @@
 | skill | 目录 | 职责 |
 |---|---|---|
 | chat-team | `chat-team/` | POC 总纲与公共文档：requirements（需求范围）/ design（协议与 agent 设计）/ NOTES（运行观测与结论）/ 运行与重置指引 |
-| team-board | `team-board/` | 文件 board 编排协议（串行基线）：board-protocol.md（协议正本）+ assets/view.html（状态盘模板） |
+| team-board | `team-board/` | 文件 board 编排协议（串行基线）：board-protocol.md（协议正本）+ template/（task/message/state schema、view.html 状态盘、lead-subagent-io / lead-spec-context / worker-reply 运行文案） |
 | team-parallel | `team-parallel/` | worktree 并行编排增量：git 分割、编号命名空间、merge 汇合（依赖 team-board） |
+
+> 文档规范不在本目录：`doc/rule/doc-rule/`（全局覆盖，含 Terminology 必备规则、版本管理、chat 展示格式）。

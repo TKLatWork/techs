@@ -8,6 +8,17 @@ description: TeamLead 并行编排技能：git worktree 分割子任务、经文
 执行者：**TeamLead**（`.github/agents/team-lead.agent.md`）。
 协议基础：`doc/skills/team-board/board-protocol.md`（必读；本技能只规定并行增量，冲突时以协议正本为准）。
 
+## Terminology
+
+| 术语 | 定义 |
+|---|---|
+| worktree 分割 | 每个并行任务独占一个 git worktree + 分支，业务文件物理隔离 |
+| 主工作副本 | 仓库原工作树；board 实体所在地，所有 agent 以绝对路径共享 |
+| 命名空间编号 | 并行任务消息编号 `msg-<taskid>-NN`，无锁防撞号 |
+| 串行收尾任务 | 修改共享文件的任务，在全部 merge 后于主副本执行 |
+| merge 汇合 | TeamLead 核验后串行 `git merge --no-ff` 并清理 worktree/分支 |
+| 通道 | 宿主的子代理调用机制（Copilot agents / Kilo task / 人肉多窗口） |
+
 ## 适用判定（全部满足才并行，否则回退串行流程）
 
 1. 可拆出 ≥2 个**授权路径互不相交**的子任务
@@ -24,6 +35,8 @@ git status --short
 
 工作区脏（有未提交改动）→ 请用户先 commit/stash 再继续：worktree 从 HEAD checkout，未提交内容不会进入新 worktree。
 
+同时确认仓库根 `.gitignore` 含 `.worktrees/`（worktree 放仓库内，必须排除；缺失则先补上并提交）。
+
 **untracked 文件陷阱**：`doc/skills/`、`doc/specs/`、`.github/agents/` 等未提交文件在新 worktree 中**不可见**。因此所有 worker 对 board 与规范文档一律使用**绝对路径**（任务描述中写全）。
 
 ### 1. 拆分
@@ -33,10 +46,10 @@ git status --short
 ### 2. 创建 worktree（每并行任务一个）
 
 ```
-git worktree add ../.worktrees/<spec>/task-NNN -b spec/<spec>/task-NNN
+git worktree add .worktrees/<spec>/task-NNN -b spec/<spec>/task-NNN
 ```
 
-worktree 统一放 `<仓库根>/../.worktrees/<spec>/` 下，避免仓库内嵌套。
+worktree 统一放**仓库内** `.worktrees/<spec>/` 下（IDE 文件树可见，便于观察与清理；已由 `.gitignore` 排除，不污染 git status）。搜索工具若扫到副本噪音，在编辑器排除设置中加 `.worktrees`。
 
 ### 3. 任务文件增量字段
 
@@ -75,7 +88,7 @@ branch: spec/<spec>/task-NNN  # 串行任务为 null
 
 1. 核验 board：task.result 消息 + `## 结果`（含 commit hash）+ 授权范围
 2. `git merge --no-ff spec/<spec>/task-NNN`
-3. 成功 → `git worktree remove ../.worktrees/<spec>/task-NNN`；`git branch -d spec/<spec>/task-NNN`；写 `info` 消息记录 merge 结果
+3. 成功 → `git worktree remove .worktrees/<spec>/task-NNN`；`git branch -d spec/<spec>/task-NNN`；写 `info` 消息记录 merge 结果
 4. 冲突 → `git merge --abort`，写 `info` 消息记录，**上报用户决策**；worktree 与分支保留现场
 5. 全部 merge 成功后，再执行串行收尾任务（如有）
 

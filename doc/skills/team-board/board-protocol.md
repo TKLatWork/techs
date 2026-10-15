@@ -2,10 +2,26 @@
 
 正本位置：`doc/skills/team-board/board-protocol.md`。所有 agent（TeamLead、team-worker-research、team-worker-code）执行任务前后必须遵守本协议。
 
+## Terminology
+
+| 术语 | 定义 |
+|---|---|
+| spec | 一次大任务及其运行工作目录 `doc/specs/<spec>/` |
+| board | spec 目录下 tasks/messages/state.json/view.html 的总称，编排唯一事实源 |
+| 任务文件 | `board/tasks/task-NNN.md`，分派与验收单元（描述/验收标准/结果三段） |
+| 消息 | `board/messages/msg-*.md`，agent 间 append-only 通信记录 |
+| TeamLead / worker | 主 agent（分派/回收/合并）/ 执行 agent（research、code） |
+| claim | worker 领取任务：open → claimed + task.claim 消息 |
+| ask / info | worker 请求决策的消息 / 答复与补充说明消息 |
+| append-only | 写入后不改不删；纠错发新消息 reply_to 指向原消息 |
+| state.json | TeamLead 单点维护的汇总视图；非事实源，冲突以文件为准 |
+| worktree / 分支 | 并行任务的 git 隔离目录与分支（正本见 team-parallel） |
+| 命名空间编号 | 并行任务消息编号 `msg-<taskid>-NN`，无锁防撞号 |
+
 ## spec 目录（运行工作目录）
 
 - 每个「spec」一个运行工作目录：`doc/specs/<spec>/`，其 board 位于 `doc/specs/<spec>/board/`。
-- spec 目录由 **TeamLead 创建并初始化**：建 `board/tasks/`、`board/messages/`，从 `doc/skills/team-board/assets/view.html` 复制状态盘到 `board/view.html`，写初始 `board/state.json`。
+- spec 目录由 **TeamLead 创建并初始化**：建 `board/tasks/`、`board/messages/`，从 `doc/skills/team-board/template/view.html` 复制状态盘到 `board/view.html`，写初始 `board/state.json`。
 - TeamLead 调用 worker 的指令必须包含：**spec 目录路径 + task id**（worker 看不到 chat 上下文）。
 - 任务产物写入 spec 目录内任务文件明确授权的路径。
 - `doc/skills/**` 为规范目录：**所有 agent 只读，禁止写入**。
@@ -124,7 +140,7 @@ TeamLead 重试失败任务：修订任务描述后 `failed → open`，写新 t
 
 ## view.html（状态盘）
 
-- 模板：`doc/skills/team-board/assets/view.html`，TeamLead 初始化 spec 时复制到 `board/view.html`。
+- 模板：`doc/skills/team-board/template/view.html`，TeamLead 初始化 spec 时复制到 `board/view.html`。
 - NavTab 多标签：首页总视图（每 2s fetch `state.json`），点击 task/消息 id 新开标签渲染对应 .md。
 - file:// 下 fetch 被 CORS 拦截，须经 http 打开：
 
