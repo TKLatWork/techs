@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "updated": "2026-10-15T14:12:00Z",
+  "spec": "parallel-demo",
+  "runtime": "kilo-task-tool",
+  "flow": {
+    "goal": "验证 team-parallel 技能：task-001(research/patterns.md) ∥ task-002(templates/) 双 worktree 并行，merge 后 task-003 串行收尾产出 spec README",
+    "phase": "planning",
+    "steps": [
+      {
+        "id": "step-1",
+        "task": "task-001",
+        "desc": "调研三种编排模式 → research/patterns.md（worktree 并行）",
+        "assignee": "team-worker-research",
+        "state": "pending"
+      },
+      {
+        "id": "step-2",
+        "task": "task-002",
+        "desc": "提取协议模板 → templates/ 三件套（worktree 并行，与 step-1 同时）",
+        "assignee": "team-worker-code",
+        "state": "pending"
+      },
+      {
+        "id": "step-3",
+        "task": "task-003",
+        "desc": "merge 后串行收尾 → spec README.md",
+        "assignee": "team-worker-code",
+        "state": "pending"
+      }
+    ]
+  },
+  "agents": [
+    { "name": "TeamLead", "role": "lead", "state": "idle", "detail": "spec 已初始化，任务已建，等待启动（未执行）" },
+    { "name": "team-worker-research", "role": "worker", "state": "idle", "detail": "待 task-001" },
+    { "name": "team-worker-code", "role": "worker", "state": "idle", "detail": "待 task-002 / task-003" }
+  ],
+  "tasks": [
+    {
+      "id": "task-001",
+      "title": "调研对比三种多 agent 编排模式，产出 patterns.md",
+      "status": "open",
+      "assignee": "team-worker-research",
+      "messages": []
+    },
+    {
+      "id": "task-002",
+      "title": "提取协议模板，产出 templates/ 三件套",
+      "status": "open",
+      "assignee": "team-worker-code",
+      "messages": []
+    },
+    {
+      "id": "task-003",
+      "title": "汇总调研与模板，产出 spec README.md（串行收尾）",
+      "status": "open",
+      "assignee": "team-worker-code",
+      "messages": []
+    }
+  ],
+  "messages": []
+}
