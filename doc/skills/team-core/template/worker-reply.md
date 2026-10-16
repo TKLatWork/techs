@@ -1,6 +1,6 @@
 <!--
 worker-reply.md — worker 回帖文案模板（research / code 通用）
-正本：doc/skills/team-board/template/。复制后替换 <占位符>；可选段按标注取舍。
+正本：doc/skills/team-core/template/。复制后替换 <占位符>；可选段按标注取舍。
 -->
 
 ## 1. task.claim 正文

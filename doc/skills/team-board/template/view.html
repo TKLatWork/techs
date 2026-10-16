@@ -182,7 +182,7 @@ async function loadHome() {
     $('err').style.display = 'none';
   } catch (e) {
     $('err').style.display = 'block';
-    $('err').textContent = '无法读取 state.json：' + e.message + '（file:// 下 fetch 被 CORS 拦截，请通过 http 服务打开本页，见 POC README「状态盘」节）';
+    $('err').textContent = '无法读取 state.json：' + e.message + '（file:// 下 fetch 被 CORS 拦截，请通过 http 服务打开本页，见 doc/skills/team-board/SKILL.md「view.html 状态盘」节）';
   }
 }
 

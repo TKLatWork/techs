@@ -1,6 +1,8 @@
-# board 消息协议 v0.1（agent 运行时必读）
+# team 协议正本 v0.2（agent 运行时必读）
 
-正本位置：`doc/skills/team-board/board-protocol.md`。所有 agent（TeamLead、team-worker-research、team-worker-code）执行任务前后必须遵守本协议。
+> 状态：active v0.2.0 ｜ 日期：2026-10-16 ｜ 维护者：Kilo（用户指令）
+
+正本位置：`doc/skills/team-core/protocol.md`。所有 agent（TeamLead、team-worker-research、team-worker-code）执行任务前后必须遵守本协议。state.json 的 schema 数据契约与状态盘见 `doc/skills/team-board/SKILL.md`；本协议只规定其维护职责。
 
 ## Terminology
 
@@ -32,8 +34,8 @@
 doc/specs/<spec>/board/
 ├── tasks/task-NNN.md       # 每任务一文件，NNN 从 001 递增
 ├── messages/msg-NNNN.md    # 每消息一文件，NNNN 从 0001 递增
-├── state.json              # 状态汇总视图（TeamLead 单点维护，见末节）
-└── view.html               # 只读状态盘（初始化时从 assets 复制）
+├── state.json              # 状态汇总视图（TeamLead 单点维护，契约见「state.json」节）
+└── view.html               # 只读状态盘（初始化时从 team-board/template 复制）
 ```
 
 新编号 = 扫描对应目录现有最大编号 + 1（写前必须重新扫描）。
@@ -95,7 +97,7 @@ ts: 2026-10-15T12:00:00Z
 
 TeamLead 重试失败任务：修订任务描述后 `failed → open`，写新 task.assign 消息（每任务最多重试 1 次）。
 
-## 并行模式（v0.2 增量）
+## 并行模式（流程正本见 team-parallel）
 
 子任务 ≥2 且授权路径互不相交时，TeamLead 可按 `doc/skills/team-parallel/SKILL.md`（流程正本）分割并行 worker。协议增量：
 
@@ -114,12 +116,13 @@ TeamLead 重试失败任务：修订任务描述后 `failed → open`，写新 t
 5. **返回摘要**：worker 结束后向调用方返回一行 `task-NNN done|failed|ask: <一句话>`。
 6. **state.json 单点维护**：唯一写者是 TeamLead，每次状态流转后立即写盘。
 
-## state.json（状态汇总视图）
+## state.json（数据契约与维护职责）
 
-- 位置：`doc/specs/<spec>/board/state.json`。**唯一写者是 TeamLead**；worker 与 `view.html` 渲染页只读。
+- 位置：`doc/specs/<spec>/board/state.json`。**唯一写者是 TeamLead**；worker 与 `view.html` 渲染页只读（渲染行为与启动方式见 `doc/skills/team-board/SKILL.md`）。
 - 更新时机：创建任务、分派（assign）、确认 worker 回帖（claim/result/failed）、ask 处理、汇总完成——每次状态流转后立即写盘。spec 初始化时由 TeamLead 首次写入（phase: planning）。
 - 一致性规则：state.json 只是汇总视图；任务文件与消息文件仍是事实源。冲突时以文件为准，TeamLead 负责修正 state.json。
-- Schema：
+- 骨架模板：`doc/skills/team-core/template/state-template.json`。
+- **数据契约（schema 正本）**：
 
 ```json
 {
@@ -138,14 +141,8 @@ TeamLead 重试失败任务：修订任务描述后 `failed → open`，写新 t
 }
 ```
 
+字段约束：`tasks[]` 只登记已建任务文件的 task（`flow.steps[]` 可含规划中步骤）；枚举值不得超出上表；`messages[]` 按时间序；并行增量——`flow.steps[]` 允许多个 `running`、`agents[]` 多个 worker 同时 `working`。
+
 ## view.html（状态盘）
 
-- 模板：`doc/skills/team-board/template/view.html`，TeamLead 初始化 spec 时复制到 `board/view.html`。
-- NavTab 多标签：首页总视图（每 2s fetch `state.json`），点击 task/消息 id 新开标签渲染对应 .md。
-- file:// 下 fetch 被 CORS 拦截，须经 http 打开：
-
-  ```powershell
-  npx -y http-server doc\specs\<spec>\board -p 8787 -c-1   # → http://127.0.0.1:8787/view.html
-  ```
-
-  或用 VS Code Live Preview 扩展右键 `board/view.html` → Show Preview。
+可视化契约（渲染行为、启动方式、模板位置）见 `doc/skills/team-board/SKILL.md`。TeamLead 初始化 spec 时复制 `doc/skills/team-board/template/view.html` 到 `board/view.html`。

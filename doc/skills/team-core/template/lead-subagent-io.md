@@ -8,7 +8,7 @@ spec 运行上下文类文案（初始化/merge/汇总/决策请求）见 lead-s
 
 串行：
 
-> 你是 <assignee>。spec 目录 doc/specs/<spec>，新任务 task-NNN。先读 doc/skills/team-board/board-protocol.md，再读 spec 目录下 board/tasks/task-NNN.md，按协议执行。
+> 你是 <assignee>。spec 目录 doc/specs/<spec>，新任务 task-NNN。先读 doc/skills/team-core/protocol.md，再读 spec 目录下 board/tasks/task-NNN.md，按协议执行。
 
 并行追加段：
 

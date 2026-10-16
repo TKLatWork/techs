@@ -1,6 +1,6 @@
-# 设计：主从 Agent Team 编排协议 v0
+# team-core 设计：主从 Agent Team 编排架构
 
-> 对应需求：同目录 `requirements.md` v0.2 ｜ 日期：2026-10-13
+> 状态：active v0.3.0 ｜ 日期：2026-10-16 ｜ 维护者：Kilo（用户指令）
 
 ## Terminology
 
@@ -9,8 +9,8 @@
 | spec | 一次大任务及其运行工作目录 `doc/specs/<spec>/` |
 | board | spec 下 tasks/messages/state.json，编排唯一事实源 |
 | TeamLead / worker | 主 agent / 执行 agent；线程模型见 §1.3 |
-| 命名空间编号 | 并行消息编号 `msg-<taskid>-NN`（§12） |
-| 状态盘 | state.json + view.html 组合（§11） |
+| 命名空间编号 | 并行消息编号 `msg-<taskid>-NN`（§8） |
+| 状态盘 | state.json + view.html 组合（§7） |
 
 ## 1. 架构总览
 
@@ -24,7 +24,7 @@
                    │  3. agents 工具调用 worker，只传 task id
                    ▼
         team-worker-research / team-worker-code
-                   │  4. 读 doc/skills/team-board/board-protocol.md + 任务文件
+                   │  4. 读 doc/skills/team-core/protocol.md + 任务文件
                    │  5. status: claimed → 干活 → 写 task.result 消息
                    │  6. status: done / failed，返回一行摘要给 TeamLead
                    ▼
@@ -48,12 +48,12 @@ sequenceDiagram
     participant C as team-worker-code
 
     U->>M: @TeamLead <任务>
-    M->>B: 读 README.md 协议 + 扫描现有编号
+    M->>B: 读 protocol.md 协议 + 扫描现有编号
     M->>B: 写 tasks/task-001.md (status: open)
     M->>B: 写 messages/msg-0001.md (task.assign → R)
 
     M->>R: agents 工具调用：「你有新任务 task-001」(只传 id)
-    R->>B: 读 README.md + tasks/task-001.md
+    R->>B: 读 protocol.md + tasks/task-001.md
     R->>B: status: claimed + msg-0002 (task.claim)
     R->>R: 只读调研 (view/codebase/fetch)
     R->>B: 填 ## 结果 + status: done + msg-0003 (task.result)
@@ -116,7 +116,7 @@ sequenceDiagram
 
 - **驱动方向单一**：只有 TeamLead 调用能让 worker 存在；board 上 `open` 任务无人轮询。
 - **worker 无状态**：跨调用的"对话线程"不在内存，而是 board 消息文件重建的逻辑线程（task id + reply_to 链）。`ask` 流程即：worker 发 ask 后消亡 → TeamLead 写 info 回帖 → TeamLead 重新调用**全新** worker 实例 → 该实例从 board 读到问答上下文再继续。
-- **串行（默认）**：串行模式下 TeamLead 一次只嵌套一个 worker 子请求；并行模式（worktree 分割 + 批量发起）见 §12。
+- **串行（默认）**：串行模式下 TeamLead 一次只嵌套一个 worker 子请求；并行模式（worktree 分割 + 批量发起）见 §8。
 - **固有限制**：worker 自转监听任务队列需要脚本/常驻进程，超出「纯 .md」范围（Out of scope）。
 
 ## 2. 目录布局（skills = 规范，specs = 运行）
@@ -128,25 +128,31 @@ techs/                                # VS Code 工作区根
 │   ├── team-worker-research.agent.md
 │   └── team-worker-code.agent.md
 ├── doc/rule/doc-rule/                # 文档规范（全局覆盖：结构/Terminology/版本管理 + chat 展示 + template/）
-├── doc/skills/                       # agent/team 规范（运行时所有 agent 只读）
+├── doc/skills/                       # team 规范（运行时所有 agent 只读）
 │   ├── AGENTS.md                     # 目录规则（顶层唯一文件）
-│   ├── chat-team/                    # skill：POC 总纲（SKILL.md + requirements / design / NOTES）
-│   ├── team-board/                   # skill：board 编排协议（串行基线）
+│   ├── team-core/                    # skill：team 主运行框架
+│   │   ├── SKILL.md                  # 框架入口：概览 / 运行 / 重置
+│   │   ├── protocol.md               # 协议正本（spec/task/message/状态机/铁律/并行增量）
+│   │   ├── design.md                 # 本文件：架构与设计依据
+│   │   ├── NOTES.md                  # 运行观测记录
+│   │   └── template/                 # task / message / state-template / lead-subagent-io / lead-spec-context / worker-reply
+│   ├── team-board/                   # skill：过程可视化（view.html 状态盘渲染）
 │   │   ├── SKILL.md
-│   │   ├── board-protocol.md         # 协议正本（含并行模式增量）
-│   │   └── template/                 # 运行模板（task/message/state/view.html/lead-subagent-io/lead-spec-context/worker-reply）
-│   └── team-parallel/                # skill：worktree 并行编排（TeamLead 执行，§12）
+│   │   └── template/                 # view.html
+│   └── team-parallel/                # skill：worktree 并行编排（TeamLead 执行，§8）
 │       └── SKILL.md
 └── doc/specs/<spec>/              # 每个spec的运行工作目录（TeamLead 初始化）
     ├── board/
     │   ├── tasks/task-NNN.md         # 每任务一文件
     │   ├── messages/msg-NNNN.md      # 每消息一文件，NNNN 递增（扫描现有最大值 +1）
-    │   ├── state.json                # 状态汇总视图（TeamLead 单点维护，§11）
-    │   └── view.html                 # 初始化时从 assets 复制（§11）
+    │   ├── state.json                # 状态汇总视图（TeamLead 单点维护，§7）
+    │   └── view.html                 # 初始化时从 team-board/template 复制（§7）
     └── （任务产物文件）
 ```
 
 ## 3. 任务文件 schema（board/tasks/task-NNN.md）
+
+> §3–§5 为设计期摘要；schema 与状态机正本见同目录 `protocol.md`。
 
 ```yaml
 ---
@@ -198,46 +204,9 @@ ts: <ISO8601>
 | team-worker-research | view, codebase, fetch, editFiles | spec 的 `board/**`、任务指定的输出文件（默认只读调研） |
 | team-worker-code | view, editFiles, runCommands, codebase | spec 的 `board/**`、任务授权白名单路径 |
 
-所有 agent 对 `doc/skills/**` 只读。写范围只由 prompt 约定（无代码强制）——违反情况是 POC 观测对象。
+所有 agent 对 `doc/skills/**` 只读。写范围只由 prompt 约定（无代码强制）——违反情况记入同目录 `NOTES.md` 观测。
 
-## 7. 预检（Q4 硬约束：必须真跨 agent）
-
-0. **工作区发现**：agent 定义在仓库根 `.github/agents/`，VS Code 以 `techs/` 为工作区根即直接识别，无需另开文件夹。
-1. VS Code ≥ 支持 custom agents 的版本（Insiders 1.101+ / Stable 1.104+ 附近，以实际为准）。
-2. 打开 `.github/agents/team-lead.agent.md`，确认 `tools` 中 `agents` 无「unknown tool」告警。
-3. Chat 切到 Agent 模式，输入 `@` 确认 TeamLead 出现在列表。
-4. 冒烟：`@TeamLead ping`，确认它能调用任一 worker 并在 board 留下消息。
-
-任一步失败 → POC 阻塞，直接把「环境不支持 agents 工具」写入 `doc/skills/chat-team/NOTES.md` 作为结论。
-
-## 8. 端到端验证场景
-
-> `@TeamLead 调研 doc/skills/ 下的规范文档，总结协议风险点写入 risks.md，并生成一份协议速查表 quickref.md`
-
-预期：TeamLead 初始化 `doc/specs/<spec>/board/`，消息链 ≥6 条：
-1. task.assign → research（调研 doc/skills/，风险总结写入 task-001 `## 结果`）
-2. task.claim / task.result ← research
-3. task.assign → code（依据 research 结果在 spec 目录产出 risks.md、quickref.md）
-4. task.claim / task.result ← code
-5. TeamLead 汇总答复用户 + 更新 state.json 为 done
-
-## 9. 观测指标（记入 doc/skills/chat-team/NOTES.md）
-
-- schema 符合率：消息/任务文件字段完整、格式正确的比例
-- 状态机遵守率：status 流转是否按表执行、有无漏写消息
-- 越权行为：worker 是否写了范围外文件、TeamLead 是否亲自干活
-- 往返开销：完成场景所需 chat 轮次与消息条数
-- 结论：可行 / 需代码强制 / 不可行
-
-## 10. 如何运行
-
-1. VS Code 打开仓库根 `techs/`（agent 定义直接被发现），完成 §7 预检。
-2. Chat → Agent 模式 → 发送 `@TeamLead <spec描述>`；TeamLead 自动创建 `doc/specs/<spec>/` 并初始化 board（tasks/、messages/、state.json、复制 view.html）。
-3. 观察 chat 简报与 spec board 的消息链，按 §9 指标记录到 `doc/skills/chat-team/NOTES.md`。
-4. 状态盘（可选）：`npx -y http-server doc\specs\<spec>\board -p 8787 -c-1` → <http://127.0.0.1:8787/view.html>，或 Live Preview 打开 `board/view.html`。
-5. 重跑/清空：删除对应 spec 目录 `Remove-Item -Recurse -Force doc\specs\<spec>`（规范文档不受影响）。
-
-## 11. 状态可视化（state.json + view.html）
+## 7. 状态可视化（state.json + view.html）
 
 - **`<spec>/board/state.json`**：单文件状态汇总——总 flow（goal/phase/steps）、各 task 状态、各 agent 状态（idle/working/waiting/failed）、消息索引。**TeamLead 是唯一写者**，每次状态流转后立即写盘；worker 与渲染页只读（铁律 3 的收窄）。
 - **一致性规则**：state.json 只是汇总视图，任务/消息文件仍是事实源；冲突时以文件为准，TeamLead 修正 state.json。
@@ -247,9 +216,9 @@ ts: <ISO8601>
   npx -y http-server doc\specs\<spec>\board -p 8787 -c-1   # → http://127.0.0.1:8787/view.html
   ```
 
-- **schema 正本**：`doc/skills/team-board/board-protocol.md`「state.json」节。
+- **数据契约与维护职责正本**：同目录 `protocol.md`「state.json（数据契约与维护职责）」节；渲染行为与启动方式见 `doc/skills/team-board/SKILL.md`。
 
-## 12. 并行模式（team-parallel skill）
+## 8. 并行模式（team-parallel skill）
 
 串行为默认。当子任务 ≥2 且授权路径互不相交（或用户明确要求并行）时，TeamLead 执行 `doc/skills/team-parallel/SKILL.md`：
 
@@ -257,4 +226,4 @@ ts: <ISO8601>
 - **防撞号**：并行任务消息用 `msg-<taskid>-NN` 命名空间，TeamLead 全局消息仍 `msg-NNNN`
 - **汇合**：worker 在自己分支 commit 并报 hash；TeamLead 核验后串行 `git merge --no-ff`、清理 worktree/branch；冲突 abort + 上报用户
 - **通道无关**：只依赖 git CLI；调用通道可为 Copilot `agents`（同步→退化串行）/ Kilo `task`（background→真并行）/ 人肉多窗口；隔离性与正确性不随通道变化
-- 协议增量正本：`board-protocol.md`「并行模式」节
+- 协议增量正本：`protocol.md`「并行模式」节

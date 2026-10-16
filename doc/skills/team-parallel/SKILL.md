@@ -6,7 +6,7 @@ description: TeamLead 并行编排技能：git worktree 分割子任务、经文
 # team-parallel — TeamLead 并行编排（worktree 分割）
 
 执行者：**TeamLead**（`.github/agents/team-lead.agent.md`）。
-协议基础：`doc/skills/team-board/board-protocol.md`（必读；本技能只规定并行增量，冲突时以协议正本为准）。
+协议基础：`doc/skills/team-core/protocol.md`（必读；本技能只规定并行增量，冲突时以协议正本为准）。
 
 ## Terminology
 
@@ -73,7 +73,7 @@ branch: spec/<spec>/task-NNN  # 串行任务为 null
 
 调用行模板：
 
-> 你是 <assignee>。spec 根 <spec 目录绝对路径>，新任务 task-NNN。先读 <仓库根>/doc/skills/team-parallel/SKILL.md 的「worker 契约」节与 <仓库根>/doc/skills/team-board/board-protocol.md，再读 spec 目录下 board/tasks/task-NNN.md 执行。业务文件操作一律在任务文件 `worktree` 字段指定的目录内；board 用绝对路径。
+> 你是 <assignee>。spec 根 <spec 目录绝对路径>，新任务 task-NNN。先读 <仓库根>/doc/skills/team-parallel/SKILL.md 的「worker 契约」节与 <仓库根>/doc/skills/team-core/protocol.md，再读 spec 目录下 board/tasks/task-NNN.md 执行。业务文件操作一律在任务文件 `worktree` 字段指定的目录内；board 用绝对路径。
 
 ### 6. worker 契约（并行增量）
 
@@ -98,7 +98,7 @@ branch: spec/<spec>/task-NNN  # 串行任务为 null
 
 ## 失败处理
 
-- **worker failed**：按协议正本重试规则（每任务 ≤1 次）。已知正本 v0.1 铁律 2 与「修订任务描述」存在矛盾（skills-audit 轮观测发现，该 spec 已删除，见 `doc/skills/chat-team/NOTES.md`）：执行时采用「修订内容写入新 task.assign 消息正文，任务文件只重置 status」的方式。重试仍在原 worktree 内进行
+- **worker failed**：按协议正本重试规则（每任务 ≤1 次）。已知正本 v0.1 铁律 2 与「修订任务描述」存在矛盾（skills-audit 轮观测发现，该 spec 已删除，见 `doc/skills/team-core/NOTES.md`）：执行时采用「修订内容写入新 task.assign 消息正文，任务文件只重置 status」的方式。重试仍在原 worktree 内进行
 - **worker 无响应/挂起**：通道超时后 TeamLead 写 `info` 消息，任务重置 `open`，可重建 worktree 重试一次；再失败上报用户
 - **通道无并行能力**：全流程退化为串行执行，隔离性与正确性不受影响
 

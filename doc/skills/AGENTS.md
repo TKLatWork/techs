@@ -1,19 +1,19 @@
 # doc/skills 目录规则
 
 1. **顶层只有本文件**：`doc/skills/` 顶层仅允许 `AGENTS.md`；其余任何文件必须归属某个 skill 目录，没有合适的就新建 skill。
-2. **每个 skill 一个目录**：目录名即 skill 名（kebab-case），如 `chat-team/`、`team-board/`、`team-parallel/`。
+2. **每个 skill 一个目录**：目录名即 skill 名（kebab-case），如 `team-core/`、`team-board/`、`team-parallel/`。
 3. **SKILL.md 为入口**：每个 skill 目录必有 `SKILL.md`，frontmatter 含 `name`（与目录名一致）与 `description`（何时使用）；正文为可执行流程/规则/索引。
 4. **资源同目录**：协议正本、模板、assets、公共文档等一律放所属 skill 目录内；skill 内部用相对路径引用，跨 skill/跨目录引用用仓库相对路径。
 5. **运行时只读**：执行 agent（TeamLead / worker）对 `doc/skills/**` 一律只读；修订只能在 spec 结束后作为维护动作进行。
-6. **增删 skill 同步索引**：更新本文件「当前 skill 清单」，以及 `chat-team/requirements.md` §8 与 `chat-team/design.md` §2 的目录树。
+6. **增删 skill 同步索引**：更新本文件「当前 skill 清单」，以及 `team-core/design.md` §2 的目录树。
 7. **skill 间依赖显式声明**：在 SKILL.md 开头写明依赖（如 team-parallel 依赖 team-board 协议正本）；规则冲突时以被依赖的正本为准。
 
 ## 当前 skill 清单
 
 | skill | 目录 | 职责 |
 |---|---|---|
-| chat-team | `chat-team/` | POC 总纲与公共文档：requirements（需求范围）/ design（协议与 agent 设计）/ NOTES（运行观测与结论）/ 运行与重置指引 |
-| team-board | `team-board/` | 文件 board 编排协议（串行基线）：board-protocol.md（协议正本）+ template/（task/message/state schema、view.html 状态盘、lead-subagent-io / lead-spec-context / worker-reply 运行文案） |
+| team-core | `team-core/` | **team 主运行框架**：protocol.md（协议正本：spec/task/message/状态机/铁律/并行增量/**state.json 数据契约**）+ template/（task · message · state-template · lead-subagent-io · lead-spec-context · worker-reply）+ design.md（架构依据）+ NOTES.md（运行观测） |
+| team-board | `team-board/` | **过程可视化（渲染）**：template/view.html 状态盘渲染页 + 渲染契约/启动方式；state.json 数据契约正本在 team-core/protocol.md |
 | team-parallel | `team-parallel/` | worktree 并行编排增量：git 分割、编号命名空间、merge 汇合（依赖 team-board） |
 
 > 文档规范不在本目录：`doc/rule/doc-rule/`（全局覆盖，含 Terminology 必备规则、版本管理、chat 展示格式）。

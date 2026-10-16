@@ -7,11 +7,11 @@ lead-spec-context.md — TeamLead 管理 spec 运行上下文的文案模板（�
 
 ## 1. spec 初始化清单（按序执行）
 
-- [ ] 读协议正本 `doc/skills/team-board/board-protocol.md`
+- [ ] 读协议正本 `doc/skills/team-core/protocol.md`
 - [ ] 确定 spec slug（用户指定或从任务提炼英文短横线名）→ `doc/specs/<spec>/`
 - [ ] 建 `board/tasks/`、`board/messages/`
 - [ ] 复制 `doc/skills/team-board/template/view.html` → `board/view.html`
-- [ ] 从 `template/state-template.json` 落地 `board/state.json`（phase: planning，只登记已建任务文件的 task）
+- [ ] 从 `doc/skills/team-core/template/state-template.json` 落地 `board/state.json`（phase: planning，只登记已建任务文件的 task）
 - [ ] 扫描 tasks/、messages/ 确定下一个可用编号
 - [ ] （并行模式）`git status` 干净？`.gitignore` 含 `.worktrees/`？
 - [ ] 拆解子任务（授权路径互不相交才可并行；共享文件改动独立为串行收尾任务）
@@ -31,7 +31,7 @@ lead-spec-context.md — TeamLead 管理 spec 运行上下文的文案模板（�
 > [结果表：task ｜ 模式 ｜ 产物 ｜ 结果/commit]
 >
 > 消息链 N 条（全局 n + 命名空间 n），schema 符合 N/N，状态机 <遵守｜异常>，越权 <无｜明细>。
-> state.json 已置 done；观测已记入 `chat-team/NOTES.md`。
+> state.json 已置 done；观测已记入 `team-core/NOTES.md`。
 > 待决策/下一步：<条目｜无>。
 
 ## 4. 决策请求（给用户）

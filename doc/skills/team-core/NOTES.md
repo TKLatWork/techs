@@ -1,8 +1,8 @@
-# POC 观测记录
+# 运行观测记录
 
-> 协议与设计见同目录 `design.md` 与 `../team-board/board-protocol.md`；spec 运行目录见 `doc/specs/<spec>/`。指标定义见 design.md §9。
+> 协议与设计见同目录 `protocol.md` 与 `design.md`；spec 运行目录见 `doc/specs/<spec>/`。
 
-## 预检结果（design.md §7）
+## 预检结果（Copilot runtime，待验证）
 
 **运行时说明**：两轮均在 Kilo CLI 会话内由主会话代行 TeamLead，跨 agent 通道 = Kilo `task` 子代理（真跨 agent、无状态实例、冷启动读 board，与 design §1.3 线程模型一致）；两次 worker 调用均为后台模式（不阻塞 chat）。Copilot `agents` 工具侧仍未验证。
 

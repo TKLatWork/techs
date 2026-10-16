@@ -25,13 +25,13 @@ description: <这个 skill 做什么 + 什么时候使用（触发条件）+ 依
 
 ## 相关文档
 
-<跨 skill 引用用仓库相对路径；公共文档指向 doc/skills/chat-team/。>
+<跨 skill 引用用仓库相对路径；team 公共文档指向 doc/skills/team-core/。>
 
 <!--
 新建 skill 检查清单（提交前删除本注释）：
 1. 目录名 = frontmatter name（kebab-case）
 2. 资源全部在本目录内，跨目录用仓库相对路径
 3. 已更新 doc/skills/AGENTS.md「当前 skill 清单」
-4. 已更新 chat-team/requirements.md §8 与 chat-team/design.md §2 目录树
+4. 已更新 team-core/design.md §2 目录树
 5. 依赖的 skill 已在开头显式声明
 -->
