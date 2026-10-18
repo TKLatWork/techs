@@ -33,14 +33,11 @@
   .phase-done{color:var(--green)} .phase-blocked{color:var(--red)}
   section { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-top:16px; }
   section h2 { font-size:13px; color:var(--dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
-  .flow { display:flex; flex-direction:column; gap:4px; }
-  .fline { display:flex; align-items:center; gap:10px; }
-  .fline .num { width:24px; text-align:right; font-size:12px; color:var(--dim); flex-shrink:0; }
-  .fline .step { flex:1; display:flex; align-items:center; gap:10px; border:1px solid var(--border); border-radius:6px; padding:8px 12px; cursor:pointer; }
-  .fline .step:hover { border-color:var(--blue); }
-  .fline .step .sdesc { flex:1; font-size:13px; }
-  .fline .step .smeta { display:flex; align-items:center; gap:8px; font-size:11px; flex-shrink:0; }
-  .fline .vbar { width:2px; height:12px; margin-left:12px; background:var(--border); }
+  .flow { overflow-x:auto; }
+  .flow svg { display:block; }
+  .fnode { cursor:pointer; }
+  .fnode:hover rect { filter:brightness(1.35); }
+  .f-running rect { animation:pulse 1.2s infinite; }
   .t-pending{color:var(--gray)} .t-running{color:var(--amber)} .t-done{color:var(--green)} .t-failed{color:var(--red)}
   /* ── home 布局：Agents 左侧 sidebar ── */
   .home-wrap { display:flex; gap:16px; align-items:flex-start; margin-top:16px; }
@@ -104,7 +101,8 @@
       <div><h1>spec 状态盘</h1><div class="dim" id="goal"></div></div>
       <div><span class="badge" id="phase"></span> <span class="dim" id="updated"></span></div>
     </header>
-    <section><h2>Flow（总任务流 · 点击步骤看任务详情）</h2><div class="flow" id="flow"></div></section>
+    <section><h2>Flow（总任务流 · 点击步骤看任务详情）</h2><div class="flow" id="flow"></div>
+      <div class="dim" style="font-size:11px;margin-top:8px">注脚：节点边框色 = state——灰 pending · 琥珀 running（闪烁）· 绿 done · 红 failed；箭头 = 顺序依赖；悬停看完整 desc，点击节点打开 task 文件。</div></section>
     <section><h2>Tasks</h2><table class="grid" id="tasks">
       <thead><tr><th>id</th><th>标题</th><th>状态</th><th>assignee</th><th>消息</th></tr></thead>
       <tbody></tbody>
@@ -114,7 +112,7 @@
         <section><h2>Agents</h2><div class="agents" id="agents"></div></section>
       </aside>
       <div class="home-main">
-        <section><h2>Messages（append-only 消息链）</h2><ul class="msgs" id="msgs"></ul></section>
+        <section><h2>Messages（append-only 消息链 · 最新在上）</h2><ul class="msgs" id="msgs"></ul></section>
       </div>
     </div>
     <footer>state.json 由 TeamLead 单点维护 · 首页 2s 自动刷新 · md 标签页激活时重新拉取 ·
@@ -190,19 +188,61 @@ async function loadHome() {
   }
 }
 
+/* ══════════ Flow 图形渲染：横向步骤链（零依赖 SVG），节点色=state，点击开任务 ══════════ */
+const FST = { pending:'#6e7681', running:'#d29922', done:'#3fb950', failed:'#f85149' };
+
+/* 按显示宽度折行（CJK 计 2、ASCII 计 1），最多 2 行，超出加省略号 */
+function wrap2(s, budget) {
+  s = String(s ?? '');
+  const out = []; let cur = '', w = 0, done = false;
+  for (const ch of s) {
+    const cw = ch.charCodeAt(0) > 255 ? 2 : 1;
+    if (w + cw > budget) {
+      out.push(cur); cur = ''; w = 0;
+      if (out.length === 2) { done = true; break; }
+    }
+    cur += ch; w += cw;
+  }
+  if (!done && cur) out.push(cur);
+  if (out.length === 2 && (done || out.join('').length < s.length)) out[1] = out[1].slice(0, -1) + '…';
+  return out;
+}
+
+function flowGraph(steps) {
+  if (!steps.length) return '<span class="dim">（暂无步骤）</span>';
+  const W = 208, H = 88, GAP = 52, PAD = 14;
+  const w = PAD * 2 + steps.length * W + (steps.length - 1) * GAP;
+  const h = H + PAD * 2;
+  let g = '';
+  steps.forEach((st, i) => {
+    const x = PAD + i * (W + GAP), y = PAD;
+    const c = FST[st.state] || FST.pending;
+    const dl = wrap2(st.desc, 32);
+    g += `<g class="fnode f-${esc(st.state)}" ${st.task ? `onclick="openTask('${esc(st.task)}')"` : ''}>
+      <title>${esc((st.task ?? 'gate') + ' · ' + (st.desc ?? '') + (st.task ? '\n（点击打开 ' + st.task + '.md）' : ''))}</title>
+      <rect x="${x}" y="${y}" width="${W}" height="${H}" rx="8" fill="#161b22" stroke="${c}" stroke-width="1.5"/>
+      <text x="${x + 12}" y="${y + 20}" font-size="12" font-weight="bold" fill="${c}">${i + 1}. ${esc(st.task ?? 'gate')}</text>
+      ${dl.map((l, j) => `<text x="${x + 12}" y="${y + 40 + j * 14}" font-size="11" fill="#8b949e">${esc(l)}</text>`).join('')}
+      <text x="${x + 12}" y="${y + H - 10}" font-size="10" fill="#8b949e">${esc(st.assignee ?? '—')} · <tspan fill="${c}">${esc(st.state)}</tspan></text>
+    </g>`;
+    if (i < steps.length - 1) {
+      const ax = x + W, ay = y + H / 2;
+      g += `<line x1="${ax + 4}" y1="${ay}" x2="${ax + GAP - 8}" y2="${ay}" stroke="#8b949e" stroke-width="1.5" marker-end="url(#farr)"/>`;
+    }
+  });
+  return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" font-family="Consolas,'Cascadia Mono',monospace">
+    <defs><marker id="farr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/></marker></defs>
+    ${g}</svg>`;
+}
+
 function renderHome(s) {
   $('goal').textContent = s.flow?.goal ?? '';
   $('phase').textContent = 'phase: ' + (s.flow?.phase ?? '?');
   $('phase').className = 'badge phase-' + (s.flow?.phase ?? '');
   $('updated').textContent = 'updated ' + (s.updated ?? '?') + ' · runtime ' + (s.runtime ?? '?');
 
-  $('flow').innerHTML = (s.flow?.steps ?? []).map((st, i) =>
-    `<div class="fline"><span class="num">${i+1}</span>
-     <div class="step" onclick="${st.task?`openTask('${esc(st.task)}')`:''}" title="${st.task?"打开 "+esc(st.task)+".md":''}">
-       <span class="sdesc">${esc(st.desc)}</span>
-       <span class="smeta"><span class="lnk">${esc(st.task ?? 'gate')}</span> · ${esc(st.assignee ?? '—')} · <span class="t-${esc(st.state)}">${esc(st.state)}</span></span>
-     </div></div>`
-  ).join('');
+  $('flow').innerHTML = flowGraph(s.flow?.steps ?? []);
 
   $('agents').innerHTML = (s.agents ?? []).map(a =>
     `<div class="agent"><div><span class="dot s-${esc(a.state)}"></span><b>${esc(a.name)}</b>
@@ -218,7 +258,7 @@ function renderHome(s) {
      <td class="dim">${(t.messages ?? []).map(m => `<span class="lnk" onclick="openMsg('${esc(m)}')">${esc(m)}</span>`).join(', ')}</td></tr>`
   ).join('');
 
-  $('msgs').innerHTML = (s.messages ?? []).map(m =>
+  $('msgs').innerHTML = (s.messages ?? []).slice().reverse().map(m =>
     `<li><span class="dim">${esc(m.ts?.slice(11,19) ?? '')}</span>
      <span class="ty ty-${esc(m.type)}">${esc(m.type)}</span>
      <span class="lnk" onclick="openMsg('${esc(m.id)}')">${esc(m.id)}</span>

@@ -6,7 +6,7 @@ tools: ['view', 'codebase', 'fetch', 'editFiles']
 
 你是 team-worker-research，主从 team 中的调研 worker。你只接受通过 board 分派的任务。
 
-规范目录 `doc/skills/`（协议正本 `doc/skills/team-core/protocol.md`）对所有 agent **只读**。spec 工作目录（`doc/specs/<spec>/`）与 task id 由调用指令给出。
+规范目录 `doc/skills/`（协议正本 `doc/skills/team-core/protocol.md`）对所有 agent **只读**。spec 工作目录（`doc/spec-changes/<spec>/`）与 task id 由调用指令给出。
 
 ## 收到调用后必做
 

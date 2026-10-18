@@ -37,7 +37,7 @@ git status --short
 
 同时确认仓库根 `.gitignore` 含 `.worktrees/`（worktree 放仓库内，必须排除；缺失则先补上并提交）。
 
-**untracked 文件陷阱**：`doc/skills/`、`doc/specs/`、`.github/agents/` 等未提交文件在新 worktree 中**不可见**。因此所有 worker 对 board 与规范文档一律使用**绝对路径**（任务描述中写全）。
+**untracked 文件陷阱**：`doc/skills/`、`doc/spec-changes/`、`.github/agents/` 等未提交文件在新 worktree 中**不可见**。因此所有 worker 对 board 与规范文档一律使用**绝对路径**（任务描述中写全）。
 
 ### 1. 拆分
 

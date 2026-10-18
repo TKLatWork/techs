@@ -17,7 +17,7 @@
 
 | skill | 目录 | 职责 |
 |---|---|---|
-| team-core | `team-core/` | **team 主运行框架**：protocol.md（协议正本：spec/task/message/状态机/铁律/并行增量/**state.json 数据契约**）+ template/（task · message · state-template · lead-subagent-io · lead-spec-context · worker-reply）+ design.md（架构依据）+ NOTES.md（运行观测） |
+| team-core | `team-core/` | **team 主运行框架**：protocol.md（协议正本：spec/task/message/状态机/manual task/铁律/并行增量/**state.json 数据契约**/**context.md spec 上下文**）+ template/（task · message · state-template · context-template · lead-subagent-io · lead-spec-context · worker-reply）+ design.md（架构依据）+ NOTES.md（运行观测） |
 | team-board | `team-board/` | **过程可视化（渲染）**：template/view.html 状态盘渲染页 + 渲染契约/启动方式；state.json 数据契约正本在 team-core/protocol.md |
 | team-parallel | `team-parallel/` | worktree 并行编排增量：git 分割、编号命名空间、merge 汇合（依赖 team-board） |
 | spec-driven-dev | `spec-driven-dev/` | 模块可视化文档：五 tab 单文件 HTML（概要/需求/接口契约/测试/架构）+ template/ 占位骨架 |

@@ -1,6 +1,6 @@
 <!--
 task-template.md — 任务文件模板（提取自 team-core/protocol.md 正本）
-位置：doc/specs/<spec>/board/tasks/task-NNN.md，NNN 从 001 递增。
+位置：doc/spec-changes/<spec>/board/tasks/task-NNN.md，NNN 从 001 递增。
 新编号 = 扫描 tasks/ 目录现有最大编号 + 1（写前必须重新扫描）。
 创建者：TeamLead（worker 只允许更新 frontmatter status 与「## 结果」段）。
 -->

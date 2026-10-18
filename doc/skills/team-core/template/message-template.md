@@ -1,6 +1,6 @@
 <!--
 message-template.md — 消息文件模板（提取自 team-core/protocol.md 正本）
-位置：doc/specs/<spec>/board/messages/ 下，每消息一文件。
+位置：doc/spec-changes/<spec>/board/messages/ 下，每消息一文件。
 编号：串行/全局消息 msg-NNNN（NNNN 从 0001 递增，写前重新扫描目录取最大编号 + 1）；
 并行任务消息用命名空间 msg-<taskid>-NN（如 msg-task-003-01），无锁不撞号。
 铁律 append-only：消息写入后不得修改或删除；纠错用新消息 reply_to 指向原消息。

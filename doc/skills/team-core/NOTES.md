@@ -1,6 +1,6 @@
 # 运行观测记录
 
-> 协议与设计见同目录 `protocol.md` 与 `design.md`；spec 运行目录见 `doc/specs/<spec>/`。
+> 协议与设计见同目录 `protocol.md` 与 `design.md`；spec 运行目录见 `doc/spec-changes/<spec>/`。
 
 ## 预检结果（Copilot runtime，待验证）
 

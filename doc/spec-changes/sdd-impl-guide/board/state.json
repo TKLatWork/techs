@@ -1,0 +1,106 @@
+{
+  "version": 1,
+  "updated": "2026-10-18T15:34:00Z",
+  "spec": "sdd-impl-guide",
+  "runtime": "kilo-task-tool",
+  "flow": {
+    "goal": "spec-driven-dev 子项：制定「给定 SDD spec 如何分步实现」指南——契约与实现分离（可分包/分路径则必须分）、契约携带与 spec 一致的 version、契约以注释等方式呈现主要流程指导实现；产出草案并安装回 doc/skills/spec-driven-dev/",
+    "phase": "executing",
+    "steps": [
+      {
+        "id": "step-1",
+        "task": "task-001",
+        "desc": "draft：草案 draft/impl-guide.md——五段主干（spec-doc 起点→Contract imple→Contract review→Full impl→Final review，review=自动验收两类+manual approve），第三轮 v0.3.0",
+        "assignee": "team-worker-code",
+        "state": "done"
+      },
+      {
+        "id": "step-2",
+        "task": "task-002",
+        "desc": "draft：草案 draft/SKILL.md——spec-driven-dev SKILL.md 修订版（五段主干措辞同步，基于 impl-guide v0.3.0，第三轮）",
+        "assignee": "team-worker-code",
+        "state": "done"
+      },
+      {
+        "id": "step-3",
+        "task": "task-003",
+        "desc": "test【manual】：用户人工检验两份草案（R1/R2/R3 覆盖、SKILL↔指南一致性、干跑），测试结论 + 修正项清单写入 ## 结果；TeamLead 协助记录与状态流转",
+        "assignee": "user",
+        "state": "running"
+      },
+      {
+        "id": "step-4",
+        "task": null,
+        "desc": "manual gate③：用户审定 task-003 测试报告与修正项清单，明确批准后方可进入 accept 段（本批准同时构成 task-004 安装 doc/skills/** 的例外授权依据）",
+        "assignee": "user",
+        "state": "running"
+      },
+      {
+        "id": "step-5",
+        "task": "task-004",
+        "desc": "accept：按测试报告修正收口 → 安装 doc/skills/spec-driven-dev/（例外授权，以 gate③ 批准为据）+ 索引同步 + spec README（done 后迁 doc/spec-doc/）；不再另设内部验收点",
+        "assignee": "team-worker-code",
+        "state": "pending"
+      }
+    ]
+  },
+  "agents": [
+    { "name": "TeamLead", "role": "lead", "state": "waiting", "detail": "task-003 已重置（msg-0016：open，## 结果清空、原代录内容存档于消息）；协议 v0.5.0 manual 完成指令规则（msg-0017）；context.md 制度建立（protocol v0.6.0，msg-0018）；用户改模板后 context.md 已重写（msg-0019）；task-001/002 第三轮重做完成（v0.3.0 五段主干 + SKILL v1.1.0，msg-0034/0037）；test-plan.md 已产出（msg-0046，test/ 干跑待用户定 scope/技术栈/执行者）；task-003 续测中（claimed）：修正项 12 条（起点=spec-doc / 五段结构 / review=manual approve / 自动验收限两类 / 总览图拆分 v0.4.0 / 清除幻想内容 v0.5.0 / sub-steps flow 收编 v0.6.0 / 验收清单收进折叠 v0.6.1 / 合并段①② + 移除规则细节 = 四段主干 v0.7.0 / 用户补充要求 3 条 v0.8.0 / 移除顶部原话块 v0.9.0 / 移除验收清单 v0.10.0——第 5~12 条已直接落地，msg-0027~0030、0038~0045）；完成仅认「完成-003」→ gate③ → task-004" },
+    { "name": "team-worker-research", "role": "worker", "state": "idle", "detail": "本 spec 无 worker 调研任务（task-003 已改 manual/user，msg-0007）" },
+    { "name": "team-worker-code", "role": "worker", "state": "idle", "detail": "draft 段第三轮重做完成（task-001/002 done，v0.3.0/v1.1.0，msg-0034/0037）；idle 待 gate③ 批准后 task-004" }
+  ],
+  "tasks": [
+    [{ "id": "task-001", "title": "草案 SDD spec 分步实现指南 draft/impl-guide.md", "status": "done", "assignee": "team-worker-code", "messages": ["msg-0008", "msg-0009", "msg-0010", "msg-0019", "msg-0020", "msg-0021", "msg-0022", "msg-0031", "msg-0032", "msg-0033", "msg-0034"] }],
+    [{ "id": "task-002", "title": "草案 spec-driven-dev SKILL.md 修订版 draft/SKILL.md", "status": "done", "assignee": "team-worker-code", "messages": ["msg-0011", "msg-0012", "msg-0013", "msg-0019", "msg-0023", "msg-0024", "msg-0025", "msg-0031", "msg-0035", "msg-0036", "msg-0037"] }],
+    [{ "id": "task-003", "title": "【manual】用户检验两份草案并产出测试结论", "status": "claimed", "assignee": "user", "messages": ["msg-0014", "msg-0016", "msg-0027", "msg-0028", "msg-0029", "msg-0030", "msg-0038", "msg-0039", "msg-0040", "msg-0041", "msg-0042", "msg-0043", "msg-0044", "msg-0045"] }],
+    [{ "id": "task-004", "title": "修正收口 + 安装 doc/skills/spec-driven-dev（例外授权）+ spec README", "status": "open", "assignee": "team-worker-code", "messages": [] }]
+  ],
+  "messages": [
+    { "id": "msg-0001", "type": "info", "from": "TeamLead", "to": "user", "task": null, "ts": "2026-10-18T10:06:00Z" },
+    { "id": "msg-0002", "type": "info", "from": "TeamLead", "to": "user", "task": null, "ts": "2026-10-18T10:22:00Z" },
+    { "id": "msg-0003", "type": "info", "from": "TeamLead", "to": "user", "task": null, "ts": "2026-10-18T10:24:00Z" },
+    { "id": "msg-0004", "type": "info", "from": "TeamLead", "to": "user", "task": null, "ts": "2026-10-18T10:32:00Z" },
+    { "id": "msg-0005", "type": "info", "from": "TeamLead", "to": "user", "task": null, "ts": "2026-10-18T11:06:00Z" },
+    { "id": "msg-0006", "type": "info", "from": "TeamLead", "to": "user", "task": null, "ts": "2026-10-18T11:09:00Z" },
+    { "id": "msg-0007", "type": "info", "from": "TeamLead", "to": "user", "task": null, "ts": "2026-10-18T11:17:00Z" },
+    { "id": "msg-0008", "type": "task.assign", "from": "TeamLead", "to": "team-worker-code", "task": "task-001", "ts": "2026-10-18T11:17:00Z" },
+    { "id": "msg-0009", "type": "task.claim", "from": "team-worker-code", "to": "TeamLead", "task": "task-001", "ts": "2026-10-18T11:23:00Z" },
+    { "id": "msg-0010", "type": "task.result", "from": "team-worker-code", "to": "TeamLead", "task": "task-001", "ts": "2026-10-18T11:30:00Z" },
+    { "id": "msg-0011", "type": "task.assign", "from": "TeamLead", "to": "team-worker-code", "task": "task-002", "ts": "2026-10-18T11:25:00Z" },
+    { "id": "msg-0012", "type": "task.claim", "from": "team-worker-code", "to": "TeamLead", "task": "task-002", "ts": "2026-10-18T11:28:20Z" },
+    { "id": "msg-0013", "type": "task.result", "from": "team-worker-code", "to": "TeamLead", "task": "task-002", "ts": "2026-10-18T11:29:41Z" },
+    { "id": "msg-0014", "type": "info", "from": "TeamLead", "to": "user", "task": "task-003", "ts": "2026-10-18T11:44:00Z" },
+    { "id": "msg-0015", "type": "info", "from": "TeamLead", "to": "user", "task": null, "ts": "2026-10-18T11:46:00Z" },
+    { "id": "msg-0016", "type": "info", "from": "TeamLead", "to": "user", "task": "task-003", "ts": "2026-10-18T11:47:00Z" },
+    { "id": "msg-0017", "type": "info", "from": "TeamLead", "to": "user", "task": null, "ts": "2026-10-18T11:49:00Z" },
+    { "id": "msg-0018", "type": "info", "from": "TeamLead", "to": "user", "task": null, "ts": "2026-10-18T11:57:00Z" },
+    { "id": "msg-0019", "type": "info", "from": "TeamLead", "to": "user", "task": null, "ts": "2026-10-18T12:10:00Z" },
+    { "id": "msg-0020", "type": "task.assign", "from": "TeamLead", "to": "team-worker-code", "task": "task-001", "ts": "2026-10-18T12:12:00Z" },
+    { "id": "msg-0021", "type": "task.claim", "from": "team-worker-code", "to": "TeamLead", "task": "task-001", "ts": "2026-10-18T12:16:30Z" },
+    { "id": "msg-0022", "type": "task.result", "from": "team-worker-code", "to": "TeamLead", "task": "task-001", "ts": "2026-10-18T12:24:00Z" },
+    { "id": "msg-0023", "type": "task.assign", "from": "TeamLead", "to": "team-worker-code", "task": "task-002", "ts": "2026-10-18T12:26:00Z" },
+    { "id": "msg-0024", "type": "task.claim", "from": "team-worker-code", "to": "TeamLead", "task": "task-002", "ts": "2026-10-18T12:28:00Z" },
+    { "id": "msg-0025", "type": "task.result", "from": "team-worker-code", "to": "TeamLead", "task": "task-002", "ts": "2026-10-18T12:32:00Z" },
+    { "id": "msg-0026", "type": "info", "from": "TeamLead", "to": "user", "task": null, "ts": "2026-10-18T13:12:00Z" },
+    { "id": "msg-0027", "type": "info", "from": "TeamLead", "to": "user", "task": "task-003", "ts": "2026-10-18T13:14:00Z" },
+    { "id": "msg-0028", "type": "info", "from": "TeamLead", "to": "user", "task": "task-003", "ts": "2026-10-18T13:18:00Z" },
+    { "id": "msg-0029", "type": "info", "from": "TeamLead", "to": "user", "task": "task-003", "ts": "2026-10-18T13:19:00Z" },
+    { "id": "msg-0030", "type": "info", "from": "TeamLead", "to": "user", "task": "task-003", "ts": "2026-10-18T13:21:00Z" },
+    { "id": "msg-0031", "type": "info", "from": "TeamLead", "to": "user", "task": null, "ts": "2026-10-18T13:22:00Z" },
+    { "id": "msg-0032", "type": "task.assign", "from": "TeamLead", "to": "team-worker-code", "task": "task-001", "ts": "2026-10-18T13:22:00Z" },
+    { "id": "msg-0033", "type": "task.claim", "from": "team-worker-code", "to": "TeamLead", "task": "task-001", "ts": "2026-10-18T13:25:00Z" },
+    { "id": "msg-0034", "type": "task.result", "from": "team-worker-code", "to": "TeamLead", "task": "task-001", "ts": "2026-10-18T13:33:24Z" },
+    { "id": "msg-0035", "type": "task.assign", "from": "TeamLead", "to": "team-worker-code", "task": "task-002", "ts": "2026-10-18T13:35:00Z" },
+    { "id": "msg-0036", "type": "task.claim", "from": "team-worker-code", "to": "TeamLead", "task": "task-002", "ts": "2026-10-18T13:37:00Z" },
+    { "id": "msg-0037", "type": "task.result", "from": "team-worker-code", "to": "TeamLead", "task": "task-002", "ts": "2026-10-18T13:40:00Z" },
+    { "id": "msg-0038", "type": "info", "from": "TeamLead", "to": "user", "task": "task-003", "ts": "2026-10-18T14:20:00Z" },
+    { "id": "msg-0039", "type": "info", "from": "TeamLead", "to": "user", "task": "task-003", "ts": "2026-10-18T14:26:00Z" },
+    { "id": "msg-0040", "type": "info", "from": "TeamLead", "to": "user", "task": "task-003", "ts": "2026-10-18T15:10:00Z" },
+    { "id": "msg-0041", "type": "info", "from": "TeamLead", "to": "user", "task": "task-003", "ts": "2026-10-18T15:14:00Z" },
+    { "id": "msg-0042", "type": "info", "from": "TeamLead", "to": "user", "task": "task-003", "ts": "2026-10-18T15:22:00Z" },
+    { "id": "msg-0043", "type": "info", "from": "TeamLead", "to": "user", "task": "task-003", "ts": "2026-10-18T15:27:00Z" },
+    { "id": "msg-0044", "type": "info", "from": "TeamLead", "to": "user", "task": "task-003", "ts": "2026-10-18T15:29:00Z" },
+    { "id": "msg-0045", "type": "info", "from": "TeamLead", "to": "user", "task": "task-003", "ts": "2026-10-18T15:31:00Z" },
+    { "id": "msg-0046", "type": "info", "from": "TeamLead", "to": "user", "task": null, "ts": "2026-10-18T15:34:00Z" }
+  ]
+}

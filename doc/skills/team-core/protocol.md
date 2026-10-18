@@ -1,6 +1,6 @@
-# team 协议正本 v0.2（agent 运行时必读）
+# team 协议正本 v0.6（agent 运行时必读）
 
-> 状态：active v0.2.0 ｜ 日期：2026-10-16 ｜ 维护者：Kilo（用户指令）
+> 状态：active v0.6.0 ｜ 日期：2026-10-18 ｜ 维护者：Kilo（用户指令）
 
 正本位置：`doc/skills/team-core/protocol.md`。所有 agent（TeamLead、team-worker-research、team-worker-code）执行任务前后必须遵守本协议。state.json 的 schema 数据契约与状态盘见 `doc/skills/team-board/SKILL.md`；本协议只规定其维护职责。
 
@@ -8,8 +8,8 @@
 
 | 术语 | 定义 |
 |---|---|
-| spec | 一次大任务及其运行工作目录 `doc/specs/<spec>/` |
-| board | spec 目录下 tasks/messages/state.json/view.html 的总称，编排唯一事实源 |
+| spec | 一次大任务及其运行工作目录 `doc/spec-changes/<spec>/` |
+| board | spec 目录下 tasks/messages/state.json/context.md/view.html 的总称，编排唯一事实源 |
 | 任务文件 | `board/tasks/task-NNN.md`，分派与验收单元（描述/验收标准/结果三段） |
 | 消息 | `board/messages/msg-*.md`，agent 间 append-only 通信记录 |
 | TeamLead / worker | 主 agent（分派/回收/合并）/ 执行 agent（research、code） |
@@ -17,13 +17,16 @@
 | ask / info | worker 请求决策的消息 / 答复与补充说明消息 |
 | append-only | 写入后不改不删；纠错发新消息 reply_to 指向原消息 |
 | state.json | TeamLead 单点维护的汇总视图；非事实源，冲突以文件为准 |
+| context.md | spec 上下文汇总视图（用户原始需求原话/决议记录/术语演进/关键约束）；TeamLead 单点维护，见「context.md」节 |
 | worktree / 分支 | 并行任务的 git 隔离目录与分支（正本见 team-parallel） |
 | 命名空间编号 | 并行任务消息编号 `msg-<taskid>-NN`，无锁防撞号 |
 
 ## spec 目录（运行工作目录）
 
-- 每个「spec」一个运行工作目录：`doc/specs/<spec>/`，其 board 位于 `doc/specs/<spec>/board/`。
-- spec 目录由 **TeamLead 创建并初始化**：建 `board/tasks/`、`board/messages/`，从 `doc/skills/team-board/template/view.html` 复制状态盘到 `board/view.html`，写初始 `board/state.json`。
+- 目录语义（2026-10-18 用户指令）：`doc/spec-changes/` = **进行中的 change**；`doc/spec-doc/` = **项目的当前文档目录（source-of-truth）**。
+- 完成迁移（2026-10-18 用户批准）：spec `phase: done` 后，正式产物迁入 `doc/spec-doc/`；board 运行记录留在 `doc/spec-changes/<spec>/`。
+- 每个「spec」一个运行工作目录：`doc/spec-changes/<spec>/`，其 board 位于 `doc/spec-changes/<spec>/board/`。
+- spec 目录由 **TeamLead 创建并初始化**：建 `board/tasks/`、`board/messages/`，从 `doc/skills/team-board/template/view.html` 复制状态盘到 `board/view.html`，写初始 `board/state.json`，从 `doc/skills/team-core/template/context-template.md` 落地 `board/context.md`（填入用户原始需求原话）。
 - TeamLead 调用 worker 的指令必须包含：**spec 目录路径 + task id**（worker 看不到 chat 上下文）。
 - 任务产物写入 spec 目录内任务文件明确授权的路径。
 - `doc/skills/**` 为规范目录：**所有 agent 只读，禁止写入**。
@@ -31,10 +34,11 @@
 ## board 目录
 
 ```
-doc/specs/<spec>/board/
+doc/spec-changes/<spec>/board/
 ├── tasks/task-NNN.md       # 每任务一文件，NNN 从 001 递增
 ├── messages/msg-NNNN.md    # 每消息一文件，NNNN 从 0001 递增
 ├── state.json              # 状态汇总视图（TeamLead 单点维护，契约见「state.json」节）
+├── context.md              # spec 上下文汇总视图（TeamLead 单点维护，见「context.md」节）
 └── view.html               # 只读状态盘（初始化时从 team-board/template 复制）
 ```
 
@@ -47,7 +51,7 @@ doc/specs/<spec>/board/
 id: task-001
 title: 一句话标题
 status: open            # open → claimed → done | failed；TeamLead 重试时 failed → open
-assignee: team-worker-plan | team-worker-research | team-worker-code
+assignee: team-worker-plan | team-worker-research | team-worker-code | user（manual task，见「manual task 增量」）
 created_by: TeamLead
 worktree: null          # 并行模式：该任务 worktree 绝对路径（见「并行模式」节）
 branch: null            # 并行模式：spec/<spec>/task-NNN
@@ -97,6 +101,12 @@ ts: 2026-10-15T12:00:00Z
 
 TeamLead 重试失败任务：修订任务描述后 `failed → open`，写新 task.assign 消息（每任务最多重试 1 次）。
 
+### manual task 增量（2026-10-18 用户指令）
+
+- 需用户亲自执行/验收的环节可建 `assignee: user` 的 manual task（任务文件注明授权依据）。
+- **manual task 的完成必须由用户明确指令触发**，格式如「完成-task-NNN」/「完成-NNN」；TeamLead 不得从测试反馈、修正意见、含糊或无关答复中推断完成，收到明确指令前不流转 `claimed → done`、不推进后续步骤（gate/分派）。
+- manual task 的 status 流转与 `## 结果` 记录由 TeamLead 依用户指令/口述代操作（代录须注明来源）。
+
 ## 人工批准 gate（规划批准）
 
 拆解完成后、任何分派之前，必须经过人工批准 gate：
@@ -129,7 +139,7 @@ TeamLead 重试失败任务：修订任务描述后 `failed → open`，写新 t
 
 ## state.json（数据契约与维护职责）
 
-- 位置：`doc/specs/<spec>/board/state.json`。**唯一写者是 TeamLead**；worker 与 `view.html` 渲染页只读（渲染行为与启动方式见 `doc/skills/team-board/SKILL.md`）。
+- 位置：`doc/spec-changes/<spec>/board/state.json`。**唯一写者是 TeamLead**；worker 与 `view.html` 渲染页只读（渲染行为与启动方式见 `doc/skills/team-board/SKILL.md`）。
 - 更新时机：创建任务、分派（assign）、确认 worker 回帖（claim/result/failed）、ask 处理、汇总完成——每次状态流转后立即写盘。spec 初始化时由 TeamLead 首次写入（phase: planning）。
 - 一致性规则：state.json 只是汇总视图；任务文件与消息文件仍是事实源。冲突时以文件为准，TeamLead 负责修正 state.json。
 - 骨架模板：`doc/skills/team-core/template/state-template.json`。
@@ -153,6 +163,13 @@ TeamLead 重试失败任务：修订任务描述后 `failed → open`，写新 t
 ```
 
 字段约束：`tasks[]` 只登记已建任务文件的 task（`flow.steps[]` 可含规划中步骤）；枚举值不得超出上表；`messages[]` 按时间序；并行增量——`flow.steps[]` 允许多个 `running`、`agents[]` 多个 worker 同时 `working`。
+
+## context.md（spec 上下文）
+
+- 位置：`doc/spec-changes/<spec>/board/context.md`；模板 `doc/skills/team-core/template/context-template.md`。**唯一写者是 TeamLead**（同 state.json），worker 只读。
+- 定位：人类可读的上下文汇总视图——**用户原始需求（原话）**、**决议记录**（gate 批准/Q&A/修订，每条注明日期 + 依据 msg/chat）、**术语演进**、**关键约束**。运行中随决议产生及时追加，不等到收尾。
+- 与事实源的关系：context.md 是汇总，冲突时以消息/任务文件为准（同 state.json 定位）；chat 不持久化，用户指令与决议必须及时落 context.md 或消息文件。
+- 任务描述**自包含**要求不变：worker 调用仍以任务文件为准，context.md 仅作补充背景（调用指令中可给出路径）。
 
 ## view.html（状态盘）
 

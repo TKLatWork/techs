@@ -5,7 +5,7 @@ description: team 过程可视化渲染：view.html 状态盘页（NavTab 多标
 
 # team-board — team 过程可视化（渲染）
 
-> 状态：active v1.1.0 ｜ 日期：2026-10-16 ｜ 维护者：Kilo（用户指令）
+> 状态：active v1.3.0 ｜ 日期：2026-10-18 ｜ 维护者：Kilo（用户指令）
 
 依赖技能：team-core——state.json 的**数据契约（schema 正本）**与维护职责（TeamLead 单点写、更新时机、冲突以任务/消息文件为准）均在 `doc/skills/team-core/protocol.md`「state.json（数据契约与维护职责）」节；本 skill 只定义**渲染行为与启动方式**。
 
@@ -24,7 +24,7 @@ description: team 过程可视化渲染：view.html 状态盘页（NavTab 多标
 - file:// 下 fetch 被 CORS 拦截，须经 http 打开：
 
   ```powershell
-  npx -y http-server doc\specs\<spec>\board -p 8787 -c-1   # → http://127.0.0.1:8787/view.html
+  npx -y http-server doc\spec-changes\<spec>\board -p 8787 -c-1   # → http://127.0.0.1:8787/view.html
   ```
 
   或用 VS Code Live Preview 右键 `board/view.html` → Show Preview。
@@ -33,9 +33,9 @@ description: team 过程可视化渲染：view.html 状态盘页（NavTab 多标
 
 | state.json 字段 | 渲染位置 |
 |---|---|
-| `flow.goal` / `flow.phase` / `flow.steps[]` | 页头 + Flow 管线（点击 step → 对应 task md 标签） |
+| `flow.goal` / `flow.phase` / `flow.steps[]` | 页头 + Flow 图形（零依赖 SVG 横向步骤链：节点边框色 = state——灰 pending · 琥珀 running 闪烁 · 绿 done · 红 failed；箭头 = 顺序依赖；悬停看完整 desc，点击节点 → 对应 task md 标签；图下注脚） |
 | `agents[]`（含 state） | 左侧 sidebar 状态灯（idle / working / waiting / failed） |
 | `tasks[]` | Tasks 表（id 与消息 id 可点开 md 标签） |
-| `messages[]` | 消息链时间线（id 可点开 md 标签） |
+| `messages[]` | 消息链时间线（**最新在上**，渲染时 reverse；state.json 内仍按时间序 append-only；id 可点开 md 标签） |
 
 字段/枚举变更时：先改 team-core/protocol.md 正本，再同步本页映射与 `template/view.html` 渲染逻辑。

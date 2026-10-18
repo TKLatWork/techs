@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>spec 状态盘</title>
+<style>
+  :root { --bg:#0d1117; --panel:#161b22; --border:#30363d; --fg:#e6edf3; --dim:#8b949e;
+          --green:#3fb950; --amber:#d29922; --red:#f85149; --blue:#58a6ff; --gray:#6e7681; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--fg); font:14px/1.5 Consolas,'Cascadia Mono',monospace; }
+  .dim { color:var(--dim); }
+  .err { background:#3d1418; border:1px solid var(--red); color:var(--red); padding:10px; border-radius:6px; margin:12px 20px; display:none; }
+
+  /* ── NavTab bar ── */
+  nav#tabs { display:flex; gap:4px; padding:8px 12px 0; background:#010409; border-bottom:1px solid var(--border);
+             overflow-x:auto; position:sticky; top:0; z-index:10; }
+  .tab { display:flex; align-items:center; gap:6px; padding:6px 12px; border:1px solid var(--border); border-bottom:none;
+         border-radius:8px 8px 0 0; background:var(--panel); color:var(--dim); cursor:pointer; font:12px/1.4 inherit;
+         white-space:nowrap; user-select:none; }
+  .tab.active { background:var(--bg); color:var(--fg); border-color:var(--blue); }
+  .tab .x { border-radius:4px; padding:0 4px; color:var(--dim); }
+  .tab .x:hover { background:var(--border); color:var(--red); }
+
+  main { padding:20px; }
+  .view { display:none; }
+  .view.active { display:block; }
+
+  /* ── home ── */
+  h1 { font-size:18px; margin-bottom:4px; }
+  header { display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; }
+  .badge { padding:2px 10px; border-radius:12px; font-size:12px; border:1px solid var(--border); }
+  .phase-planning{color:var(--blue)} .phase-awaiting-approval{color:var(--amber)} .phase-executing{color:var(--amber)} .phase-aggregating{color:var(--blue)}
+  .phase-done{color:var(--green)} .phase-blocked{color:var(--red)}
+  section { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-top:16px; }
+  section h2 { font-size:13px; color:var(--dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+  .flow { overflow-x:auto; }
+  .flow svg { display:block; }
+  .fnode { cursor:pointer; }
+  .fnode:hover rect { filter:brightness(1.35); }
+  .f-running rect { animation:pulse 1.2s infinite; }
+  .t-pending{color:var(--gray)} .t-running{color:var(--amber)} .t-done{color:var(--green)} .t-failed{color:var(--red)}
+  /* ── home 布局：Agents 左侧 sidebar ── */
+  .home-wrap { display:flex; gap:16px; align-items:flex-start; margin-top:16px; }
+  aside#sidebar { flex:0 0 250px; position:sticky; top:52px; }
+  aside#sidebar section { margin-top:0; }
+  .home-main { flex:1; min-width:0; }
+  .home-main section:first-child { margin-top:0; }
+  .agents { display:flex; flex-direction:column; gap:10px; }
+  .agent { border:1px solid var(--border); border-radius:6px; padding:10px 14px; min-width:0; }
+  .dot { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:6px; }
+  .s-idle{background:var(--gray)} .s-working{background:var(--green); animation:pulse 1.2s infinite}
+  .s-waiting{background:var(--amber)} .s-failed{background:var(--red)}
+  @keyframes pulse { 50% { opacity:.35 } }
+  table.grid { width:100%; border-collapse:collapse; }
+  table.grid th, table.grid td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--border); }
+  table.grid th { color:var(--dim); font-weight:normal; font-size:12px; }
+  .t-open{color:var(--blue)} .t-claimed,.t-running{color:var(--amber)} .t-done{color:var(--green)} .t-failed{color:var(--red)}
+  .t-pending{color:var(--gray)}
+  .lnk { color:var(--blue); cursor:pointer; text-decoration:underline dotted; }
+  .lnk:hover { text-decoration:underline; }
+  ul.msgs { list-style:none; }
+  ul.msgs li { padding:4px 0; border-bottom:1px dashed var(--border); font-size:13px; }
+  ul.msgs li:last-child { border-bottom:none; }
+  .ty { display:inline-block; min-width:92px; }
+  .ty-task\.assign{color:var(--blue)} .ty-task\.claim{color:var(--amber)}
+  .ty-task\.result{color:var(--green)} .ty-task\.failed{color:var(--red)}
+  .ty-ask{color:var(--amber)} .ty-info{color:var(--dim)}
+  footer { margin-top:16px; color:var(--dim); font-size:12px; }
+
+  /* ── md view ── */
+  .mdbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+  .mdbar .path { color:var(--dim); font-size:12px; }
+  .mdbar button { background:var(--panel); border:1px solid var(--border); color:var(--blue); border-radius:6px;
+                  padding:3px 10px; cursor:pointer; font:12px inherit; }
+  .md { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:18px 22px; max-width:900px; }
+  .md h2 { font-size:17px; margin:16px 0 8px; border-bottom:1px solid var(--border); padding-bottom:4px; }
+  .md h3 { font-size:15px; margin:14px 0 6px; }
+  .md h4,.md h5 { font-size:13px; margin:12px 0 4px; color:var(--dim); }
+  .md p { margin:6px 0; }
+  .md ul,.md ol { margin:6px 0 6px 22px; }
+  .md li { margin:2px 0; }
+  .md code { background:#21262d; border:1px solid var(--border); border-radius:4px; padding:0 4px; font-size:13px; }
+  .md pre { background:#010409; border:1px solid var(--border); border-radius:6px; padding:10px; overflow-x:auto; margin:8px 0; }
+  .md pre code { background:none; border:none; padding:0; }
+  .md a { color:var(--blue); }
+  table.fm { border-collapse:collapse; margin:0 0 14px; background:#010409; border:1px solid var(--border); border-radius:6px; }
+  table.fm th { text-align:left; color:var(--dim); font-weight:normal; padding:4px 12px 4px 10px; border-bottom:1px solid var(--border); font-size:12px; }
+  table.fm td { padding:4px 14px 4px 6px; border-bottom:1px solid var(--border); font-size:13px; }
+  table.fm tr:last-child th, table.fm tr:last-child td { border-bottom:none; }
+</style>
+</head>
+<body>
+
+<nav id="tabs"></nav>
+<div class="err" id="err"></div>
+<main id="views">
+
+  <!-- 首页：总视图 -->
+  <div class="view" id="view-home">
+    <header>
+      <div><h1>spec 状态盘</h1><div class="dim" id="goal"></div></div>
+      <div><span class="badge" id="phase"></span> <span class="dim" id="updated"></span></div>
+    </header>
+    <section><h2>Flow（总任务流 · 点击步骤看任务详情）</h2><div class="flow" id="flow"></div>
+      <div class="dim" style="font-size:11px;margin-top:8px">注脚：节点边框色 = state——灰 pending · 琥珀 running（闪烁）· 绿 done · 红 failed；箭头 = 顺序依赖；悬停看完整 desc，点击节点打开 task 文件。</div></section>
+    <section><h2>Tasks</h2><table class="grid" id="tasks">
+      <thead><tr><th>id</th><th>标题</th><th>状态</th><th>assignee</th><th>消息</th></tr></thead>
+      <tbody></tbody>
+    </table></section>
+    <div class="home-wrap">
+      <aside id="sidebar">
+        <section><h2>Agents</h2><div class="agents" id="agents"></div></section>
+      </aside>
+      <div class="home-main">
+        <section><h2>Messages（append-only 消息链 · 最新在上）</h2><ul class="msgs" id="msgs"></ul></section>
+      </div>
+    </div>
+    <footer>state.json 由 TeamLead 单点维护 · 首页 2s 自动刷新 · md 标签页激活时重新拉取 ·
+      <span class="lnk" onclick="loadHome()">立即刷新</span></footer>
+  </div>
+
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const inline = s => s
+  .replace(/`([^`]+)`/g, '<code>$1</code>')
+  .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+  .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+
+/* ══════════ NavTab 管理 ══════════ */
+let tabs = [];
+
+function makeTab(key, title, type, path) {
+  const btn = document.createElement('div');
+  btn.className = 'tab';
+  btn.innerHTML = `<span>${esc(title)}</span>` + (type === 'md' ? `<span class="x" title="关闭">×</span>` : '');
+  const view = type === 'home' ? $('view-home') : document.createElement('div');
+  view.className = 'view';
+  if (type !== 'home') $('views').appendChild(view);
+  const t = { key, title, type, path, btn, view };
+  btn.onclick = e => { if (e.target.classList.contains('x')) closeTab(t); else activate(t); };
+  tabs.push(t);
+  $('tabs').appendChild(btn);
+  if (type === 'md') {
+    view.innerHTML = `<div class="mdbar"><span class="path">${esc(path)}</span>
+      <button onclick="loadMd(tabs.find(x=>x.key==='${key}'))">刷新</button></div>
+      <div class="md"><span class="dim">加载中…</span></div>`;
+  }
+  return t;
+}
+
+function activate(t) {
+  tabs.forEach(x => {
+    x.btn.classList.toggle('active', x === t);
+    x.view.classList.toggle('active', x === t);
+  });
+  if (t.type === 'md') loadMd(t);
+}
+
+function closeTab(t) {
+  const i = tabs.indexOf(t);
+  t.btn.remove(); t.view.remove();
+  tabs.splice(i, 1);
+  if (t.btn.classList.contains('active') === false && tabs.length) { /* closed inactive tab */ }
+  activate(tabs[Math.min(i, tabs.length - 1)] || tabs[0]);
+}
+
+function openTab(key, title, path) {
+  const ex = tabs.find(t => t.key === key);
+  if (ex) return activate(ex);
+  activate(makeTab(key, title, 'md', path));
+}
+const openTask = id => openTab(id, `📋 ${id}`, `tasks/${id}.md`);
+const openMsg  = id => openTab(id, `✉ ${id}`, `messages/${id}.md`);
+
+/* ══════════ 首页：state.json ══════════ */
+async function loadHome() {
+  try {
+    const r = await fetch('state.json?_=' + Date.now());
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    renderHome(await r.json());
+    $('err').style.display = 'none';
+  } catch (e) {
+    $('err').style.display = 'block';
+    $('err').textContent = '无法读取 state.json：' + e.message + '（file:// 下 fetch 被 CORS 拦截，请通过 http 服务打开本页，见 doc/skills/team-board/SKILL.md「view.html 状态盘」节）';
+  }
+}
+
+/* ══════════ Flow 图形渲染：横向步骤链（零依赖 SVG），节点色=state，点击开任务 ══════════ */
+const FST = { pending:'#6e7681', running:'#d29922', done:'#3fb950', failed:'#f85149' };
+
+/* 按显示宽度折行（CJK 计 2、ASCII 计 1），最多 2 行，超出加省略号 */
+function wrap2(s, budget) {
+  s = String(s ?? '');
+  const out = []; let cur = '', w = 0, done = false;
+  for (const ch of s) {
+    const cw = ch.charCodeAt(0) > 255 ? 2 : 1;
+    if (w + cw > budget) {
+      out.push(cur); cur = ''; w = 0;
+      if (out.length === 2) { done = true; break; }
+    }
+    cur += ch; w += cw;
+  }
+  if (!done && cur) out.push(cur);
+  if (out.length === 2 && (done || out.join('').length < s.length)) out[1] = out[1].slice(0, -1) + '…';
+  return out;
+}
+
+function flowGraph(steps) {
+  if (!steps.length) return '<span class="dim">（暂无步骤）</span>';
+  const W = 208, H = 88, GAP = 52, PAD = 14;
+  const w = PAD * 2 + steps.length * W + (steps.length - 1) * GAP;
+  const h = H + PAD * 2;
+  let g = '';
+  steps.forEach((st, i) => {
+    const x = PAD + i * (W + GAP), y = PAD;
+    const c = FST[st.state] || FST.pending;
+    const dl = wrap2(st.desc, 32);
+    g += `<g class="fnode f-${esc(st.state)}" ${st.task ? `onclick="openTask('${esc(st.task)}')"` : ''}>
+      <title>${esc((st.task ?? 'gate') + ' · ' + (st.desc ?? '') + (st.task ? '\n（点击打开 ' + st.task + '.md）' : ''))}</title>
+      <rect x="${x}" y="${y}" width="${W}" height="${H}" rx="8" fill="#161b22" stroke="${c}" stroke-width="1.5"/>
+      <text x="${x + 12}" y="${y + 20}" font-size="12" font-weight="bold" fill="${c}">${i + 1}. ${esc(st.task ?? 'gate')}</text>
+      ${dl.map((l, j) => `<text x="${x + 12}" y="${y + 40 + j * 14}" font-size="11" fill="#8b949e">${esc(l)}</text>`).join('')}
+      <text x="${x + 12}" y="${y + H - 10}" font-size="10" fill="#8b949e">${esc(st.assignee ?? '—')} · <tspan fill="${c}">${esc(st.state)}</tspan></text>
+    </g>`;
+    if (i < steps.length - 1) {
+      const ax = x + W, ay = y + H / 2;
+      g += `<line x1="${ax + 4}" y1="${ay}" x2="${ax + GAP - 8}" y2="${ay}" stroke="#8b949e" stroke-width="1.5" marker-end="url(#farr)"/>`;
+    }
+  });
+  return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" font-family="Consolas,'Cascadia Mono',monospace">
+    <defs><marker id="farr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/></marker></defs>
+    ${g}</svg>`;
+}
+
+function renderHome(s) {
+  $('goal').textContent = s.flow?.goal ?? '';
+  $('phase').textContent = 'phase: ' + (s.flow?.phase ?? '?');
+  $('phase').className = 'badge phase-' + (s.flow?.phase ?? '');
+  $('updated').textContent = 'updated ' + (s.updated ?? '?') + ' · runtime ' + (s.runtime ?? '?');
+
+  $('flow').innerHTML = flowGraph(s.flow?.steps ?? []);
+
+  $('agents').innerHTML = (s.agents ?? []).map(a =>
+    `<div class="agent"><div><span class="dot s-${esc(a.state)}"></span><b>${esc(a.name)}</b>
+     <span class="dim">${esc(a.role)}</span></div>
+     <div class="dim" style="font-size:12px">${esc(a.state)} · ${esc(a.detail ?? '')}</div></div>`
+  ).join('');
+
+  document.querySelector('#tasks tbody').innerHTML = (s.tasks ?? []).map(t =>
+    `<tr><td><span class="lnk" onclick="openTask('${esc(t.id)}')">${esc(t.id)}</span></td>
+     <td>${esc(t.title)}</td>
+     <td class="t-${esc(t.status)}">${esc(t.status)}</td>
+     <td>${esc(t.assignee)}</td>
+     <td class="dim">${(t.messages ?? []).map(m => `<span class="lnk" onclick="openMsg('${esc(m)}')">${esc(m)}</span>`).join(', ')}</td></tr>`
+  ).join('');
+
+  $('msgs').innerHTML = (s.messages ?? []).slice().reverse().map(m =>
+    `<li><span class="dim">${esc(m.ts?.slice(11,19) ?? '')}</span>
+     <span class="ty ty-${esc(m.type)}">${esc(m.type)}</span>
+     <span class="lnk" onclick="openMsg('${esc(m.id)}')">${esc(m.id)}</span>
+     ${esc(m.from)} ──▶ ${esc(m.to)} <span class="dim">[${esc(m.task ?? '-')}]</span></li>`
+  ).join('');
+}
+
+/* ══════════ md 标签页：零依赖渲染 ══════════ */
+async function loadMd(t) {
+  const box = t.view.querySelector('.md');
+  try {
+    const r = await fetch(t.path + '?_=' + Date.now());
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    box.innerHTML = renderMd(await r.text());
+  } catch (e) {
+    box.innerHTML = `<span style="color:var(--red)">读取 ${esc(t.path)} 失败：${esc(e.message)}</span>`;
+  }
+}
+
+function renderMd(src) {
+  let out = '', body = src;
+  const fm = src.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
+  if (fm) {
+    body = src.slice(fm[0].length);
+    out += '<table class="fm">' + fm[1].split(/\r?\n/).filter(l => l.includes(':')).map(l => {
+      const i = l.indexOf(':');
+      return `<tr><th>${esc(l.slice(0, i).trim())}</th><td>${inline(esc(l.slice(i + 1).trim()))}</td></tr>`;
+    }).join('') + '</table>';
+  }
+  let inCode = false, list = null;
+  const closeList = () => { if (list) { out += `</${list}>`; list = null; } };
+  const openList = tag => { if (list !== tag) { closeList(); out += `<${tag}>`; list = tag; } };
+  for (const line of body.split(/\r?\n/)) {
+    let m;
+    if (line.trimStart().startsWith('```')) {
+      closeList();
+      out += inCode ? '</code></pre>' : '<pre><code>';
+      inCode = !inCode; continue;
+    }
+    if (inCode) { out += esc(line) + '\n'; continue; }
+    if (m = line.match(/^(#{1,5})\s+(.*)/)) { closeList(); const n = m[1].length + 1; out += `<h${n}>${inline(esc(m[2]))}</h${n}>`; continue; }
+    if (m = line.match(/^\s*[-*]\s+(.*)/)) { openList('ul'); out += `<li>${inline(esc(m[1]))}</li>`; continue; }
+    if (m = line.match(/^\s*\d+[.)]\s+(.*)/)) { openList('ol'); out += `<li>${inline(esc(m[1]))}</li>`; continue; }
+    if (!line.trim()) { closeList(); continue; }
+    closeList(); out += `<p>${inline(esc(line))}</p>`;
+  }
+  if (inCode) out += '</code></pre>';
+  closeList();
+  return out;
+}
+
+/* ══════════ init ══════════ */
+activate(makeTab('home', '⌂ 总览', 'home'));
+loadHome();
+setInterval(loadHome, 2000);
+</script>
+</body>
+</html>

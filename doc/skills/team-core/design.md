@@ -1,13 +1,13 @@
 # team-core 设计：主从 Agent Team 编排架构
 
-> 状态：active v0.3.0 ｜ 日期：2026-10-16 ｜ 维护者：Kilo（用户指令）
+> 状态：active v0.4.0 ｜ 日期：2026-10-18 ｜ 维护者：Kilo（用户指令）
 
 ## Terminology
 
 | 术语 | 定义 |
 |---|---|
-| spec | 一次大任务及其运行工作目录 `doc/specs/<spec>/` |
-| board | spec 下 tasks/messages/state.json，编排唯一事实源 |
+| spec | 一次大任务及其运行工作目录 `doc/spec-changes/<spec>/` |
+| board | spec 下 tasks/messages/state.json/context.md/view.html，编排唯一事实源 |
 | TeamLead / worker | 主 agent / 执行 agent；线程模型见 §1.3 |
 | 命名空间编号 | 并行消息编号 `msg-<taskid>-NN`（§8） |
 | 状态盘 | state.json + view.html 组合（§7） |
@@ -145,11 +145,12 @@ techs/                                # VS Code 工作区根
 │   └── spec-driven-dev/               # skill：模块可视化文档（五 tab 单文件 HTML）
 │       ├── SKILL.md
 │       └── template/                  # spec-driven-dev-template.html
-└── doc/specs/<spec>/              # 每个spec的运行工作目录（TeamLead 初始化）
+└── doc/spec-changes/<spec>/              # 每个spec的运行工作目录（TeamLead 初始化）
     ├── board/
     │   ├── tasks/task-NNN.md         # 每任务一文件
     │   ├── messages/msg-NNNN.md      # 每消息一文件，NNNN 递增（扫描现有最大值 +1）
     │   ├── state.json                # 状态汇总视图（TeamLead 单点维护，§7）
+    │   ├── context.md                # spec 上下文汇总视图（TeamLead 单点维护，正本见 protocol.md「context.md」节）
     │   └── view.html                 # 初始化时从 team-board/template 复制（§7）
     └── （任务产物文件）
 ```
@@ -219,7 +220,7 @@ ts: <ISO8601>
 - **`view.html`**：模板在 `doc/skills/team-board/template/view.html`，TeamLead 初始化 spec 时复制到 `<spec>/board/view.html`。零依赖只读状态盘，NavTab 多标签——首页为总视图（每 2s `fetch('state.json')` 渲染 flow 管线、agent 状态灯、task 表、消息链），点击 task/消息 id 新开标签渲染对应 .md（内置迷你 markdown 渲染器，frontmatter 渲染为字段表；标签激活时重新拉取）。file:// 下 fetch 被 CORS 拦截，须经 http 打开：
 
   ```powershell
-  npx -y http-server doc\specs\<spec>\board -p 8787 -c-1   # → http://127.0.0.1:8787/view.html
+  npx -y http-server doc\spec-changes\<spec>\board -p 8787 -c-1   # → http://127.0.0.1:8787/view.html
   ```
 
 - **数据契约与维护职责正本**：同目录 `protocol.md`「state.json（数据契约与维护职责）」节；渲染行为与启动方式见 `doc/skills/team-board/SKILL.md`。

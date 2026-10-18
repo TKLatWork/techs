@@ -1,5 +1,5 @@
 {
-  "_comment": "state-template.json — state.json 模板（schema 与维护职责正本：doc/skills/team-core/protocol.md「state.json（数据契约与维护职责）」节）。位置：doc/specs/<spec>/board/state.json。唯一写者是 TeamLead，每次状态流转后立即写盘；worker 与 view.html 渲染页只读。state.json 只是汇总视图，任务文件与消息文件仍是事实源，冲突时以文件为准。并行增量：flow.steps[] 允许多个 running；agents[] 多个 worker 同时 working。JSON 无注释语法，_comment 键仅作说明，落地时可删除。",
+  "_comment": "state-template.json — state.json 模板（schema 与维护职责正本：doc/skills/team-core/protocol.md「state.json（数据契约与维护职责）」节）。位置：doc/spec-changes/<spec>/board/state.json。唯一写者是 TeamLead，每次状态流转后立即写盘；worker 与 view.html 渲染页只读。state.json 只是汇总视图，任务文件与消息文件仍是事实源，冲突时以文件为准。并行增量：flow.steps[] 允许多个 running；agents[] 多个 worker 同时 working。JSON 无注释语法，_comment 键仅作说明，落地时可删除。",
   "version": 1,
   "updated": "<ISO8601>",
   "spec": "<spec 名>",

@@ -8,10 +8,11 @@ lead-spec-context.md — TeamLead 管理 spec 运行上下文的文案模板（�
 ## 1. spec 初始化清单（按序执行）
 
 - [ ] 读协议正本 `doc/skills/team-core/protocol.md`
-- [ ] 确定 spec slug（用户指定或从任务提炼英文短横线名）→ `doc/specs/<spec>/`
+- [ ] 确定 spec slug（用户指定或从任务提炼英文短横线名）→ `doc/spec-changes/<spec>/`
 - [ ] 建 `board/tasks/`、`board/messages/`
 - [ ] 复制 `doc/skills/team-board/template/view.html` → `board/view.html`
 - [ ] 从 `doc/skills/team-core/template/state-template.json` 落地 `board/state.json`（phase: planning，只登记已建任务文件的 task）
+- [ ] 从 `doc/skills/team-core/template/context-template.md` 落地 `board/context.md`（填入用户原始需求原话 + 已知决议；运行中随决议及时追加）
 - [ ] 扫描 tasks/、messages/ 确定下一个可用编号
 - [ ] （并行模式）`git status` 干净？`.gitignore` 含 `.worktrees/`？
 - [ ] **委托拆解**：创建 task-001（assignee: team-worker-plan），任务描述含 spec 目标 + 用户原始需求 + 仓库上下文；完成后收回拆解计划（子任务清单：assignee / 白名单 / 产物 / 依赖 / 并行判定 / gate 位置）
