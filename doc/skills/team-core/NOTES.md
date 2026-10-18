@@ -18,7 +18,13 @@
 | 2 | 2026-10-15 | skills-audit | design §8 spec 制场景 | 6 | 6/6 | 是（open→claimed→done ×2） | TeamLead 1 次（state.json 漂移，轮内自纠）；research 自报 2 条只读 shell | 两次调用均后台；msg-0005/0006 为真实秒级时间戳；spec 目录已于 2026-10-15 按要求删除（risks.md R1–R9/quickref.md 随之移除，关键发现已吸收进协议 v0.2 并行增量与 team-parallel SKILL.md） |
 | 3 | 2026-10-15 | parallel-demo | team-parallel 首跑：双 worktree 并行 + merge + 串行收尾 | 10（全局 6 + 命名空间 4） | 10/10 | 是（open→claimed→done ×3） | 无 | 双后台 task 真并行；msg-task-NNN 命名空间零撞号；merge --no-ff ×2 零冲突；board 写主副本未混入分支 commit；worktree 当轮在仓库外，轮后按方案 B 改仓库内 `.worktrees/` + .gitignore；spec 目录运行后由用户删除，模板三件套已吸收进 `team-board/template/`（patterns.md 等产物存于 git `22df466`） |
 
+| 4 | 2026-10-16 | module-viz-skill | 人工批准 gate 首用（规划段） | 5（含 1 条纠错） | 5/5 | 纠错回退 ×1（claimed→open，依据 msg-0005） | **TeamLead 1 次越权**：gate 答复「继续看看前半段的规划」被误读为执行批准，分派 task-001；用户手动终止 sub | 纠偏完整（msg-0005 撤回 + 状态回退 + 无效产物标记）；协议已补「批准须明确表述」条款 |
+
 ## 协议违反明细
+
+第 4 轮（module-viz-skill）：
+
+1. **TeamLead gate 语义误读（越权分派）**：用户在批准 gate Q1 的答复「插入实现gate，继续看看前半段的规划」被解读为「批准调研段执行」，随即分派 task-001 并写 msg-0002「批准通过」记录；用户实际意图是**审查规划、未批准执行**，手动终止了 worker。**处置**：msg-0005 撤回分派并作废 msg-0002 批准记录、task-001 status 回退 open、worker 遗留 claim（msg-0004）标记无效、`## 结果` 未写入无需清理。**根因**：协议未定义「批准」的表述标准，LLM 把倾向性答复当成许可。**修复**：protocol.md「人工批准 gate」第 4 条——批准必须是明确表述（同意/批准/开跑/执行），含糊或审查性答复一律视为未批准。**含义**：gate 机制本身有效（phase/消息/state 全程可回溯、可纠偏），但 gate 判定不能靠 LLM 语义推断，必须协议显式收紧。
 
 第 3 轮（parallel-demo）：零违反。正面观测：① 并行命名空间编号（msg-task-001-NN / msg-task-002-NN）与全局编号（msg-NNNN）双轨并行无冲突；② worker 严格把 board 写在主副本、产物 commit 在各自分支，merge 干净；③ task-003 遵守「禁止 commit」附加约束；④ reply_to 链完整（assign→claim→result 逐级回指）。
 

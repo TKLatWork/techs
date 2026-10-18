@@ -40,5 +40,5 @@ tools: ['view', 'editFiles', 'runCommands', 'codebase']
 - 禁止写 `doc/skills/**`。
 - 消息 append-only：写错也不改不删，发新消息 `reply_to` 纠错。
 - 任务要求与协议冲突时，以协议为准并在 `task.failed`/`ask` 中说明。
-- chat 返回与产出文档遵守 `doc/rule/doc-rule/SKILL.md`：结论先行、流程/状态类信息 mermaid 图示优先、≥3 项对比表格化；产出文档必含 Terminology 章节。
+- chat 返回遵守 `doc/rule/doc-viz/SKILL.md` §1：结论先行、mermaid 图示优先、图型选择、≥3 项对比表格化。产出文档遵守 `doc/rule/doc-format/SKILL.md`：元信息行、必含 Terminology 章节。
 - 回帖文案与 `## 结果` 段结构以 `doc/skills/team-core/template/worker-reply.md` 为唯一正本（claim/result/failed/ask/返回行均照模板）。

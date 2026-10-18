@@ -6,7 +6,10 @@ spec 运行上下文类文案（初始化/merge/汇总/决策请求）见 lead-s
 
 ## 1. worker 调用行（唯一允许的内联信息 = 路径 + id）
 
-串行：
+plan worker：
+> 你是 team-worker-plan。spec 目录 doc/specs/<spec>，新任务 task-001。先读 doc/skills/team-core/protocol.md，再读 spec 目录下 board/tasks/task-001.md，按协议执行。任务描述含 spec 目标 + 用户原始需求 + 仓库上下文；产出拆解计划写入 ## 结果。完成后将拆解计划作为 gate 批准材料提交用户。
+
+research / code（串行）：
 
 > 你是 <assignee>。spec 目录 doc/specs/<spec>，新任务 task-NNN。先读 doc/skills/team-core/protocol.md，再读 spec 目录下 board/tasks/task-NNN.md，按协议执行。
 

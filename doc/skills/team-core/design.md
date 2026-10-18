@@ -127,7 +127,8 @@ techs/                                # VS Code 工作区根
 │   ├── team-lead.agent.md
 │   ├── team-worker-research.agent.md
 │   └── team-worker-code.agent.md
-├── doc/rule/doc-rule/                # 文档规范（全局覆盖：结构/Terminology/版本管理 + chat 展示 + template/）
+├── doc/rule/doc-format/              # 文档格式规范（结构/Terminology/版本管理 + template/ 文档模板）
+├── doc/rule/doc-viz/                  # 全局可视化规范（chat mermaid 优先/图型选择 + view.html 渲染规则）
 ├── doc/skills/                       # team 规范（运行时所有 agent 只读）
 │   ├── AGENTS.md                     # 目录规则（顶层唯一文件）
 │   ├── team-core/                    # skill：team 主运行框架
@@ -141,6 +142,9 @@ techs/                                # VS Code 工作区根
 │   │   └── template/                 # view.html
 │   └── team-parallel/                # skill：worktree 并行编排（TeamLead 执行，§8）
 │       └── SKILL.md
+│   └── spec-driven-dev/               # skill：模块可视化文档（五 tab 单文件 HTML）
+│       ├── SKILL.md
+│       └── template/                  # spec-driven-dev-template.html
 └── doc/specs/<spec>/              # 每个spec的运行工作目录（TeamLead 初始化）
     ├── board/
     │   ├── tasks/task-NNN.md         # 每任务一文件
@@ -193,14 +197,16 @@ ts: <ISO8601>
 | 失败 | worker | claimed → failed | task.failed（含原因） |
 | worker 提问 | worker | 不变 | ask（to=TeamLead），并在返回摘要中说明 |
 | 汇总 | TeamLead | 检查全部 done | info（可选）+ chat 答复用户 |
+| 规划批准 gate | TeamLead | phase: awaiting-approval → executing | info（批准请求/结果，to/from `user`） |
 
-失败处理：TeamLead 收到 task.failed 后可改写任务重试（最多 1 次）或终止并向用户说明。
+失败处理：TeamLead 收到 task.failed 后可改写任务重试（最多 1 次）或终止并向用户说明。人工批准 gate（拆解后、分派前必须经用户批准）正本见 `protocol.md`「人工批准 gate」节。
 
 ## 6. agent 职责边界
 
 | agent | tools | 可写范围 |
 |---|---|---|
-| TeamLead | view, editFiles, agents, codebase | spec 的 `board/**`、不直接改业务文件 |
+| TeamLead | view, editFiles, agents, codebase | spec 的 `board/**`、不直接改业务文件、不亲自拆解（委托 plan worker） |
+| team-worker-plan | view, codebase, editFiles | spec 的 `board/**`、任务文件 `## 结果`/status；产出拆解计划（不创建/修改业务文件） |
 | team-worker-research | view, codebase, fetch, editFiles | spec 的 `board/**`、任务指定的输出文件（默认只读调研） |
 | team-worker-code | view, editFiles, runCommands, codebase | spec 的 `board/**`、任务授权白名单路径 |
 

@@ -47,7 +47,7 @@ doc/specs/<spec>/board/
 id: task-001
 title: 一句话标题
 status: open            # open → claimed → done | failed；TeamLead 重试时 failed → open
-assignee: team-worker-research | team-worker-code
+assignee: team-worker-plan | team-worker-research | team-worker-code
 created_by: TeamLead
 worktree: null          # 并行模式：该任务 worktree 绝对路径（见「并行模式」节）
 branch: null            # 并行模式：spec/<spec>/task-NNN
@@ -74,8 +74,8 @@ ts: 2026-10-15T12:00:00Z
 ---
 id: msg-0001
 type: task.assign | task.claim | task.result | task.failed | ask | info
-from: TeamLead | team-worker-research | team-worker-code
-to: TeamLead | team-worker-research | team-worker-code
+from: TeamLead | team-worker-plan | team-worker-research | team-worker-code | user（仅批准 gate 记录）
+to: TeamLead | team-worker-plan | team-worker-research | team-worker-code | user（仅批准 gate 记录）
 task: task-001          # 关联任务 id，与任务无关时为 null
 reply_to: null          # 可选，指向被回复的 msg id
 ts: 2026-10-15T12:00:00Z
@@ -93,9 +93,20 @@ ts: 2026-10-15T12:00:00Z
 | task.result | worker | 成功完成，`## 结果` 已填 | claimed → done |
 | task.failed | worker | 失败，正文含原因 | claimed → failed |
 | ask | worker | 需要 TeamLead 决策，正文含问题与选项 | 不变 |
-| info | 任意 | 答复 ask、补充说明 | 不变 |
+| info | 任意 | 答复 ask、补充说明、批准请求/批准结果（to/from 可为 `user`） | 不变 |
 
 TeamLead 重试失败任务：修订任务描述后 `failed → open`，写新 task.assign 消息（每任务最多重试 1 次）。
+
+## 人工批准 gate（规划批准）
+
+拆解完成后、任何分派之前，必须经过人工批准 gate：
+
+1. **规划摘要**：TeamLead 在 chat 向用户输出：需求理解表、拆分结构（mermaid）、每任务 assignee/授权白名单/产物、风险与开放问题（含 gate 位置：研究类任务之后、实现类任务之前是否设第二批准点）。
+2. **记录请求**：写 `info` 消息（`to: user`，task: null）正文为规划摘要要点；`state.json` 的 `flow.phase` → `awaiting-approval`。
+3. **等待与修订**：用户要求修改 → 规划期内直接调整（**尚未写 assign 的任务文件允许 TeamLead 修订或删除重建**——铁律 2 的唯一例外，仅限未分派状态），更新摘要后再记一条 info。
+4. **批准通过**：批准必须是**明确表述**（「同意 / 批准 / 开跑 / 执行」）；含糊或审查性答复（如「继续看看规划」「先不急」）一律视为**未批准**，phase 停留 `awaiting-approval`，不得分派任何任务。批准后写 info 消息（reply_to 指向请求消息）记录批准结论与范围 → phase → `executing` → 开始写 task.assign 分派。
+5. **跳过 gate**：仅当用户明确表示（「直接跑/跳过批准」）；info 消息中记录用户原话。
+6. **双 gate（可选）**：规划摘要中声明「实现任务前二次批准」；到达时重复 1–4（范围限实现段）。
 
 ## 并行模式（流程正本见 team-parallel）
 
@@ -110,7 +121,7 @@ TeamLead 重试失败任务：修订任务描述后 `failed → open`，写新 t
 ## 铁律
 
 1. **append-only**：消息文件写入后不得修改或删除；纠错用新消息 `reply_to` 指向原消息。
-2. **任务文件最小写入**：只有 frontmatter `status` 和 `## 结果` 段允许被更新，且只能按状态机流转。
+2. **任务文件最小写入**：只有 frontmatter `status` 和 `## 结果` 段允许被更新，且只能按状态机流转（唯一例外：规划期尚未 assign 的任务文件可由 TeamLead 修订/删除重建，见「人工批准 gate」）。
 3. **写权限**：TeamLead 只写 spec 的 `board/**`；worker 写 spec 的 `board/**` + 任务描述明确授权的路径；任何 agent 不得写 `doc/skills/**`。
 4. **时间戳**：`ts` 用 ISO8601（UTC），不得留空。
 5. **返回摘要**：worker 结束后向调用方返回一行 `task-NNN done|failed|ask: <一句话>`。
@@ -132,7 +143,7 @@ TeamLead 重试失败任务：修订任务描述后 `failed → open`，写新 t
   "runtime": "<copilot-agents | kilo-task-tool | ...>",
   "flow": {
     "goal": "<总任务一句话>",
-    "phase": "planning | executing | aggregating | done | blocked",
+    "phase": "planning | awaiting-approval | executing | aggregating | done | blocked",
     "steps": [ { "id": "step-1", "task": "task-001", "desc": "...", "assignee": "<agent>", "state": "pending | running | done | failed" } ]
   },
   "agents": [ { "name": "<agent>", "role": "lead | worker", "state": "idle | working | waiting | failed", "detail": "..." } ],

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>模块可视化文档</title>
+<style>
+  :root {
+    --bg:#0d1117; --panel:#161b22; --bd:#30363d; --fg:#c9d1d9; --dim:#8b949e;
+    --gn:#3fb950; --am:#d29922; --rd:#f85149; --bl:#58a6ff;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--fg); font:14px/1.55 Consolas,"Cascadia Mono",monospace; min-height:100vh; }
+  a { color:var(--bl); text-decoration:none; } a:hover { text-decoration:underline; }
+  code { background:#21262d; border:1px solid var(--bd); border-radius:4px; padding:1px 5px; font-size:13px; }
+  pre { background:#010409; border:1px solid var(--bd); border-radius:6px; padding:12px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; border:none; padding:0; }
+  table { width:100%; border-collapse:collapse; margin:8px 0; }
+  th,td { text-align:left; padding:5px 9px; border-bottom:1px solid var(--bd); font-size:13px; }
+  th { color:var(--dim); font-weight:normal; font-size:11px; text-transform:uppercase; letter-spacing:1px; }
+  details { margin:6px 0; }
+  summary { cursor:pointer; color:var(--bl); font-size:13px; padding:2px 0; user-select:none; }
+  summary:hover { text-decoration:underline; }
+  details .det { padding:8px 0 8px 16px; border-left:2px solid var(--bd); margin-left:6px; }
+
+  /* ── layout ── */
+  .shell { max-width:960px; margin:0 auto; padding:24px 32px 40px; }
+
+  /* ── tabs ── */
+  .tabs { display:flex; gap:2px; border-bottom:1px solid var(--bd); margin-bottom:20px; }
+  .tab { padding:8px 18px; border-radius:8px 8px 0 0; border:1px solid transparent;
+         cursor:pointer; font:13px inherit; color:var(--dim); user-select:none; }
+  .tab:hover { color:var(--fg); }
+  .tab.active { color:var(--fg); border-color:var(--bl); border-bottom-color:var(--bg); background:var(--bg); font-weight:bold; }
+  .panel { display:none; }
+  .panel.active { display:block; }
+
+  /* ── generic ── */
+  h1 { font-size:18px; margin-bottom:2px; }
+  .meta { color:var(--dim); font-size:12px; margin-bottom:16px; }
+  h2 { font-size:15px; margin:22px 0 8px; border-bottom:1px solid var(--bd); padding-bottom:6px; }
+  h3 { font-size:14px; margin:14px 0 6px; color:var(--dim); }
+  h4 { font-size:13px; margin:10px 0 4px; }
+  .card { background:var(--panel); border:1px solid var(--bd); border-radius:8px; padding:14px 18px; margin:10px 0; }
+  .row { display:flex; gap:12px; }
+  .row>* { flex:1; min-width:0; }
+  .placeholder { color:var(--dim); font-style:italic; border:1px dashed var(--bd); border-radius:6px; padding:20px; text-align:center; }
+
+  footer { margin-top:32px; color:var(--dim); font-size:11px; border-top:1px solid var(--bd); padding-top:10px; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <h1>spec-driven-dev</h1>
+  <p class="meta">scope 描述 · 版本 · 日期</p>
+
+  <details style="margin-bottom:16px">
+    <summary>模板meta</summary>
+    <div class="det">
+      <ol style="font-size:12px;line-height:1.8">
+        <li>遵循 <code>doc/rule/doc-viz/SKILL.md</code> — 信息形态决定表达形式：时序→序列/泳道，状态→有向边，结构→层级，清单→表</li>
+      </ol>
+    </div>
+  </details>
+
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-panel="overview">模块概要</div>
+    <div class="tab" data-panel="requirement">需求</div>
+    <div class="tab" data-panel="contract">对外接口 / 契约</div>
+    <div class="tab" data-panel="test">测试</div>
+    <div class="tab" data-panel="design">实现设计 / 架构</div>
+  </div>
+
+  <!-- ══════════ 模块概要 ══════════ -->
+  <div class="panel active" id="p-overview">
+
+    <h2>概述</h2>
+    <div class="placeholder">简短概要</div>
+
+    <h2>概要图</h2>
+    <div class="placeholder">架构拓扑 / 数据流 / 状态机 — 选一个最能表达模块结构的图</div>
+
+  </div>
+
+  <!-- ══════════ 需求 ══════════ -->
+  <div class="panel" id="p-requirement">
+
+    <h2>Terminology</h2>
+    <div class="placeholder">术语 ｜ 定义（全文档统一）</div>
+
+    <h2>用户场景图示</h2>
+    <div class="placeholder">用例 / 场景 / 用户故事图</div>
+
+    <h2>行为契约图示</h2>
+    <div class="placeholder">输入 → 输出 → 副作用图</div>
+
+    <details>
+      <summary>需求细则与图示（按需折叠）</summary>
+      <div class="det">
+        <div class="placeholder">详细用例图 / 边界条件 / 错误场景</div>
+      </div>
+    </details>
+
+  </div>
+
+  <!-- ══════════ 对外接口 / 契约 ══════════ -->
+  <div class="panel" id="p-contract">
+
+    <h2>对外接口</h2>
+    <div class="placeholder">API 签名 / 方法列表 / 参数说明</div>
+
+    <h2>数据契约</h2>
+    <div class="placeholder">输入/输出 schema · 错误码 · 状态枚举</div>
+
+  </div>
+
+  <!-- ══════════ 测试 ══════════ -->
+  <div class="panel" id="p-test">
+
+    <h2>测试用例</h2>
+    <div class="placeholder">用例表：场景 → 输入 → 期望输出</div>
+
+    <h2>测试环境</h2>
+    <div class="placeholder">硬件 / OS / 依赖版本 / 配置</div>
+
+    <h2>预设测试场景数据</h2>
+    <div class="placeholder">输入数据 / mock / fixture</div>
+
+  </div>
+
+  <!-- ══════════ 实现设计 / 架构 ══════════ -->
+  <div class="panel" id="p-design">
+
+    <h2>架构总览</h2>
+    <div class="placeholder">组件拓扑图 / 数据流图</div>
+
+    <h2>子模块</h2>
+    <div class="placeholder">数据结构 / 状态机 / 关键接口</div>
+
+    <h2>技术决策</h2>
+    <div class="placeholder">选型理由 / 权衡记录</div>
+
+  </div>
+
+  <footer>生成自 spec-driven-dev · 零 CDN 单文件 · 占位模板</footer>
+
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('.tab').forEach(function(t){
+    t.addEventListener('click', function(){
+      document.querySelectorAll('.tab').forEach(function(x){ x.classList.remove('active'); });
+      document.querySelectorAll('.panel').forEach(function(x){ x.classList.remove('active'); });
+      t.classList.add('active');
+      document.getElementById('p-' + t.dataset.panel).classList.add('active');
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -2,7 +2,7 @@
 lead-spec-context.md — TeamLead 管理 spec 运行上下文的文案模板（正本，唯一出处）
 覆盖：spec 初始化 / merge 汇合记录 / 对用户的汇总与决策请求。
 与 sub-agent 的交互文案见 lead-subagent-io.md。
-结构受 doc/rule/doc-rule/SKILL.md §3 约束（结论先行、表格化、mermaid 图示优先）。
+结构受 doc/rule/doc-viz/SKILL.md §1 约束（结论先行、表格化、mermaid 图示优先）。
 -->
 
 ## 1. spec 初始化清单（按序执行）
@@ -14,7 +14,8 @@ lead-spec-context.md — TeamLead 管理 spec 运行上下文的文案模板（�
 - [ ] 从 `doc/skills/team-core/template/state-template.json` 落地 `board/state.json`（phase: planning，只登记已建任务文件的 task）
 - [ ] 扫描 tasks/、messages/ 确定下一个可用编号
 - [ ] （并行模式）`git status` 干净？`.gitignore` 含 `.worktrees/`？
-- [ ] 拆解子任务（授权路径互不相交才可并行；共享文件改动独立为串行收尾任务）
+- [ ] **委托拆解**：创建 task-001（assignee: team-worker-plan），任务描述含 spec 目标 + 用户原始需求 + 仓库上下文；完成后收回拆解计划（子任务清单：assignee / 白名单 / 产物 / 依赖 / 并行判定 / gate 位置）
+- [ ] **批准 gate**：收到拆解计划后输出规划摘要（§6）请求用户批准，写 info 记录，phase → awaiting-approval；批准通过后才建 task-002 起的任务文件并分派
 
 ## 2. merge 汇合 info 消息正文（并行段结束）
 
@@ -50,3 +51,17 @@ lead-spec-context.md — TeamLead 管理 spec 运行上下文的文案模板（�
 - 每次状态流转后立即更新 `board/state.json`（flow/steps、agents、tasks、messages 索引）
 - chat 进度简报：`[task-NNN <状态>] <一句话>`，状态 ∈ assigned / claimed / done / failed / ask / merged
 - 汇总前终检：扫描全部任务文件终态 + 有无未答复 ask + 有无停留 claimed 的任务
+
+## 6. 规划批准请求（人工 gate）
+
+> **spec <spec> 规划摘要 — 请批准**
+>
+> 需求理解：[R# ｜ 需求 ｜ 落点任务] 表
+> 拆分结构：mermaid flowchart（依赖 + 串行/并行标注）
+> 每任务：[task ｜ assignee ｜ 授权白名单 ｜ 产物]
+> 风险/开放问题：[条目 + 推荐选项]
+> gate 位置：[单 gate（批准后全程执行）｜ 双 gate（实现段前二次批准）]
+>
+> 回复「同意」执行，或提出修改点；回复「直接跑」跳过 gate。
+
+批准/修订/跳过均以 info 消息落 board（`to/from: user`），批准消息 reply_to 指向请求消息。

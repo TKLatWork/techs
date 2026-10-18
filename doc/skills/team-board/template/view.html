@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>chatTeam board</title>
+<title>spec 状态盘</title>
 <style>
   :root { --bg:#0d1117; --panel:#161b22; --border:#30363d; --fg:#e6edf3; --dim:#8b949e;
           --green:#3fb950; --amber:#d29922; --red:#f85149; --blue:#58a6ff; --gray:#6e7681; }
@@ -29,15 +29,19 @@
   h1 { font-size:18px; margin-bottom:4px; }
   header { display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; }
   .badge { padding:2px 10px; border-radius:12px; font-size:12px; border:1px solid var(--border); }
-  .phase-planning{color:var(--blue)} .phase-executing{color:var(--amber)} .phase-aggregating{color:var(--blue)}
+  .phase-planning{color:var(--blue)} .phase-awaiting-approval{color:var(--amber)} .phase-executing{color:var(--amber)} .phase-aggregating{color:var(--blue)}
   .phase-done{color:var(--green)} .phase-blocked{color:var(--red)}
   section { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-top:16px; }
   section h2 { font-size:13px; color:var(--dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
-  .flow { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-  .step { border:1px solid var(--border); border-radius:6px; padding:8px 12px; min-width:180px; cursor:pointer; }
-  .step:hover { border-color:var(--blue); }
-  .step .st { font-size:11px; }
-  .arrow { color:var(--dim); }
+  .flow { display:flex; flex-direction:column; gap:4px; }
+  .fline { display:flex; align-items:center; gap:10px; }
+  .fline .num { width:24px; text-align:right; font-size:12px; color:var(--dim); flex-shrink:0; }
+  .fline .step { flex:1; display:flex; align-items:center; gap:10px; border:1px solid var(--border); border-radius:6px; padding:8px 12px; cursor:pointer; }
+  .fline .step:hover { border-color:var(--blue); }
+  .fline .step .sdesc { flex:1; font-size:13px; }
+  .fline .step .smeta { display:flex; align-items:center; gap:8px; font-size:11px; flex-shrink:0; }
+  .fline .vbar { width:2px; height:12px; margin-left:12px; background:var(--border); }
+  .t-pending{color:var(--gray)} .t-running{color:var(--amber)} .t-done{color:var(--green)} .t-failed{color:var(--red)}
   /* ── home 布局：Agents 左侧 sidebar ── */
   .home-wrap { display:flex; gap:16px; align-items:flex-start; margin-top:16px; }
   aside#sidebar { flex:0 0 250px; position:sticky; top:52px; }
@@ -97,7 +101,7 @@
   <!-- 首页：总视图 -->
   <div class="view" id="view-home">
     <header>
-      <div><h1>chatTeam · board 状态盘</h1><div class="dim" id="goal"></div></div>
+      <div><h1>spec 状态盘</h1><div class="dim" id="goal"></div></div>
       <div><span class="badge" id="phase"></span> <span class="dim" id="updated"></span></div>
     </header>
     <section><h2>Flow（总任务流 · 点击步骤看任务详情）</h2><div class="flow" id="flow"></div></section>
@@ -193,11 +197,11 @@ function renderHome(s) {
   $('updated').textContent = 'updated ' + (s.updated ?? '?') + ' · runtime ' + (s.runtime ?? '?');
 
   $('flow').innerHTML = (s.flow?.steps ?? []).map((st, i) =>
-    (i ? '<span class="arrow">──▶</span>' : '') +
-    `<div class="step" onclick="openTask('${esc(st.task)}')" title="打开 ${esc(st.task)}.md">
-       <div>${esc(st.desc)}</div>
-       <div class="st dim"><span class="lnk">${esc(st.task)}</span> · ${esc(st.assignee)}</div>
-       <div class="st t-${esc(st.state)}">${esc(st.state)}</div></div>`
+    `<div class="fline"><span class="num">${i+1}</span>
+     <div class="step" onclick="${st.task?`openTask('${esc(st.task)}')`:''}" title="${st.task?"打开 "+esc(st.task)+".md":''}">
+       <span class="sdesc">${esc(st.desc)}</span>
+       <span class="smeta"><span class="lnk">${esc(st.task ?? 'gate')}</span> · ${esc(st.assignee ?? '—')} · <span class="t-${esc(st.state)}">${esc(st.state)}</span></span>
+     </div></div>`
   ).join('');
 
   $('agents').innerHTML = (s.agents ?? []).map(a =>

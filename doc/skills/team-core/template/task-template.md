@@ -9,7 +9,7 @@ task-template.md — 任务文件模板（提取自 team-core/protocol.md 正本
 id: task-001                      # 任务 id，与文件名一致（task-NNN）
 title: 一句话标题                  # 任务的简短标题
 status: open                      # open → claimed → done | failed；TeamLead 重试时 failed → open
-assignee: team-worker-research    # team-worker-research | team-worker-code
+assignee: team-worker-research    # team-worker-plan | team-worker-research | team-worker-code
 created_by: TeamLead              # 创建者，固定为 TeamLead
 worktree: null                    # 并行模式：该任务 worktree 绝对路径（见「并行模式」节）；串行任务为 null
 branch: null                      # 并行模式：spec/<spec>/task-NNN；串行任务为 null

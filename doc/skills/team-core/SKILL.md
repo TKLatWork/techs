@@ -46,4 +46,5 @@ Remove-Item -Recurse -Force doc\specs\<spec>
 
 - `team-board`：过程可视化渲染（view.html 状态盘；数据契约正本在本 skill protocol.md）
 - `team-parallel`：worktree 并行编排增量（依赖本 skill）
-- `doc/rule/doc-rule`：文档与会话展示规范（全局约束所有产出）
+- `doc/rule/doc-format`：文档格式规范（全局约束所有产出）
+- `doc/rule/doc-viz`：可视化规范（chat 展示 + view.html 渲染规则）

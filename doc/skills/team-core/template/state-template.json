@@ -6,7 +6,7 @@
   "runtime": "<copilot-agents | kilo-task-tool | ...>",
   "flow": {
     "goal": "<总任务一句话>",
-    "phase": "planning | executing | aggregating | done | blocked",
+    "phase": "planning | awaiting-approval | executing | aggregating | done | blocked",
     "steps": [
       {
         "id": "step-1",

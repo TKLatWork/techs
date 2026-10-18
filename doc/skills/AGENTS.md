@@ -8,6 +8,11 @@
 6. **增删 skill 同步索引**：更新本文件「当前 skill 清单」，以及 `team-core/design.md` §2 的目录树。
 7. **skill 间依赖显式声明**：在 SKILL.md 开头写明依赖（如 team-parallel 依赖 team-board 协议正本）；规则冲突时以被依赖的正本为准。
 
+# do/don't
+
+- 不允许未通过approve就修改rule/skills下的内容
+- 不允许在 rule/skills 下加入没明确要求的/联想/幻想的内容 
+
 ## 当前 skill 清单
 
 | skill | 目录 | 职责 |
@@ -15,5 +20,6 @@
 | team-core | `team-core/` | **team 主运行框架**：protocol.md（协议正本：spec/task/message/状态机/铁律/并行增量/**state.json 数据契约**）+ template/（task · message · state-template · lead-subagent-io · lead-spec-context · worker-reply）+ design.md（架构依据）+ NOTES.md（运行观测） |
 | team-board | `team-board/` | **过程可视化（渲染）**：template/view.html 状态盘渲染页 + 渲染契约/启动方式；state.json 数据契约正本在 team-core/protocol.md |
 | team-parallel | `team-parallel/` | worktree 并行编排增量：git 分割、编号命名空间、merge 汇合（依赖 team-board） |
+| spec-driven-dev | `spec-driven-dev/` | 模块可视化文档：五 tab 单文件 HTML（概要/需求/接口契约/测试/架构）+ template/ 占位骨架 |
 
-> 文档规范不在本目录：`doc/rule/doc-rule/`（全局覆盖，含 Terminology 必备规则、版本管理、chat 展示格式）。
+> 文档规范不在本目录：`doc/rule/doc-format/`（格式/结构/必含 Terminology/版本管理）+ `doc/rule/doc-viz/`（可视化/mermaid 优先/图型选择/view.html 渲染规则）。
