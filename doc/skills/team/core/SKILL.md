@@ -1,11 +1,13 @@
 ---
 name: team-core
-description: 主从 agent team 的主运行框架：协议正本（spec/task/message/状态机/铁律/并行增量）、运行文案模板与设计依据、运行观测记录。TeamLead 与所有 worker 执行任何 spec 前必读 protocol.md；team-board（可视化）与 team-parallel（并行）均以本框架为基础。
+description: team 执行器的 core 组件：协议正本（spec/task/message/状态机/铁律/并行增量）、运行文案模板与设计依据、运行观测记录。TeamLead 与所有 worker 执行任何 spec 前必读 protocol.md；board（可视化）与 parallel（并行）均以本框架为基础。
 ---
 
-# team-core — team 主运行框架
+# team/core — team 主运行框架
 
-> 状态：active v1.1.0 ｜ 日期：2026-10-18 ｜ 维护者：Kilo（用户指令）
+> 状态：active v1.2.0 ｜ 日期：2026-10-19 ｜ 维护者：Kilo（用户指令）
+
+组件入口，隶属 [`team`](../SKILL.md)；顶层 skill 只暴露 `team/`。
 
 执行者：**TeamLead**（`.github/agents/team-lead.agent.md`）；参与者：team-worker-research / team-worker-code。
 
@@ -17,9 +19,9 @@ description: 主从 agent team 的主运行框架：协议正本（spec/task/mes
 | board | spec 下 tasks/messages/state.json/context.md/view.html 的总称，编排唯一事实源 |
 | 协议正本 | protocol.md——team 协作规则的唯一权威出处 |
 | 运行模板 | template/ 下复制即用的任务/消息/文案骨架 |
-| 状态盘 | state.json + view.html 组合（可视化契约见 team-board） |
+| 状态盘 | state.json + view.html 组合（可视化契约见 team/board） |
 
-## 本 skill 内容
+## 本组件内容
 
 | 资源 | 说明 |
 |---|---|
@@ -32,9 +34,10 @@ description: 主从 agent team 的主运行框架：协议正本（spec/task/mes
 
 1. VS Code 打开仓库根（agent 定义在 `.github/agents/` 直接被发现）；Chat → Agent 模式，`@` 列表出现 TeamLead。
 2. 发送 `@TeamLead <spec描述>`：TeamLead 按 protocol.md 初始化 `doc/spec-changes/<spec>/`（board 目录、state.json、context.md、复制 view.html），拆解并分派任务。
-3. 子任务 ≥2 且授权路径互不相交 → 按 `doc/skills/team-parallel/SKILL.md` 做 worktree 并行分割。
+3. 子任务 ≥2 且授权路径互不相交 → 按 `doc/skills/team/parallel/SKILL.md` 做 worktree 并行分割。
 4. 状态盘：`npx -y http-server doc\spec-changes\<spec>\board -p 8787 -c-1` → <http://127.0.0.1:8787/view.html>（或 Live Preview 打开 `board/view.html`）。
-5. 每轮运行按 [NOTES.md](NOTES.md) 表头口径记录观测。
+5. SDD 协作：`delivery/` 与 `hub/` 由 SDD/hub 维护；team 只写 `board/`，不写 cell 状态。接口见 [protocol.md](protocol.md)「SDD ↔ team 接口」。
+6. 每轮运行按 [NOTES.md](NOTES.md) 表头口径记录观测。
 
 ## 重置
 
@@ -42,9 +45,10 @@ description: 主从 agent team 的主运行框架：协议正本（spec/task/mes
 Remove-Item -Recurse -Force doc\spec-changes\<spec>
 ```
 
-## 相关 skill
+## 相关
 
-- `team-board`：过程可视化渲染（view.html 状态盘；数据契约正本在本 skill protocol.md）
-- `team-parallel`：worktree 并行编排增量（依赖本 skill）
+- [`../SKILL.md`](../SKILL.md)：team 顶层入口与 SDD ↔ team 边界
+- [`../board/SKILL.md`](../board/SKILL.md)：执行状态盘渲染（数据契约正本在本组件 protocol.md）
+- [`../parallel/SKILL.md`](../parallel/SKILL.md)：worktree 并行编排增量（依赖本组件）
 - `doc/rule/doc-format`：文档格式规范（全局约束所有产出）
 - `doc/rule/doc-viz`：可视化规范（chat 展示 + view.html 渲染规则）

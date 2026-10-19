@@ -1,2 +1,5 @@
 # team-parallel 并行 worktree 工作目录（运行时产物，不入库）
 .worktrees/
+
+# 本地临时验证产物（截图/渲染等，不入库）
+.tmp/

@@ -1,13 +1,16 @@
-# team-core 设计：主从 Agent Team 编排架构
+# team/core 设计：主从 Agent Team 编排架构
 
-> 状态：active v0.4.0 ｜ 日期：2026-10-18 ｜ 维护者：Kilo（用户指令）
+> 状态：active v0.5.0 ｜ 日期：2026-10-19 ｜ 维护者：Kilo（用户指令）
 
 ## Terminology
 
 | 术语 | 定义 |
 |---|---|
 | spec | 一次大任务及其运行工作目录 `doc/spec-changes/<spec>/` |
-| board | spec 下 tasks/messages/state.json/context.md/view.html，编排唯一事实源 |
+| board | spec 下 `board/`：tasks/messages/state.json/context.md/view.html；team 执行状态唯一事实源 |
+| delivery | spec 下 `delivery/`：SDD status.json / spec-doc.json / 模块文档；cell 状态唯一来源 |
+| hub | spec 下 `hub/`：SDD + team 单一入口（见 `doc/skills/hub/SKILL.md`） |
+| cell / attempt | SDD 交付单元 / team 对 WorkOrder 的一次执行尝试 |
 | TeamLead / worker | 主 agent / 执行 agent；线程模型见 §1.3 |
 | 命名空间编号 | 并行消息编号 `msg-<taskid>-NN`（§8） |
 | 状态盘 | state.json + view.html 组合（§7） |
@@ -24,7 +27,7 @@
                    │  3. agents 工具调用 worker，只传 task id
                    ▼
         team-worker-research / team-worker-code
-                   │  4. 读 doc/skills/team-core/protocol.md + 任务文件
+                   │  4. 读 doc/skills/team/core/protocol.md + 任务文件
                    │  5. status: claimed → 干活 → 写 task.result 消息
                    │  6. status: done / failed，返回一行摘要给 TeamLead
                    ▼
@@ -129,30 +132,34 @@ techs/                                # VS Code 工作区根
 │   └── team-worker-code.agent.md
 ├── doc/rule/doc-format/              # 文档格式规范（结构/Terminology/版本管理 + template/ 文档模板）
 ├── doc/rule/doc-viz/                  # 全局可视化规范（chat mermaid 优先/图型选择 + view.html 渲染规则）
-├── doc/skills/                       # team 规范（运行时所有 agent 只读）
+├── doc/skills/                       # 规范目录（运行时所有 agent 只读）
 │   ├── AGENTS.md                     # 目录规则（顶层唯一文件）
-│   ├── team-core/                    # skill：team 主运行框架
-│   │   ├── SKILL.md                  # 框架入口：概览 / 运行 / 重置
-│   │   ├── protocol.md               # 协议正本（spec/task/message/状态机/铁律/并行增量）
-│   │   ├── design.md                 # 本文件：架构与设计依据
-│   │   ├── NOTES.md                  # 运行观测记录
-│   │   └── template/                 # task / message / state-template / lead-subagent-io / lead-spec-context / worker-reply
-│   ├── team-board/                   # skill：过程可视化（view.html 状态盘渲染）
+│   ├── team/                          # skill：多 agent 执行器
+│   │   ├── SKILL.md                   # 顶层入口：SDD ↔ team 边界 / 组件索引
+│   │   ├── core/                      # 组件：协议 + 模板 + design/NOTES
+│   │   │   ├── SKILL.md
+│   │   │   ├── protocol.md
+│   │   │   ├── design.md
+│   │   │   ├── NOTES.md
+│   │   │   └── template/
+│   │   ├── board/                     # 组件：执行状态盘
+│   │   │   ├── SKILL.md
+│   │   │   └── template/              # view.html · state.json（示例）
+│   │   └── parallel/                  # 组件：worktree 并行
+│   │       └── SKILL.md
+│   ├── spec-doc-gen/                  # skill：SDD 文档/状态页
 │   │   ├── SKILL.md
-│   │   └── template/                 # view.html
-│   └── team-parallel/                # skill：worktree 并行编排（TeamLead 执行，§8）
-│       └── SKILL.md
-│   └── spec-driven-dev/               # skill：模块可视化文档（五 tab 单文件 HTML）
+│   │   └── template/                  # spec-doc-template.html · process-status-template.html
+│   │                                 # status.json · spec-doc.json
+│   ├── spec-driven-dev/               # skill：SDD 二维交付
+│   │   └── SKILL.md
+│   └── hub/                           # skill：单一入口（SDD + team）
 │       ├── SKILL.md
-│       └── template/                  # spec-driven-dev-template.html
-└── doc/spec-changes/<spec>/              # 每个spec的运行工作目录（TeamLead 初始化）
-    ├── board/
-    │   ├── tasks/task-NNN.md         # 每任务一文件
-    │   ├── messages/msg-NNNN.md      # 每消息一文件，NNNN 递增（扫描现有最大值 +1）
-    │   ├── state.json                # 状态汇总视图（TeamLead 单点维护，§7）
-    │   ├── context.md                # spec 上下文汇总视图（TeamLead 单点维护，正本见 protocol.md「context.md」节）
-    │   └── view.html                 # 初始化时从 team-board/template 复制（§7）
-    └── （任务产物文件）
+│       └── template/                  # hub-template.html · hub.json
+└── doc/spec-changes/<spec>/           # 每个 spec 的运行工作目录
+    ├── board/                         # team 执行记录（tasks/messages/state/view）
+    ├── delivery/                      # SDD status.json / spec-doc.json / 模块文档
+    └── hub/                           # hub-template.html + hub.json
 ```
 
 ## 3. 任务文件 schema（board/tasks/task-NNN.md）
@@ -163,8 +170,12 @@ techs/                                # VS Code 工作区根
 ---
 id: task-001
 title: <一句话标题>
-status: open            # open → claimed → done | failed
+status: open            # open → claimed → done | failed | cancelled；done = attempt 成功
 assignee: team-worker-research | team-worker-code
+cell: null              # SDD <module>:<stage>
+input_versions: {}      # SDD 输入版本
+attempt: 1              # 第几次尝试
+output_version: null    # attempt 成功时填写
 created_by: TeamLead
 ts: <ISO8601>
 ---
@@ -177,7 +188,7 @@ ts: <ISO8601>
 ```yaml
 ---
 id: msg-0001
-type: task.assign | task.claim | task.result | task.failed | ask | info
+type: task.assign | task.claim | task.result | task.failed | task.cancelled | ask | info
 from: TeamLead | team-worker-research | team-worker-code
 to: <agent name>
 task: task-001          # 关联任务，无任务时为 null
@@ -194,11 +205,14 @@ ts: <ISO8601>
 |---|---|---|---|
 | 创建任务 | TeamLead | → open | task.assign（to=worker） |
 | 领取任务 | worker | open → claimed | task.claim |
-| 完成 | worker | claimed → done，填 `## 结果` | task.result（含摘要 + 产物路径） |
+| 完成 | worker | claimed → done，填 `## 结果` | task.result（含摘要 + 产物路径 + output_version） |
 | 失败 | worker | claimed → failed | task.failed（含原因） |
+| SDD 失效/取消 | TeamLead | open / claimed → cancelled | task.cancelled（含原因 + 版本变化） |
 | worker 提问 | worker | 不变 | ask（to=TeamLead），并在返回摘要中说明 |
 | 汇总 | TeamLead | 检查全部 done | info（可选）+ chat 答复用户 |
 | 规划批准 gate | TeamLead | phase: awaiting-approval → executing | info（批准请求/结果，to/from `user`） |
+
+> `task.done` 只是 attempt 成功；SDD cell 的 done/invalid、Contract 与版本由 `spec-driven-dev` 决定。接口见 `protocol.md`「SDD ↔ team 接口」。
 
 失败处理：TeamLead 收到 task.failed 后可改写任务重试（最多 1 次）或终止并向用户说明。人工批准 gate（拆解后、分派前必须经用户批准）正本见 `protocol.md`「人工批准 gate」节。
 
@@ -215,19 +229,19 @@ ts: <ISO8601>
 
 ## 7. 状态可视化（state.json + view.html）
 
-- **`<spec>/board/state.json`**：单文件状态汇总——总 flow（goal/phase/steps）、各 task 状态、各 agent 状态（idle/working/waiting/failed）、消息索引。**TeamLead 是唯一写者**，每次状态流转后立即写盘；worker 与渲染页只读（铁律 3 的收窄）。
+- **`<spec>/board/state.json`**：单文件状态汇总——总 flow（goal/phase/steps）、各 task 状态（含 cell/attempt）、各 agent 状态（idle/working/waiting/failed）、消息索引。**TeamLead 是唯一写者**，每次状态流转后立即写盘；worker 与渲染页只读（铁律 3 的收窄）。SDD cell 状态不在此文件，以 `<spec>/delivery/status.json` 为准。
 - **一致性规则**：state.json 只是汇总视图，任务/消息文件仍是事实源；冲突时以文件为准，TeamLead 修正 state.json。
-- **`view.html`**：模板在 `doc/skills/team-board/template/view.html`，TeamLead 初始化 spec 时复制到 `<spec>/board/view.html`。零依赖只读状态盘，NavTab 多标签——首页为总视图（每 2s `fetch('state.json')` 渲染 flow 管线、agent 状态灯、task 表、消息链），点击 task/消息 id 新开标签渲染对应 .md（内置迷你 markdown 渲染器，frontmatter 渲染为字段表；标签激活时重新拉取）。file:// 下 fetch 被 CORS 拦截，须经 http 打开：
+- **`view.html`**：模板在 `doc/skills/team/board/template/view.html`，TeamLead 初始化 spec 时复制到 `<spec>/board/view.html`。零依赖只读状态盘，NavTab 多标签——首页为总视图（每 2s `fetch('state.json')` 渲染 flow 管线、agent 状态灯、task 表、消息链），点击 task/消息 id 新开标签渲染对应 .md（内置迷你 markdown 渲染器，frontmatter 渲染为字段表；标签激活时重新拉取）。file:// 下 fetch 被 CORS 拦截，须经 http 打开：
 
   ```powershell
   npx -y http-server doc\spec-changes\<spec>\board -p 8787 -c-1   # → http://127.0.0.1:8787/view.html
   ```
 
-- **数据契约与维护职责正本**：同目录 `protocol.md`「state.json（数据契约与维护职责）」节；渲染行为与启动方式见 `doc/skills/team-board/SKILL.md`。
+- **数据契约与维护职责正本**：同目录 `protocol.md`「state.json（数据契约与维护职责）」节；渲染行为与启动方式见 `doc/skills/team/board/SKILL.md`。
 
-## 8. 并行模式（team-parallel skill）
+## 8. 并行模式（team/parallel 组件）
 
-串行为默认。当子任务 ≥2 且授权路径互不相交（或用户明确要求并行）时，TeamLead 执行 `doc/skills/team-parallel/SKILL.md`：
+串行为默认。当子任务 ≥2 且授权路径互不相交（或用户明确要求并行）时，TeamLead 执行 `doc/skills/team/parallel/SKILL.md`：
 
 - **隔离**：每任务一个 git worktree + 分支（仓库内 `.worktrees/<spec>/task-NNN`，`.gitignore` 排除），业务文件互不可见；board 不进 worktree，所有 agent 以绝对路径共享主工作副本的 board
 - **防撞号**：并行任务消息用 `msg-<taskid>-NN` 命名空间，TeamLead 全局消息仍 `msg-NNNN`

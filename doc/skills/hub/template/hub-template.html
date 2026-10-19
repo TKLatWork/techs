@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>模块交付入口</title>
+<style>
+  :root {
+    --bg: #0a0e14;
+    --panel: #111923;
+    --panel-soft: #0d141c;
+    --border: #223041;
+    --border-strong: #304459;
+    --text: #d8e3f0;
+    --text-dim: #8b9bb0;
+    --text-faint: #5f7186;
+    --accent: #58a6ff;
+    --accent-soft: rgba(88, 166, 255, .12);
+    --green: #3fb950;
+    --green-soft: rgba(63, 185, 80, .12);
+    --amber: #d29922;
+    --amber-soft: rgba(210, 153, 34, .14);
+    --red: #f85149;
+    --red-soft: rgba(248, 81, 73, .12);
+    --purple: #bc8cff;
+    --purple-soft: rgba(188, 140, 255, .12);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --mono: "Cascadia Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    --sans: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background:
+      radial-gradient(900px 420px at 12% -8%, rgba(88, 166, 255, .10), transparent 60%),
+      radial-gradient(700px 380px at 92% 0%, rgba(188, 140, 255, .07), transparent 55%),
+      var(--bg);
+    color: var(--text);
+    font: 14px/1.6 var(--sans);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  code {
+    background: #0b121a;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 1px 5px;
+    font: 12.5px/1.5 var(--mono);
+    color: #b9d4f2;
+  }
+
+  .wrap { width: min(1240px, calc(100% - 48px)); margin: 0 auto; }
+
+  .topbar {
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(15, 21, 29, .96), rgba(10, 14, 20, .72));
+  }
+
+  .topbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 22px 0 18px;
+  }
+
+  .brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+
+  .brand-mark {
+    flex: none;
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: linear-gradient(145deg, rgba(88, 166, 255, .26), rgba(188, 140, 255, .18));
+    border: 1px solid rgba(88, 166, 255, .45);
+    color: #cfe6ff;
+    font: 700 11px/1 var(--mono);
+    letter-spacing: .06em;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
+  }
+
+  h1 {
+    font-size: clamp(19px, 2.2vw, 25px);
+    line-height: 1.25;
+    letter-spacing: -.01em;
+    font-weight: 650;
+  }
+
+  .meta-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+    color: var(--text-dim);
+    font: 12px/1.5 var(--mono);
+  }
+
+  .dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--text-faint);
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--border);
+    background: var(--panel-soft);
+    color: var(--text-dim);
+    border-radius: 999px;
+    padding: 5px 11px;
+    font: 11px/1.2 var(--mono);
+    white-space: nowrap;
+  }
+
+  .pill-accent {
+    border-color: rgba(88, 166, 255, .38);
+    background: var(--accent-soft);
+    color: #9ed0ff;
+  }
+
+  .tabbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: rgba(10, 14, 20, .9);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .tabs {
+    display: flex;
+    align-items: stretch;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    padding: 8px 0;
+  }
+
+  .tab {
+    appearance: none;
+    flex: none;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-dim);
+    border-radius: 8px;
+    padding: 9px 13px;
+    font: 500 13px/1.2 var(--sans);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color .16s ease, background .16s ease, border-color .16s ease;
+  }
+
+  .tab:hover { color: var(--text); background: rgba(255, 255, 255, .035); }
+
+  .tab.is-active {
+    color: #dcefff;
+    background: var(--accent-soft);
+    border-color: rgba(88, 166, 255, .36);
+  }
+
+  .tab:focus-visible,
+  .tab-close:focus-visible,
+  .btn:focus-visible,
+  .node:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .dynamic-tabs { display: contents; }
+
+  .tab-item {
+    display: inline-flex;
+    align-items: stretch;
+    flex: none;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: transparent;
+  }
+
+  .tab-item.is-active {
+    border-color: rgba(88, 166, 255, .36);
+    background: var(--accent-soft);
+  }
+
+  .tab-item .tab { border-radius: 8px 0 0 8px; border-color: transparent; background: transparent; }
+  .tab-item .tab:hover { background: rgba(255, 255, 255, .035); }
+  .tab-item .tab.is-active { background: transparent; border-color: transparent; }
+
+  .tab-close {
+    appearance: none;
+    border: 0;
+    border-left: 1px solid rgba(88, 166, 255, .2);
+    background: transparent;
+    color: var(--text-faint);
+    padding: 0 9px;
+    cursor: pointer;
+    font: 15px/1 var(--mono);
+  }
+
+  .tab-close:hover { color: var(--red); background: rgba(248, 81, 73, .1); }
+
+  .main { padding: 22px 0 42px; }
+
+  .load-state {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    margin-bottom: 14px;
+    padding: 11px 14px;
+    border: 1px solid rgba(248, 81, 73, .5);
+    border-radius: var(--radius-sm);
+    background: var(--red-soft);
+    color: #ffb4ae;
+    font-size: 12.5px;
+  }
+
+  .load-state[hidden] { display: none; }
+  .load-state strong { color: #ffd7d3; }
+  .load-state span { color: var(--text-dim); }
+  .load-state code { color: #ffd7d3; border-color: rgba(248, 81, 73, .35); }
+
+  .panel { display: none; }
+  .panel.is-active { display: block; animation: panel-in .2s ease both; }
+
+  @keyframes panel-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .panel-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 12px;
+  }
+
+  .eyebrow {
+    color: var(--accent);
+    font: 10.5px/1.3 var(--mono);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .panel-head h2 { font-size: 17px; font-weight: 620; }
+
+  .panel-sub {
+    color: var(--text-faint);
+    font: 11px/1.5 var(--mono);
+    margin-top: 3px;
+    word-break: break-word;
+  }
+
+  .toolbar-actions { display: flex; flex-wrap: wrap; gap: 7px; }
+
+  .btn {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border: 1px solid var(--border);
+    background: var(--panel-soft);
+    color: var(--text-dim);
+    border-radius: 7px;
+    padding: 6px 10px;
+    font: 11.5px/1.2 var(--mono);
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .btn:hover { border-color: var(--border-strong); color: var(--text); text-decoration: none; }
+  .btn-accent { border-color: rgba(88, 166, 255, .4); color: #9ed0ff; background: var(--accent-soft); }
+
+  .frame {
+    display: block;
+    width: 100%;
+    height: calc(100vh - 252px);
+    min-height: 520px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+  }
+
+  .tree-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background:
+      linear-gradient(rgba(48, 68, 89, .16) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(48, 68, 89, .16) 1px, transparent 1px),
+      linear-gradient(180deg, rgba(17, 25, 35, .96), rgba(13, 20, 28, .96));
+    background-size: 28px 28px, 28px 28px, auto;
+    overflow: auto;
+  }
+
+  .tree {
+    display: block;
+    min-width: 100%;
+  }
+
+  .edge {
+    fill: none;
+    stroke: #304459;
+    stroke-width: 1.5;
+  }
+
+  .node { cursor: pointer; }
+  .node rect {
+    fill: #0d141c;
+    stroke: #2a3b4f;
+    stroke-width: 1.2;
+    transition: stroke .15s ease, fill .15s ease;
+  }
+
+  .node:hover rect { stroke: var(--accent); }
+  .node.status-active rect { fill: rgba(88, 166, 255, .10); stroke: rgba(88, 166, 255, .65); }
+  .node.status-done rect { fill: rgba(63, 185, 80, .10); stroke: rgba(63, 185, 80, .55); }
+  .node.status-invalid rect { fill: rgba(210, 153, 34, .10); stroke: rgba(210, 153, 34, .65); }
+  .node.status-blocked rect { fill: rgba(248, 81, 73, .10); stroke: rgba(248, 81, 73, .6); }
+
+  .node .node-dot { fill: #6e7f93; }
+  .node.status-active .node-dot { fill: var(--accent); filter: drop-shadow(0 0 5px rgba(88, 166, 255, .8)); }
+  .node.status-done .node-dot { fill: var(--green); }
+  .node.status-invalid .node-dot { fill: var(--amber); }
+  .node.status-blocked .node-dot { fill: var(--red); }
+
+  .node .node-name {
+    fill: #d8e3f0;
+    font: 600 12.5px/1.2 var(--sans);
+  }
+
+  .node .node-meta {
+    fill: var(--text-faint);
+    font: 10px/1.2 var(--mono);
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--text-dim);
+    font: 10.5px/1.2 var(--mono);
+    white-space: nowrap;
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--text-faint);
+    flex: none;
+  }
+
+  .status-pending .status-dot { background: #6e7f93; }
+  .status-active .status-dot { background: var(--accent); }
+  .status-done .status-dot { background: var(--green); }
+  .status-invalid .status-dot { background: var(--amber); }
+  .status-blocked .status-dot { background: var(--red); }
+
+  .hint {
+    color: var(--text-faint);
+    font-size: 12px;
+    margin-top: 9px;
+  }
+
+  .empty {
+    color: var(--text-faint);
+    font-size: 12.5px;
+    padding: 28px;
+    text-align: center;
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-sm);
+  }
+
+  .footer {
+    border-top: 1px solid var(--border);
+    color: var(--text-faint);
+    padding: 18px 0 34px;
+    font: 11.5px/1.6 var(--mono);
+  }
+
+  @media (max-width: 780px) {
+    .wrap { width: min(100% - 28px, 1240px); }
+    .topbar-inner { align-items: flex-start; flex-direction: column; padding: 20px 0 16px; }
+    .panel-head { align-items: flex-start; flex-direction: column; gap: 9px; }
+    .legend { justify-content: flex-start; }
+    .frame { height: calc(100vh - 300px); min-height: 460px; }
+    .tab { padding: 8px 11px; font-size: 12px; }
+  }
+
+  @media print {
+    :root { --bg: #fff; --panel: #fff; --panel-soft: #fff; --border: #ccc; --border-strong: #999; --text: #111; --text-dim: #333; --text-faint: #555; }
+    body { background: #fff; }
+    .topbar, .tabbar { position: static; }
+    .tabs, .footer, .toolbar-actions { display: none; }
+    .panel { display: block; }
+    .frame { height: auto; min-height: 0; border: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">SDD</div>
+      <div>
+        <h1 id="hub-title">模块交付入口</h1>
+        <p class="meta-line" id="hub-meta">
+          <span>module</span><span class="dot" aria-hidden="true"></span>
+          <span>version</span><span class="dot" aria-hidden="true"></span>
+          <span>baseline</span><span class="dot" aria-hidden="true"></span>
+          <span>updated</span>
+        </p>
+      </div>
+    </div>
+    <div class="pills">
+      <span class="pill pill-accent">单一入口</span>
+      <span class="pill">NavTabs</span>
+      <span class="pill">零 CDN</span>
+    </div>
+  </div>
+</header>
+
+<nav class="tabbar" aria-label="入口导航">
+  <div class="wrap tabs" role="tablist" aria-label="入口导航">
+    <button class="tab is-active" role="tab" aria-selected="true" aria-controls="panel-status" data-tab="status" id="tab-status">交付状态</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="panel-tree" data-tab="tree" id="tab-tree">模块树</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="panel-team" data-tab="team" id="tab-team">Team 执行</button>
+    <div class="dynamic-tabs" id="dynamic-tabs" role="presentation"></div>
+  </div>
+</nav>
+
+<main class="wrap main" id="panels">
+
+  <div id="load-state" class="load-state" hidden></div>
+
+  <section class="panel is-active" id="panel-status" role="tabpanel" aria-labelledby="tab-status" data-panel="status">
+    <div class="panel-head">
+      <div>
+        <p class="eyebrow">Delivery</p>
+        <h2>交付状态</h2>
+        <p class="panel-sub" id="status-sub">模块 × 阶段矩阵 · 下游锥 · retry log</p>
+      </div>
+      <div class="toolbar-actions">
+        <button type="button" class="btn" id="refresh-status">刷新</button>
+        <a class="btn btn-accent" id="open-status" target="_blank" rel="noopener">新窗口打开</a>
+      </div>
+    </div>
+    <iframe class="frame" id="status-frame" title="交付状态"></iframe>
+  </section>
+
+  <section class="panel" id="panel-tree" role="tabpanel" aria-labelledby="tab-tree" data-panel="tree" hidden>
+    <div class="panel-head">
+      <div>
+        <p class="eyebrow">Module Tree</p>
+        <h2>模块树</h2>
+        <p class="panel-sub">从左到右：根模块 → 子模块；点击节点打开模块文档。</p>
+      </div>
+      <div class="legend" id="tree-legend" aria-label="模块状态图例"></div>
+    </div>
+    <div class="tree-card" id="tree-card">
+      <svg class="tree" id="tree" role="img" aria-label="模块树"></svg>
+    </div>
+    <p class="hint">模块状态为摘要，需与「交付状态」页保持同步；模块文档在动态 tab 中打开，也可在新窗口打开。</p>
+  </section>
+
+  <section class="panel" id="panel-team" role="tabpanel" aria-labelledby="tab-team" data-panel="team" hidden>
+    <div class="panel-head">
+      <div>
+        <p class="eyebrow">Execution</p>
+        <h2>Team 执行</h2>
+        <p class="panel-sub" id="team-sub">任务 / 消息 / agent 状态盘</p>
+      </div>
+      <div class="toolbar-actions">
+        <button type="button" class="btn" id="refresh-team">刷新</button>
+        <a class="btn btn-accent" id="open-team" target="_blank" rel="noopener">新窗口打开</a>
+      </div>
+    </div>
+    <iframe class="frame" id="team-frame" title="Team 执行"></iframe>
+  </section>
+
+</main>
+
+<footer class="wrap footer">hub skill · hub-template · 单一入口 · 零 CDN · JSON: hub.json</footer>
+
+
+
+<script>
+(function () {
+  var STATUS = {
+    pending: { label: '待开始' },
+    active: { label: '进行中' },
+    done: { label: '已完成' },
+    invalid: { label: '需重算' },
+    blocked: { label: '阻塞' }
+  };
+  var data = {};
+  var modules = [];
+  var components = {};
+  var moduleMap = {};
+  var panelMap = {};
+  var activeTab = 'status';
+
+  function escapeHtml(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function (char) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char];
+    });
+  }
+
+  function safeId(value) {
+    return String(value).replace(/[^a-zA-Z0-9_-]/g, '_');
+  }
+
+  function resolvePath(path) {
+    return path || '';
+  }
+
+  function withEmbed(path) {
+    if (!path) return '';
+    return path + (path.indexOf('?') === -1 ? '?' : '&') + 'embed=1';
+  }
+
+  function moduleDoc(module) {
+    return resolvePath(module.doc) || resolvePath(components.moduleDoc) || 'spec-doc-template.html';
+  }
+
+  function openDoc(module, embed) {
+    var path = moduleDoc(module);
+    return embed ? withEmbed(path) : path;
+  }
+
+  function statusOf(module) {
+    return STATUS[module.status] || STATUS.pending;
+  }
+
+  function renderHeader() {
+    var title = data.title || '模块交付入口';
+    document.title = title;
+    document.getElementById('hub-title').textContent = title;
+    document.getElementById('hub-meta').innerHTML = [
+      escapeHtml(data.title || 'module'),
+      escapeHtml(data.version || 'version'),
+      'baseline ' + escapeHtml(data.baseline || 'HEAD'),
+      'updated ' + escapeHtml(data.updated || '—')
+    ].map(function (item) { return '<span>' + item + '</span>'; }).join('<span class="dot" aria-hidden="true"></span>');
+  }
+
+  function renderStatusFrame() {
+    var statusPath = resolvePath(components.status);
+    var frame = document.getElementById('status-frame');
+    var open = document.getElementById('open-status');
+    if (statusPath) {
+      frame.src = withEmbed(statusPath);
+      open.href = statusPath;
+    } else {
+      frame.removeAttribute('src');
+      open.removeAttribute('href');
+    }
+    document.getElementById('status-sub').textContent = statusPath || '未配置 components.status';
+  }
+
+  function renderTeamFrame() {
+    var teamPath = resolvePath(components.teamBoard);
+    var frame = document.getElementById('team-frame');
+    var open = document.getElementById('open-team');
+    if (teamPath) {
+      frame.src = teamPath;
+      open.href = teamPath;
+    } else {
+      frame.removeAttribute('src');
+      open.removeAttribute('href');
+    }
+    document.getElementById('team-sub').textContent = teamPath || '未配置 components.teamBoard';
+  }
+
+  function renderLegend() {
+    document.getElementById('tree-legend').innerHTML = Object.keys(STATUS).map(function (status) {
+      return '<span class="legend-item status-' + status + '"><span class="status-dot"></span>' + escapeHtml(STATUS[status].label) + '</span>';
+    }).join('');
+  }
+
+  function buildTree() {
+    if (!modules.length) {
+      document.getElementById('tree-card').innerHTML = '<div class="empty">暂无模块，请填写 hub.json 的 modules</div>';
+      return;
+    }
+
+    var children = {};
+    var roots = [];
+
+    modules.forEach(function (module) {
+      var parent = module.parent;
+      if (parent && moduleMap[parent]) {
+        if (!children[parent]) children[parent] = [];
+        children[parent].push(module);
+      } else {
+        roots.push(module);
+      }
+    });
+
+    var NODE_W = 190;
+    var NODE_H = 56;
+    var COL_GAP = 84;
+    var ROW_GAP = 26;
+    var MARGIN_X = 24;
+    var MARGIN_Y = 24;
+    var positions = {};
+    var leafY = MARGIN_Y;
+    var maxDepth = 0;
+
+    function layout(module, depth) {
+      maxDepth = Math.max(maxDepth, depth);
+      var list = children[module.id] || [];
+      var y;
+      if (list.length) {
+        var childYs = list.map(function (child) {
+          return layout(child, depth + 1);
+        });
+        y = (Math.min.apply(null, childYs) + Math.max.apply(null, childYs)) / 2;
+      } else {
+        y = leafY;
+        leafY += NODE_H + ROW_GAP;
+      }
+      positions[module.id] = {
+        x: MARGIN_X + depth * (NODE_W + COL_GAP),
+        y: y,
+        depth: depth,
+        module: module
+      };
+      return y;
+    }
+
+    roots.forEach(function (root) { layout(root, Number(root.depth || 0)); });
+
+    var width = MARGIN_X * 2 + (maxDepth + 1) * NODE_W + maxDepth * COL_GAP;
+    var height = Math.max(leafY + MARGIN_Y, 180);
+    var svg = document.getElementById('tree');
+    svg.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+    svg.setAttribute('width', width);
+    svg.setAttribute('height', height);
+
+    var parts = [];
+    modules.forEach(function (module) {
+      var parent = module.parent;
+      if (!parent || !positions[parent] || !positions[module.id]) return;
+      var from = positions[parent];
+      var to = positions[module.id];
+      var x1 = from.x + NODE_W;
+      var y1 = from.y + NODE_H / 2;
+      var x2 = to.x;
+      var y2 = to.y + NODE_H / 2;
+      var mid = x1 + (x2 - x1) / 2;
+      parts.push('<path class="edge" d="M ' + x1 + ' ' + y1 + ' C ' + mid + ' ' + y1 + ', ' + mid + ' ' + y2 + ', ' + x2 + ' ' + y2 + '"/>');
+    });
+
+    modules.forEach(function (module) {
+      var point = positions[module.id];
+      if (!point) return;
+      var status = STATUS[module.status] ? module.status : 'pending';
+      var label = statusOf(module).label;
+      var name = String(module.name || module.id);
+      var displayName = name.length > 20 ? name.slice(0, 19) + '…' : name;
+      var docLabel = moduleDoc(module) ? 'doc' : 'template';
+      parts.push(
+        '<g class="node status-' + status + '" transform="translate(' + point.x + ',' + point.y + ')" tabindex="0" role="button" data-module="' + escapeHtml(module.id) + '" aria-label="打开 ' + escapeHtml(name) + ' 的模块文档">' +
+          '<title>' + escapeHtml(name + ' · ' + (module.summary || '')) + '</title>' +
+          '<rect width="' + NODE_W + '" height="' + NODE_H + '" rx="10"></rect>' +
+          '<circle class="node-dot" cx="14" cy="17" r="4"></circle>' +
+          '<text class="node-name" x="25" y="21">' + escapeHtml(displayName) + '</text>' +
+          '<text class="node-meta" x="14" y="42">' + escapeHtml(label + ' · ' + docLabel) + '</text>' +
+        '</g>'
+      );
+    });
+
+    svg.innerHTML = parts.join('');
+  }
+
+  function bindTree() {
+    document.querySelectorAll('.node').forEach(function (node) {
+      function open() {
+        var moduleId = node.getAttribute('data-module');
+        if (moduleMap[moduleId]) openModule(moduleId);
+      }
+      node.addEventListener('click', open);
+      node.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          open();
+        }
+      });
+    });
+  }
+
+  function setActiveTab(tabId) {
+    activeTab = tabId;
+    document.querySelectorAll('.tab').forEach(function (tab) {
+      var on = tab.getAttribute('data-tab') === tabId;
+      tab.classList.toggle('is-active', on);
+      tab.setAttribute('aria-selected', String(on));
+      tab.setAttribute('tabindex', on ? '0' : '-1');
+      var item = tab.parentElement;
+      if (item && item.classList.contains('tab-item')) {
+        item.classList.toggle('is-active', on);
+      }
+    });
+    document.querySelectorAll('.panel').forEach(function (panel) {
+      var on = panel.getAttribute('data-panel') === tabId;
+      panel.classList.toggle('is-active', on);
+      panel.hidden = !on;
+    });
+  }
+
+  function openModule(moduleId) {
+    var module = moduleMap[moduleId];
+    if (!module) return;
+    var tabId = 'module-' + safeId(moduleId);
+    var panelId = 'panel-' + tabId;
+
+    if (panelMap[tabId]) {
+      setActiveTab(tabId);
+      return;
+    }
+
+    var item = document.createElement('div');
+    item.className = 'tab-item';
+    item.setAttribute('role', 'presentation');
+    item.setAttribute('data-item', tabId);
+    item.innerHTML =
+      '<button class="tab" role="tab" aria-selected="false" aria-controls="' + panelId + '" data-tab="' + escapeHtml(tabId) + '">' + escapeHtml(module.name || module.id) + '</button>' +
+      '<button class="tab-close" type="button" aria-label="关闭 ' + escapeHtml(module.name || module.id) + '">×</button>';
+
+    var tabButton = item.querySelector('.tab');
+    var closeButton = item.querySelector('.tab-close');
+    tabButton.id = 'tab-' + tabId;
+    tabButton.addEventListener('click', function () { setActiveTab(tabId); });
+    closeButton.addEventListener('click', function (event) {
+      event.stopPropagation();
+      closeModule(tabId);
+    });
+
+    var panel = document.createElement('section');
+    panel.className = 'panel';
+    panel.id = panelId;
+    panel.setAttribute('role', 'tabpanel');
+    panel.setAttribute('aria-labelledby', tabButton.id);
+    panel.setAttribute('data-panel', tabId);
+    panel.hidden = true;
+    panel.innerHTML =
+      '<div class="panel-head">' +
+        '<div>' +
+          '<p class="eyebrow">Module</p>' +
+          '<h2>' + escapeHtml(module.name || module.id) + '</h2>' +
+          '<p class="panel-sub">' + escapeHtml(module.summary || '') + '</p>' +
+        '</div>' +
+        '<div class="toolbar-actions">' +
+          '<button type="button" class="btn" data-refresh="' + escapeHtml(tabId) + '">刷新</button>' +
+          '<a class="btn btn-accent" href="' + escapeHtml(openDoc(module, false)) + '" target="_blank" rel="noopener">新窗口打开</a>' +
+        '</div>' +
+      '</div>' +
+      '<iframe class="frame" title="' + escapeHtml(module.name || module.id) + ' 模块文档" src="' + escapeHtml(openDoc(module, true)) + '"></iframe>';
+
+    document.getElementById('dynamic-tabs').appendChild(item);
+    document.getElementById('panels').appendChild(panel);
+    panelMap[tabId] = panel;
+
+    panel.querySelector('[data-refresh]').addEventListener('click', function () {
+      var frame = panel.querySelector('iframe');
+      frame.src = frame.src;
+    });
+
+    setActiveTab(tabId);
+  }
+
+  function closeModule(tabId) {
+    var item = document.querySelector('[data-item="' + tabId + '"]');
+    var panel = panelMap[tabId];
+    if (item) item.remove();
+    if (panel) panel.remove();
+    delete panelMap[tabId];
+    if (activeTab === tabId) setActiveTab('status');
+  }
+
+  document.querySelectorAll('.tab[data-tab="status"], .tab[data-tab="tree"], .tab[data-tab="team"]').forEach(function (tab) {
+    tab.addEventListener('click', function () { setActiveTab(tab.getAttribute('data-tab')); });
+  });
+
+  document.getElementById('refresh-status').addEventListener('click', function () {
+    var frame = document.getElementById('status-frame');
+    if (frame.getAttribute('src')) frame.src = frame.getAttribute('src');
+  });
+
+  document.getElementById('refresh-team').addEventListener('click', function () {
+    var frame = document.getElementById('team-frame');
+    if (frame.getAttribute('src')) frame.src = frame.getAttribute('src');
+  });
+
+  function boot(payload) {
+    data = payload || {};
+    modules = Array.isArray(data.modules) ? data.modules : [];
+    components = data.components || {};
+    moduleMap = {};
+    panelMap = {};
+    activeTab = 'status';
+
+    modules.forEach(function (module) {
+      moduleMap[module.id] = module;
+    });
+
+    document.getElementById('dynamic-tabs').innerHTML = '';
+    document.querySelectorAll('.panel[data-panel^="module-"]').forEach(function (panel) { panel.remove(); });
+    document.getElementById('load-state').hidden = true;
+
+    renderHeader();
+    renderStatusFrame();
+    renderTeamFrame();
+    renderLegend();
+    buildTree();
+    bindTree();
+    setActiveTab('status');
+  }
+
+  function showError(error) {
+    var banner = document.getElementById('load-state');
+    banner.hidden = false;
+    banner.innerHTML =
+      '<strong>入口数据加载失败</strong>' +
+      '<span>' + escapeHtml(error && error.message ? error.message : '未知错误') + '</span>' +
+      '<span>请通过 HTTP 打开：<code>npx -y http-server doc\\skills\\spec-doc-gen\\template -p 8788 -c-1</code></span>';
+  }
+
+  function loadData() {
+    var dataUrl = new URLSearchParams(window.location.search).get('data') || 'hub.json';
+    fetch(dataUrl, { cache: 'no-store' })
+      .then(function (response) {
+        if (!response.ok) throw new Error('HTTP ' + response.status + ' ' + response.statusText);
+        return response.json();
+      })
+      .then(boot)
+      .catch(showError);
+  }
+
+  loadData();
+})();
+</script>
+</body>
+</html>

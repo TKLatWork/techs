@@ -1,16 +1,16 @@
 # SDD spec 分步实现指南（impl-guide）
 
-> 状态：draft v0.10.0 ｜ 日期：2026-10-18 ｜ 维护者：TeamLead（用户指令）
+> 状态：draft v0.10.1 ｜ 日期：2026-10-19 ｜ 维护者：TeamLead（用户指令）
 
-本指南定义给定一份 SDD spec（spec-driven-dev 产出的五 tab 单文件 HTML 文档）的分步实现工作流：**Contract 先行**，起点是 **spec-doc**，主干为**四段**。核心要求：**按当前的 spec 实现 Contract**（硬约束 R1/R2/R3 见 sub-steps flow ① Contract imple 段）。
+本指南定义给定一份 SDD spec（spec-doc-gen 产出的五 tab 单文件 HTML 文档）的分步实现工作流：**Contract 先行**，起点是 **spec-doc**，主干为**四段**。核心要求：**按当前的 spec 实现 Contract**（硬约束 R1/R2/R3 见 sub-steps flow ① Contract imple 段）。
 
-> 沿革：v0.2.0 起以 Contract 替代「契约」（用户指令）；v0.3.0 起起点显式为 spec-doc；v0.5.0 清除自行发明内容；v0.6.0 「分段 flow 图」更名 **sub-steps flow**（markdown 无原生 tabs，沿用 `<details>` 展开收起——用户确认）；v0.7.0 按用户指令合并原段①/②为 **Contract imple**（四段主干），移除面板内全部规则细节——只要求按当前的 spec 实现 Contract；v0.8.0 加入用户补充要求 3 条（Contract version meta 与 spec 一致 / 与 Impl 保持隔离如分子包 / 公共方法提供主要流程注释）；v0.9.0 移除顶部 R1/R2/R3 与用户补充两段原话块——要求内容完整收入 sub-steps flow「① Contract imple」段 flow 图节点（D/E/F）；v0.10.0 按用户指令移除「验收清单（逐项核对）」整节。
+> 沿革：v0.2.0 起以 Contract 替代「契约」（用户指令）；v0.3.0 起起点显式为 spec-doc；v0.5.0 清除自行发明内容；v0.6.0 「分段 flow 图」更名 **sub-steps flow**（markdown 无原生 tabs，沿用 `<details>` 展开收起——用户确认）；v0.7.0 按用户指令合并原段①/②为 **Contract imple**（四段主干），移除面板内全部规则细节——只要求按当前的 spec 实现 Contract；v0.8.0 加入用户补充要求 3 条（Contract version meta 与 spec 一致 / 与 Impl 保持隔离如分子包 / 公共方法提供主要流程注释）；v0.9.0 移除顶部 R1/R2/R3 与用户补充两段原话块——要求内容完整收入 sub-steps flow「① Contract imple」段 flow 图节点（D/E/F）；v0.10.0 按用户指令移除「验收清单（逐项核对）」整节；v0.10.1 术语同步 spec-doc-gen（文档生成 skill 拆分）。
 
 ## Terminology
 
 | 术语 | 定义 |
 |---|---|
-| SDD spec | spec-driven-dev 产出给定 scope 的五 tab 单文件可视化文档（概要/需求/对外接口 · 契约/测试/实现设计 · 架构） |
+| SDD spec | spec-doc-gen 产出给定 scope 的五 tab 单文件可视化文档（概要/需求/对外接口 · 契约/测试/实现设计 · 架构） |
 | spec-doc | `doc/spec-doc/` 下作为项目当前文档 source-of-truth 的 SDD spec——**本工作流的起点**；`doc/spec-changes/` 内进行中的 change 草稿不得作为起点 |
 | Contract | 用户定义原话：**API定义 / Interface / Abstract class / Model / test-case 这类切面契约**；全文以 Contract 替代「契约」 |
 | 四段 | Contract imple（起点 spec-doc）→ Contract review → Full impl → Final review（用户指定主干；v0.7.0 由原五段合并 ①/② 而来） |

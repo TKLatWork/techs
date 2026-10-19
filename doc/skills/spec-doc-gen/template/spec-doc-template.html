@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>模块可视化文档</title>
+<style>
+  :root {
+    --bg: #0a0e14;
+    --bg-elevated: #0f151d;
+    --panel: #111923;
+    --panel-soft: #0d141c;
+    --border: #223041;
+    --border-strong: #304459;
+    --text: #d8e3f0;
+    --text-dim: #8b9bb0;
+    --text-faint: #5f7186;
+    --accent: #58a6ff;
+    --accent-soft: rgba(88, 166, 255, .12);
+    --green: #3fb950;
+    --amber: #d29922;
+    --red: #f85149;
+    --purple: #bc8cff;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 18px 48px rgba(0, 0, 0, .35);
+    --mono: "Cascadia Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    --sans: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background:
+      radial-gradient(900px 420px at 12% -8%, rgba(88, 166, 255, .10), transparent 60%),
+      radial-gradient(700px 380px at 92% 0%, rgba(188, 140, 255, .07), transparent 55%),
+      var(--bg);
+    color: var(--text);
+    font: 14px/1.65 var(--sans);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  code {
+    background: #0b121a;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 1px 5px;
+    font: 12.5px/1.5 var(--mono);
+    color: #b9d4f2;
+  }
+
+  .skip {
+    position: absolute;
+    left: 16px;
+    top: -48px;
+    z-index: 30;
+    background: var(--accent);
+    color: #06101b;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: top .18s ease;
+  }
+  .skip:focus { top: 12px; }
+
+  .wrap {
+    width: min(1120px, calc(100% - 48px));
+    margin: 0 auto;
+  }
+
+  .topbar {
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(15, 21, 29, .96), rgba(10, 14, 20, .72));
+  }
+
+  .topbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 24px 0 20px;
+  }
+
+  .brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+
+  .brand-mark {
+    flex: none;
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: linear-gradient(145deg, rgba(88, 166, 255, .26), rgba(188, 140, 255, .18));
+    border: 1px solid rgba(88, 166, 255, .45);
+    color: #cfe6ff;
+    font: 700 12px/1 var(--mono);
+    letter-spacing: .08em;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
+  }
+
+  .brand-text { min-width: 0; }
+
+  h1 {
+    font-size: clamp(19px, 2.2vw, 25px);
+    line-height: 1.25;
+    letter-spacing: -.01em;
+    font-weight: 650;
+  }
+
+  .meta-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+    color: var(--text-dim);
+    font: 12px/1.5 var(--mono);
+  }
+
+  .dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--text-faint);
+  }
+
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--border);
+    background: var(--panel-soft);
+    color: var(--text-dim);
+    border-radius: 999px;
+    padding: 5px 11px;
+    font: 11px/1.2 var(--mono);
+    white-space: nowrap;
+  }
+
+  .pill-accent {
+    border-color: rgba(88, 166, 255, .38);
+    background: var(--accent-soft);
+    color: #9ed0ff;
+  }
+
+  .template-meta { margin: 14px auto 0; }
+
+  .template-meta details {
+    border: 1px dashed var(--border);
+    background: rgba(13, 20, 28, .62);
+    border-radius: var(--radius-sm);
+    padding: 0 14px;
+  }
+
+  .template-meta summary {
+    cursor: pointer;
+    padding: 10px 0;
+    color: var(--text-dim);
+    font: 12px/1.4 var(--mono);
+    list-style: none;
+  }
+
+  .template-meta summary::-webkit-details-marker { display: none; }
+  .template-meta summary::before { content: "▸ "; color: var(--accent); }
+  .template-meta details[open] summary::before { content: "▾ "; }
+
+  .template-meta .details-body {
+    border-top: 1px solid var(--border);
+    padding: 12px 0 14px 18px;
+    color: var(--text-dim);
+    font-size: 12.5px;
+  }
+
+  .template-meta ol { padding-left: 18px; }
+  .template-meta li + li { margin-top: 5px; }
+
+  .tabbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    margin-top: 18px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: rgba(10, 14, 20, .88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .tabs {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    padding: 8px 0;
+  }
+
+  .tab {
+    flex: none;
+    appearance: none;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-dim);
+    border-radius: 8px;
+    padding: 9px 14px;
+    font: 500 13px/1.2 var(--sans);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color .16s ease, background .16s ease, border-color .16s ease;
+  }
+
+  .tab:hover { color: var(--text); background: rgba(255, 255, 255, .035); }
+
+  .tab.is-active {
+    color: #dcefff;
+    background: var(--accent-soft);
+    border-color: rgba(88, 166, 255, .36);
+  }
+
+  .tab:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .main { padding: 30px 0 48px; }
+
+  .load-state {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    margin-bottom: 14px;
+    padding: 11px 14px;
+    border: 1px solid rgba(248, 81, 73, .5);
+    border-radius: var(--radius-sm);
+    background: var(--red-soft);
+    color: #ffb4ae;
+    font-size: 12.5px;
+  }
+
+  .load-state[hidden] { display: none; }
+  .load-state strong { color: #ffd7d3; }
+  .load-state span { color: var(--text-dim); }
+  .load-state code { color: #ffd7d3; border-color: rgba(248, 81, 73, .35); }
+
+  .panel[hidden] { display: none; }
+
+  .panel {
+    animation: panel-in .22s ease both;
+  }
+
+  @keyframes panel-in {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .panel-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 14px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .eyebrow {
+    color: var(--accent);
+    font: 11px/1.3 var(--mono);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .panel-head h2 {
+    font-size: 20px;
+    font-weight: 640;
+    letter-spacing: -.01em;
+  }
+
+  .panel-note {
+    max-width: 420px;
+    color: var(--text-faint);
+    font-size: 12.5px;
+    text-align: right;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .grid > .span-2 { grid-column: 1 / -1; }
+
+  .block {
+    background: linear-gradient(180deg, rgba(17, 25, 35, .96), rgba(13, 20, 28, .96));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px 18px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .025) inset;
+  }
+
+  .block h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #c7d8ea;
+    margin-bottom: 10px;
+  }
+
+  .block h3::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 2px;
+    background: var(--accent);
+    box-shadow: 0 0 12px rgba(88, 166, 255, .5);
+  }
+
+  .placeholder {
+    display: grid;
+    place-items: center;
+    min-height: 94px;
+    padding: 18px;
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-sm);
+    background:
+      linear-gradient(180deg, rgba(88, 166, 255, .035), transparent 70%),
+      rgba(8, 13, 19, .45);
+    color: var(--text-faint);
+    font-size: 12.5px;
+    text-align: center;
+    line-height: 1.7;
+  }
+
+  .placeholder::before {
+    content: "+";
+    display: block;
+    margin-bottom: 4px;
+    color: var(--border-strong);
+    font: 300 22px/1 var(--mono);
+  }
+
+  .prose {
+    color: var(--text-dim);
+    font-size: 13px;
+    line-height: 1.75;
+  }
+
+  .prose-text { white-space: pre-wrap; }
+  .prose p + p { margin-top: 8px; }
+
+  .list {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--text-dim);
+    font-size: 13px;
+    line-height: 1.75;
+  }
+
+  .list li + li { margin-top: 5px; }
+
+  .table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .table th,
+  .table td {
+    text-align: left;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    font-size: 13px;
+  }
+
+  .table tr:last-child th,
+  .table tr:last-child td { border-bottom: 0; }
+
+  .table th {
+    background: rgba(255, 255, 255, .025);
+    color: var(--text-dim);
+    font: 500 11px/1.3 var(--mono);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  .table td.is-placeholder {
+    color: var(--text-faint);
+    font-style: italic;
+  }
+
+  .fold {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: rgba(8, 13, 19, .35);
+    padding: 0 14px;
+  }
+
+  .fold summary {
+    cursor: pointer;
+    padding: 11px 0;
+    color: var(--text-dim);
+    font-size: 12.5px;
+    list-style: none;
+  }
+
+  .fold summary::-webkit-details-marker { display: none; }
+  .fold summary::before { content: "▸ "; color: var(--accent); }
+  .fold[open] summary::before { content: "▾ "; }
+
+  .fold .fold-body {
+    border-top: 1px solid var(--border);
+    padding: 14px 0;
+  }
+
+  .footer {
+    border-top: 1px solid var(--border);
+    color: var(--text-faint);
+    padding: 18px 0 34px;
+    font: 11.5px/1.6 var(--mono);
+  }
+
+  body.is-embed .topbar,
+  body.is-embed .template-meta,
+  body.is-embed .footer { display: none; }
+  body.is-embed .main { padding-top: 18px; }
+
+  @media (max-width: 760px) {
+    .wrap { width: min(100% - 28px, 1120px); }
+    .topbar-inner { align-items: flex-start; flex-direction: column; padding: 20px 0 16px; }
+    .pills { padding-left: 60px; }
+    .grid { grid-template-columns: 1fr; }
+    .grid > .span-2 { grid-column: auto; }
+    .panel-head { align-items: flex-start; flex-direction: column; gap: 8px; }
+    .panel-note { text-align: left; }
+    .tab { padding: 8px 11px; font-size: 12px; }
+  }
+
+  @media print {
+    :root { --bg: #fff; --text: #111; --text-dim: #333; --text-faint: #555; --panel: #fff; --panel-soft: #fff; --border: #ccc; --border-strong: #999; }
+    body { background: #fff; }
+    .topbar, .tabbar { position: static; }
+    .tabs, .template-meta, .footer { display: none; }
+    .panel[hidden] { display: block; }
+    .block { break-inside: avoid; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">跳到主内容</a>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">SDD</div>
+      <div class="brand-text">
+        <h1>模块可视化文档</h1>
+        <p class="meta-line">
+          <span>scope 描述</span>
+          <span class="dot" aria-hidden="true"></span>
+          <span>v0.0.0</span>
+          <span class="dot" aria-hidden="true"></span>
+          <span>YYYY-MM-DD</span>
+          <span class="dot" aria-hidden="true"></span>
+          <span>基线 commit</span>
+        </p>
+      </div>
+    </div>
+    <div class="pills" aria-label="文档属性">
+      <span class="pill pill-accent">零 CDN</span>
+      <span class="pill">单文件</span>
+      <span class="pill">五 tab</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap template-meta">
+  <details>
+    <summary>模板使用说明</summary>
+    <div class="details-body">
+      <ol>
+        <li>遵循 <code>doc/rule/doc-viz/SKILL.md</code>：时序 → 序列图，状态 → 有向边，结构 → 层级，清单 → 表格。</li>
+        <li>内容由 <code>spec-doc.json</code> 驱动；保持五 tab、section 结构与 <code>data-section</code> id，不改渲染逻辑。</li>
+        <li>每条结论带 <code>path:line</code> 锚点；代码中没有依据的内容写 <code>TODO</code>。</li>
+        <li>零 CDN：不引入外部脚本、样式、字体或图片 URL。</li>
+        <li>通过 HTTP 打开（<code>fetch</code> 需要同源）：<code>npx -y http-server doc\skills\spec-doc-gen\template -p 8788 -c-1</code>。</li>
+      </ol>
+    </div>
+  </details>
+</div>
+
+<nav class="tabbar" aria-label="文档章节">
+  <div class="wrap tabs" role="tablist" aria-label="文档章节">
+    <button class="tab is-active" id="t-overview" role="tab" aria-selected="true" aria-controls="p-overview" data-panel="overview" tabindex="0">模块概要</button>
+    <button class="tab" id="t-requirement" role="tab" aria-selected="false" aria-controls="p-requirement" data-panel="requirement" tabindex="-1">需求</button>
+    <button class="tab" id="t-contract" role="tab" aria-selected="false" aria-controls="p-contract" data-panel="contract" tabindex="-1">对外接口 / 契约</button>
+    <button class="tab" id="t-test" role="tab" aria-selected="false" aria-controls="p-test" data-panel="test" tabindex="-1">测试</button>
+    <button class="tab" id="t-design" role="tab" aria-selected="false" aria-controls="p-design" data-panel="design" tabindex="-1">实现设计 / 架构</button>
+  </div>
+</nav>
+
+<main id="main" class="wrap main">
+
+  <div id="load-state" class="load-state" hidden></div>
+
+  <section class="panel is-active" id="p-overview" role="tabpanel" aria-labelledby="t-overview" data-panel="overview">
+    <div class="panel-head">
+      <div>
+        <p class="eyebrow">01 / Overview</p>
+        <h2>模块概要</h2>
+      </div>
+      <p class="panel-note">读者先在这里判断：这个模块做什么、边界在哪、从哪里进入。</p>
+    </div>
+
+    <div class="grid">
+      <section class="block span-2">
+        <h3>概述</h3>
+        <div data-section="overview.summary">
+          <div class="placeholder">模块职责、边界、主要入口与关键依赖<br>每条结论标注 path:line</div>
+        </div>
+      </section>
+
+      <section class="block span-2">
+        <h3>概要图</h3>
+        <div data-section="overview.diagram">
+          <div class="placeholder">架构拓扑 / 数据流 / 状态机 —— 选一个最能表达模块结构的图</div>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <section class="panel" id="p-requirement" role="tabpanel" aria-labelledby="t-requirement" data-panel="requirement" hidden>
+    <div class="panel-head">
+      <div>
+        <p class="eyebrow">02 / Requirement</p>
+        <h2>需求</h2>
+      </div>
+      <p class="panel-note">只写代码与测试能证明的行为；推断不出的需求标 TODO。</p>
+    </div>
+
+    <div class="grid">
+      <section class="block span-2">
+        <h3>Terminology</h3>
+        <div data-section="requirement.terminology">
+          <table class="table">
+            <thead>
+              <tr><th>术语</th><th>定义</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="is-placeholder">术语</td><td class="is-placeholder">定义（全文档统一）</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="block">
+        <h3>用户场景图示</h3>
+        <div data-section="requirement.scenarios">
+          <div class="placeholder">用例 / 场景 / 用户故事图</div>
+        </div>
+      </section>
+
+      <section class="block">
+        <h3>行为契约图示</h3>
+        <div data-section="requirement.behavior">
+          <div class="placeholder">输入 → 输出 → 副作用</div>
+        </div>
+      </section>
+
+      <section class="block span-2">
+        <details class="fold">
+          <summary>需求细则与图示（按需折叠）</summary>
+          <div class="fold-body">
+            <div data-section="requirement.details">
+              <div class="placeholder">详细用例图 / 边界条件 / 错误场景</div>
+            </div>
+          </div>
+        </details>
+      </section>
+    </div>
+  </section>
+
+  <section class="panel" id="p-contract" role="tabpanel" aria-labelledby="t-contract" data-panel="contract" hidden>
+    <div class="panel-head">
+      <div>
+        <p class="eyebrow">03 / Contract</p>
+        <h2>对外接口 / 契约</h2>
+      </div>
+      <p class="panel-note">实现前先冻结这一页：签名、模型、错误与状态枚举。</p>
+    </div>
+
+    <div class="grid">
+      <section class="block">
+        <h3>对外接口</h3>
+        <div data-section="contract.api">
+          <div class="placeholder">API 签名 / 方法列表 / 参数说明<br>来自 public 声明与类型定义</div>
+        </div>
+      </section>
+
+      <section class="block">
+        <h3>数据契约</h3>
+        <div data-section="contract.data">
+          <div class="placeholder">输入/输出 schema · 错误码 · 状态枚举</div>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <section class="panel" id="p-test" role="tabpanel" aria-labelledby="t-test" data-panel="test" hidden>
+    <div class="panel-head">
+      <div>
+        <p class="eyebrow">04 / Test</p>
+        <h2>测试</h2>
+      </div>
+      <p class="panel-note">现有用例映射到契约项；没有覆盖的契约项单列缺口。</p>
+    </div>
+
+    <div class="grid">
+      <section class="block span-2">
+        <h3>测试用例</h3>
+        <div data-section="test.cases">
+          <table class="table">
+            <thead>
+              <tr><th>场景</th><th>输入</th><th>期望输出</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="is-placeholder">场景</td>
+                <td class="is-placeholder">输入</td>
+                <td class="is-placeholder">期望输出</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="block">
+        <h3>测试环境</h3>
+        <div data-section="test.environment">
+          <div class="placeholder">硬件 / OS / 依赖版本 / 配置</div>
+        </div>
+      </section>
+
+      <section class="block">
+        <h3>预设测试场景数据</h3>
+        <div data-section="test.fixtures">
+          <div class="placeholder">输入数据 / mock / fixture</div>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <section class="panel" id="p-design" role="tabpanel" aria-labelledby="t-design" data-panel="design" hidden>
+    <div class="panel-head">
+      <div>
+        <p class="eyebrow">05 / Design</p>
+        <h2>实现设计 / 架构</h2>
+      </div>
+      <p class="panel-note">依赖方向、子模块边界与不可逆决策；实现细节不要抄代码。</p>
+    </div>
+
+    <div class="grid">
+      <section class="block span-2">
+        <h3>架构总览</h3>
+        <div data-section="design.architecture">
+          <div class="placeholder">组件拓扑图 / 数据流图 / 依赖方向</div>
+        </div>
+      </section>
+
+      <section class="block">
+        <h3>子模块</h3>
+        <div data-section="design.submodules">
+          <div class="placeholder">数据结构 / 状态机 / 关键接口</div>
+        </div>
+      </section>
+
+      <section class="block">
+        <h3>技术决策</h3>
+        <div data-section="design.decisions">
+          <div class="placeholder">选型理由 / 权衡记录 / 约束</div>
+        </div>
+      </section>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap footer">生成自 spec-doc-gen · 零 CDN · JSON: spec-doc.json</footer>
+
+<script>
+(function () {
+  if (new URLSearchParams(window.location.search).get('embed') === '1') {
+    document.body.classList.add('is-embed');
+  }
+
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+  var loadState = document.getElementById('load-state');
+
+  function activate(name, focus) {
+    var selected = tabs.filter(function (tab) { return tab.dataset.panel === name; })[0];
+    if (!selected) return;
+
+    tabs.forEach(function (tab) {
+      var on = tab === selected;
+      tab.classList.toggle('is-active', on);
+      tab.setAttribute('aria-selected', String(on));
+      tab.tabIndex = on ? 0 : -1;
+    });
+
+    panels.forEach(function (panel) {
+      var on = panel.dataset.panel === name;
+      panel.classList.toggle('is-active', on);
+      panel.hidden = !on;
+    });
+
+    if (focus) selected.focus();
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState(null, '', '#' + name);
+    }
+  }
+
+  tabs.forEach(function (tab, index) {
+    tab.addEventListener('click', function () {
+      activate(tab.dataset.panel);
+    });
+
+    tab.addEventListener('keydown', function (event) {
+      var next = null;
+      if (event.key === 'ArrowRight') next = tabs[(index + 1) % tabs.length];
+      if (event.key === 'ArrowLeft') next = tabs[(index - 1 + tabs.length) % tabs.length];
+      if (event.key === 'Home') next = tabs[0];
+      if (event.key === 'End') next = tabs[tabs.length - 1];
+      if (next) {
+        event.preventDefault();
+        activate(next.dataset.panel, true);
+      }
+    });
+  });
+
+  var initial = window.location.hash.replace('#', '');
+  if (tabs.some(function (tab) { return tab.dataset.panel === initial; })) {
+    activate(initial);
+  }
+
+  function escapeHtml(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function (char) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char];
+    });
+  }
+
+  function renderSection(section) {
+    var type = section.type || 'placeholder';
+
+    if (type === 'table') {
+      var headers = Array.isArray(section.headers) ? section.headers : [];
+      var rows = Array.isArray(section.rows) ? section.rows : [];
+      return '<table class="table">' +
+        (headers.length ? '<thead><tr>' + headers.map(function (header) {
+          return '<th>' + escapeHtml(header) + '</th>';
+        }).join('') + '</tr></thead>' : '') +
+        '<tbody>' + rows.map(function (row) {
+          return '<tr>' + (Array.isArray(row) ? row : []).map(function (cell) {
+            return '<td>' + escapeHtml(cell) + '</td>';
+          }).join('') + '</tr>';
+        }).join('') + '</tbody>' +
+      '</table>';
+    }
+
+    if (type === 'list') {
+      var items = Array.isArray(section.items) ? section.items : [];
+      return '<ul class="list">' + items.map(function (item) {
+        return '<li>' + escapeHtml(item) + '</li>';
+      }).join('') + '</ul>';
+    }
+
+    if (type === 'text') {
+      return '<div class="prose prose-text">' + escapeHtml(section.content || '') + '</div>';
+    }
+
+    if (type === 'html') {
+      return '<div class="prose">' + (section.content || '') + '</div>';
+    }
+
+    return '<div class="placeholder">' + (section.content || '') + '</div>';
+  }
+
+  function applyData(data) {
+    var meta = data.meta || {};
+
+    if (meta.title) {
+      document.title = meta.title;
+      var heading = document.querySelector('h1');
+      if (heading) heading.textContent = meta.title;
+    }
+
+    var metaLine = document.querySelector('.meta-line');
+    if (metaLine) {
+      var parts = [meta.scope, meta.version, meta.date, meta.baseline].filter(function (item) {
+        return item !== undefined && item !== null && item !== '';
+      });
+      if (parts.length) {
+        metaLine.innerHTML = parts.map(function (item) {
+          return '<span>' + escapeHtml(item) + '</span>';
+        }).join('<span class="dot" aria-hidden="true"></span>');
+      }
+    }
+
+    var sections = data.sections || {};
+    document.querySelectorAll('[data-section]').forEach(function (target) {
+      var section = sections[target.getAttribute('data-section')];
+      if (section) target.innerHTML = renderSection(section);
+    });
+
+    loadState.hidden = true;
+  }
+
+  function showError(error) {
+    loadState.hidden = false;
+    loadState.innerHTML =
+      '<strong>文档数据加载失败</strong>' +
+      '<span>' + escapeHtml(error && error.message ? error.message : '未知错误') + '</span>' +
+      '<span>请通过 HTTP 打开：<code>npx -y http-server doc\\skills\\spec-doc-gen\\template -p 8788 -c-1</code></span>';
+  }
+
+  function loadData() {
+    var dataUrl = new URLSearchParams(window.location.search).get('data') || 'spec-doc.json';
+    fetch(dataUrl, { cache: 'no-store' })
+      .then(function (response) {
+        if (!response.ok) throw new Error('HTTP ' + response.status + ' ' + response.statusText);
+        return response.json();
+      })
+      .then(applyData)
+      .catch(showError);
+  }
+
+  loadData();
+})();
+</script>
+</body>
+</html>

@@ -1,12 +1,14 @@
 ---
 name: team-parallel
-description: TeamLead 并行编排技能：git worktree 分割子任务、经文件 board 并行调度多个 worker、串行 merge 汇合。当子任务 ≥2 且授权路径互不相交、用户要求并行执行、或提到 worktree 分割时使用。不依赖任何 runtime 专有功能，仅需 git CLI + 宿主提供的子代理调用通道。
+description: team 执行器的 parallel 组件：TeamLead 并行编排，git worktree 分割子任务、经文件 board 并行调度多个 worker、串行 merge 汇合。当子任务 ≥2 且授权路径互不相交、用户要求并行执行、或提到 worktree 分割时使用。不依赖任何 runtime 专有功能，仅需 git CLI + 宿主提供的子代理调用通道。
 ---
 
-# team-parallel — TeamLead 并行编排（worktree 分割）
+# team/parallel — TeamLead 并行编排（worktree 分割）
 
-执行者：**TeamLead**（`.github/agents/team-lead.agent.md`）。
-协议基础：`doc/skills/team-core/protocol.md`（必读；本技能只规定并行增量，冲突时以协议正本为准）。
+> 状态：active v1.4.0 ｜ 日期：2026-10-19 ｜ 维护者：Kilo（用户指令）
+
+组件入口，隶属 [`team`](../SKILL.md)。执行者：**TeamLead**（`.github/agents/team-lead.agent.md`）。
+协议基础：`doc/skills/team/core/protocol.md`（必读；本组件只规定并行增量，冲突时以协议正本为准）。
 
 ## Terminology
 
@@ -41,7 +43,7 @@ git status --short
 
 ### 1. 拆分
 
-拆为 N 个不相交并行子任务 + 可选串行收尾任务。每个并行任务确定：授权范围（worktree 内路径）、分支名、确认无相互依赖。
+拆为 N 个不相交并行子任务 + 可选串行收尾任务。每个并行任务确定：授权范围（worktree 内路径）、分支名、确认无相互依赖。SDD 任务在 frontmatter 写 `cell` / `input_versions` / `attempt`；worktree 只隔离实现，不改变 cell 的交付状态。
 
 ### 2. 创建 worktree（每并行任务一个）
 
@@ -73,7 +75,7 @@ branch: spec/<spec>/task-NNN  # 串行任务为 null
 
 调用行模板：
 
-> 你是 <assignee>。spec 根 <spec 目录绝对路径>，新任务 task-NNN。先读 <仓库根>/doc/skills/team-parallel/SKILL.md 的「worker 契约」节与 <仓库根>/doc/skills/team-core/protocol.md，再读 spec 目录下 board/tasks/task-NNN.md 执行。业务文件操作一律在任务文件 `worktree` 字段指定的目录内；board 用绝对路径。
+> 你是 <assignee>。spec 根 <spec 目录绝对路径>，新任务 task-NNN。先读 <仓库根>/doc/skills/team/parallel/SKILL.md 的「worker 契约」节与 <仓库根>/doc/skills/team/core/protocol.md，再读 spec 目录下 board/tasks/task-NNN.md 执行。业务文件操作一律在任务文件 `worktree` 字段指定的目录内；board 用绝对路径。
 
 ### 6. worker 契约（并行增量）
 
@@ -98,7 +100,7 @@ branch: spec/<spec>/task-NNN  # 串行任务为 null
 
 ## 失败处理
 
-- **worker failed**：按协议正本重试规则（每任务 ≤1 次）。已知正本 v0.1 铁律 2 与「修订任务描述」存在矛盾（skills-audit 轮观测发现，该 spec 已删除，见 `doc/skills/team-core/NOTES.md`）：执行时采用「修订内容写入新 task.assign 消息正文，任务文件只重置 status」的方式。重试仍在原 worktree 内进行
+- **worker failed**：按协议正本重试规则（每任务 ≤1 次）。已知正本 v0.1 铁律 2 与「修订任务描述」存在矛盾（skills-audit 轮观测发现，该 spec 已删除，见 `doc/skills/team/core/NOTES.md`）：执行时采用「修订内容写入新 task.assign 消息正文，任务文件只重置 status」的方式。重试仍在原 worktree 内进行
 - **worker 无响应/挂起**：通道超时后 TeamLead 写 `info` 消息，任务重置 `open`，可重建 worktree 重试一次；再失败上报用户
 - **通道无并行能力**：全流程退化为串行执行，隔离性与正确性不受影响
 

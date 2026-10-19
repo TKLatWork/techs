@@ -15,8 +15,8 @@
 | 轮次 | 日期 | spec | 场景 | 消息条数 | schema 符合 | 状态机遵守 | 越权行为 | 备注 |
 |---|---|---|---|---|---|---|---|---|
 | 1 | 2026-10-13 | （chatTeam 旧布局，数据已清） | design §8 旧场景 | 6 | 6/6 | 是 | 无 | 前台+后台各 1 次调用；发现 R2/R3c 文档矛盾（已修） |
-| 2 | 2026-10-15 | skills-audit | design §8 spec 制场景 | 6 | 6/6 | 是（open→claimed→done ×2） | TeamLead 1 次（state.json 漂移，轮内自纠）；research 自报 2 条只读 shell | 两次调用均后台；msg-0005/0006 为真实秒级时间戳；spec 目录已于 2026-10-15 按要求删除（risks.md R1–R9/quickref.md 随之移除，关键发现已吸收进协议 v0.2 并行增量与 team-parallel SKILL.md） |
-| 3 | 2026-10-15 | parallel-demo | team-parallel 首跑：双 worktree 并行 + merge + 串行收尾 | 10（全局 6 + 命名空间 4） | 10/10 | 是（open→claimed→done ×3） | 无 | 双后台 task 真并行；msg-task-NNN 命名空间零撞号；merge --no-ff ×2 零冲突；board 写主副本未混入分支 commit；worktree 当轮在仓库外，轮后按方案 B 改仓库内 `.worktrees/` + .gitignore；spec 目录运行后由用户删除，模板三件套已吸收进 `team-board/template/`（patterns.md 等产物存于 git `22df466`） |
+| 2 | 2026-10-15 | skills-audit | design §8 spec 制场景 | 6 | 6/6 | 是（open→claimed→done ×2） | TeamLead 1 次（state.json 漂移，轮内自纠）；research 自报 2 条只读 shell | 两次调用均后台；msg-0005/0006 为真实秒级时间戳；spec 目录已于 2026-10-15 按要求删除（risks.md R1–R9/quickref.md 随之移除，关键发现已吸收进协议 v0.2 并行增量与 team/parallel/SKILL.md） |
+| 3 | 2026-10-15 | parallel-demo | team-parallel 首跑：双 worktree 并行 + merge + 串行收尾 | 10（全局 6 + 命名空间 4） | 10/10 | 是（open→claimed→done ×3） | 无 | 双后台 task 真并行；msg-task-NNN 命名空间零撞号；merge --no-ff ×2 零冲突；board 写主副本未混入分支 commit；worktree 当轮在仓库外，轮后按方案 B 改仓库内 `.worktrees/` + .gitignore；spec 目录运行后由用户删除，模板三件套已吸收进 `team/board/template/`（patterns.md 等产物存于 git `22df466`） |
 
 | 4 | 2026-10-16 | module-viz-skill | 人工批准 gate 首用（规划段） | 5（含 1 条纠错） | 5/5 | 纠错回退 ×1（claimed→open，依据 msg-0005） | **TeamLead 1 次越权**：gate 答复「继续看看前半段的规划」被误读为执行批准，分派 task-001；用户手动终止 sub | 纠偏完整（msg-0005 撤回 + 状态回退 + 无效产物标记）；协议已补「批准须明确表述」条款 |
 

@@ -1,5 +1,5 @@
 <!--
-context-template.md — spec 上下文文件模板（提取自 team-core/protocol.md 正本「context.md（spec 上下文）」节）
+context-template.md — spec 上下文文件模板（提取自 team/core/protocol.md 正本「context.md（spec 上下文）」节）
 位置：doc/spec-changes/<spec>/board/context.md。唯一写者是 TeamLead（同 state.json），worker 只读。
 定位：人类可读的上下文汇总视图；冲突时以消息/任务文件为准。每条记录注明日期 + 来源（msg id 或 chat 时间戳）。
 -->

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>todos-service · 模块可视化文档</title>
+<style>
+  :root {
+    --bg:#0d1117; --panel:#161b22; --bd:#30363d; --fg:#c9d1d9; --dim:#8b949e;
+    --gn:#3fb950; --am:#d29922; --rd:#f85149; --bl:#58a6ff;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--fg); font:14px/1.55 Consolas,"Cascadia Mono",monospace; min-height:100vh; }
+  a { color:var(--bl); text-decoration:none; } a:hover { text-decoration:underline; }
+  code { background:#21262d; border:1px solid var(--bd); border-radius:4px; padding:1px 5px; font-size:13px; }
+  pre { background:#010409; border:1px solid var(--bd); border-radius:6px; padding:12px; overflow-x:auto; margin:8px 0; }
+  pre code { background:none; border:none; padding:0; }
+  table { width:100%; border-collapse:collapse; margin:8px 0; }
+  th,td { text-align:left; padding:5px 9px; border-bottom:1px solid var(--bd); font-size:13px; }
+  th { color:var(--dim); font-weight:normal; font-size:11px; text-transform:uppercase; letter-spacing:1px; }
+  details { margin:6px 0; }
+  summary { cursor:pointer; color:var(--bl); font-size:13px; padding:2px 0; user-select:none; }
+  summary:hover { text-decoration:underline; }
+  details .det { padding:8px 0 8px 16px; border-left:2px solid var(--bd); margin-left:6px; }
+
+  .shell { max-width:960px; margin:0 auto; padding:24px 32px 40px; }
+
+  .tabs { display:flex; gap:2px; border-bottom:1px solid var(--bd); margin-bottom:20px; }
+  .tab { padding:8px 18px; border-radius:8px 8px 0 0; border:1px solid transparent;
+         cursor:pointer; font:13px inherit; color:var(--dim); user-select:none; }
+  .tab:hover { color:var(--fg); }
+  .tab.active { color:var(--fg); border-color:var(--bl); border-bottom-color:var(--bg); background:var(--bg); font-weight:bold; }
+  .panel { display:none; }
+  .panel.active { display:block; }
+
+  h1 { font-size:18px; margin-bottom:2px; }
+  .meta { color:var(--dim); font-size:12px; margin-bottom:16px; }
+  h2 { font-size:15px; margin:22px 0 8px; border-bottom:1px solid var(--bd); padding-bottom:6px; }
+  h3 { font-size:14px; margin:14px 0 6px; color:var(--dim); }
+  h4 { font-size:13px; margin:10px 0 4px; }
+  .card { background:var(--panel); border:1px solid var(--bd); border-radius:8px; padding:14px 18px; margin:10px 0; }
+  .fig { background:#010409; border:1px solid var(--bd); border-radius:6px; padding:12px; margin:8px 0; overflow-x:auto; }
+  .fig svg { display:block; max-width:100%; height:auto; }
+  .figcap { color:var(--dim); font-size:12px; margin:-4px 0 12px; }
+
+  footer { margin-top:32px; color:var(--dim); font-size:11px; border-top:1px solid var(--bd); padding-top:10px; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <h1>todos-service</h1>
+  <p class="meta">纯 Java 待办事项服务（管理和操作待办事项）· v1.0.0 · 2026-10-18 · sdd-impl-guide 干跑测试 scope（test-plan.md）</p>
+
+  <details style="margin-bottom:16px">
+    <summary>模板meta</summary>
+    <div class="det">
+      <ol style="font-size:12px;line-height:1.8">
+        <li>遵循 <code>doc/rule/doc-viz/SKILL.md</code> — 信息形态决定表达形式：时序→序列/泳道，状态→有向边，结构→层级，清单→表</li>
+        <li>本文档为 <code>doc/spec-doc/</code> 下的 source-of-truth spec-doc；实现按 <code>doc/skills/spec-driven-dev/impl-guide.md</code> 四段工作流执行（测试落点 <code>test/todos-service/</code>）</li>
+      </ol>
+    </div>
+  </details>
+
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-panel="overview">模块概要</div>
+    <div class="tab" data-panel="requirement">需求</div>
+    <div class="tab" data-panel="contract">对外接口 / 契约</div>
+    <div class="tab" data-panel="test">测试</div>
+    <div class="tab" data-panel="design">实现设计 / 架构</div>
+  </div>
+
+  <!-- ══════════ 模块概要 ══════════ -->
+  <div class="panel active" id="p-overview">
+
+    <h2>概述</h2>
+    <div class="card">
+      <p><b>todos-service</b>：管理和操作待办事项（Todo）的服务模块——新增、查询、列表（可按状态过滤）、修改、标记完成、删除。</p>
+      <p style="margin-top:6px"><b>形态</b>：纯 Java（无框架依赖），本版本内存存储（进程级 <code>Map</code>，不持久化）；对外以 <code>TodosService</code> 接口为 Contract。</p>
+      <p style="margin-top:6px"><b>读者路径</b>：实现者读「对外接口 / 契约」+「实现设计 / 架构」两 tab；测试读「测试」tab。</p>
+    </div>
+
+    <h2>概要图</h2>
+    <div class="fig">
+      <svg viewBox="0 0 880 170" font-family="Consolas,monospace" font-size="11">
+        <defs>
+          <marker id="arwO" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+          </marker>
+        </defs>
+        <rect x="10" y="60" width="150" height="50" rx="6" fill="#161b22" stroke="#8b949e"/>
+        <text x="85" y="82" fill="#c9d1d9" text-anchor="middle">调用方</text>
+        <text x="85" y="98" fill="#8b949e" text-anchor="middle" font-size="10">（测试 / 上层代码）</text>
+        <rect x="230" y="60" width="190" height="50" rx="6" fill="#161b22" stroke="#d29922"/>
+        <text x="325" y="82" fill="#d29922" text-anchor="middle">TodosService（Contract）</text>
+        <text x="325" y="98" fill="#8b949e" text-anchor="middle" font-size="10">接口 + Model + 错误定义</text>
+        <rect x="490" y="60" width="190" height="50" rx="6" fill="#161b22" stroke="#58a6ff"/>
+        <text x="585" y="82" fill="#58a6ff" text-anchor="middle">InMemoryTodosService</text>
+        <text x="585" y="98" fill="#8b949e" text-anchor="middle" font-size="10">Impl（内存存储）</text>
+        <rect x="740" y="60" width="130" height="50" rx="6" fill="#161b22" stroke="#3fb950"/>
+        <text x="805" y="82" fill="#c9d1d9" text-anchor="middle">Todo / Status</text>
+        <text x="805" y="98" fill="#8b949e" text-anchor="middle" font-size="10">领域模型</text>
+        <line x1="160" y1="85" x2="226" y2="85" stroke="#8b949e" marker-end="url(#arwO)"/>
+        <line x1="420" y1="85" x2="486" y2="85" stroke="#8b949e" stroke-dasharray="4 3" marker-end="url(#arwO)"/>
+        <text x="453" y="76" fill="#8b949e" text-anchor="middle" font-size="10">实现</text>
+        <line x1="680" y1="85" x2="736" y2="85" stroke="#8b949e" marker-end="url(#arwO)"/>
+      </svg>
+    </div>
+    <p class="figcap">注脚：橙=Contract（接口/模型/错误定义），蓝=Impl，绿=领域模型；虚线=实现关系（Impl → Contract 单向依赖，R1 隔离）。</p>
+
+  </div>
+
+  <!-- ══════════ 需求 ══════════ -->
+  <div class="panel" id="p-requirement">
+
+    <h2>Terminology</h2>
+    <table>
+      <tr><th>术语</th><th>定义</th></tr>
+      <tr><td>Todo</td><td>一条待办事项：id、title、description、status、createdAt、updatedAt</td></tr>
+      <tr><td>title</td><td>待办标题，非空（去首尾空白后长度 ≥ 1）</td></tr>
+      <tr><td>Status</td><td>待办状态枚举：<code>TODO</code>（待办）｜<code>DONE</code>（已完成）</td></tr>
+      <tr><td>TodosService</td><td>对外服务接口（Contract 主体），管理与操作 Todo</td></tr>
+      <tr><td>内存存储</td><td>进程级 <code>Map&lt;String, Todo&gt;</code>，进程退出即失，无持久化</td></tr>
+    </table>
+
+    <h2>用户场景</h2>
+    <table>
+      <tr><th>#</th><th>场景</th><th>说明</th></tr>
+      <tr><td>S1</td><td>新增待办</td><td>给出标题（可选描述），得到带 id 的 Todo（status=TODO）</td></tr>
+      <tr><td>S2</td><td>查看详情</td><td>按 id 取单条 Todo</td></tr>
+      <tr><td>S3</td><td>列表 / 过滤</td><td>列出全部，或按 status 过滤（如只看 TODO）</td></tr>
+      <tr><td>S4</td><td>修改待办</td><td>按 id 更新 title / description</td></tr>
+      <tr><td>S5</td><td>标记完成</td><td>按 id 将 status 置为 DONE</td></tr>
+      <tr><td>S6</td><td>删除待办</td><td>按 id 删除</td></tr>
+    </table>
+
+    <h2>行为契约图示</h2>
+    <table>
+      <tr><th>操作</th><th>输入</th><th>输出</th><th>副作用</th><th>错误</th></tr>
+      <tr><td>add</td><td>title（非空）、description（可空）</td><td>新建 Todo（id 自动生成，status=TODO，createdAt=updatedAt=now）</td><td>存储新增一条</td><td>title 空 → E_INVALID_TITLE</td></tr>
+      <tr><td>get</td><td>id</td><td>对应 Todo</td><td>无</td><td>id 不存在 → E_NOT_FOUND</td></tr>
+      <tr><td>list</td><td>filter（可空：null=全部）</td><td>Todo 列表（按 createdAt 升序）</td><td>无</td><td>—</td></tr>
+      <tr><td>update</td><td>id、title（非空）、description</td><td>更新后的 Todo（updatedAt=now）</td><td>存储更新</td><td>E_NOT_FOUND / E_INVALID_TITLE</td></tr>
+      <tr><td>complete</td><td>id</td><td>status=DONE 的 Todo（updatedAt=now；已 DONE 时幂等返回）</td><td>存储更新</td><td>E_NOT_FOUND</td></tr>
+      <tr><td>delete</td><td>id</td><td>无（void）</td><td>存储删除一条</td><td>E_NOT_FOUND</td></tr>
+    </table>
+
+    <details>
+      <summary>需求细则（边界与错误场景）</summary>
+      <div class="det">
+        <table>
+          <tr><th>#</th><th>边界</th><th>行为</th></tr>
+          <tr><td>B1</td><td>title 为 null / 空串 / 纯空白</td><td>E_INVALID_TITLE（校验 = 去首尾空白后长度 ≥ 1）</td></tr>
+          <tr><td>B2</td><td>id 不存在（get/update/complete/delete）</td><td>E_NOT_FOUND</td></tr>
+          <tr><td>B3</td><td>complete 已 DONE 的 Todo</td><td>幂等：仍返回该 Todo（status=DONE），不报错</td></tr>
+          <tr><td>B4</td><td>update 不修改 status</td><td>状态流转仅由 complete 触发（本版本无「取消完成」操作）</td></tr>
+          <tr><td>B5</td><td>list 结果为空</td><td>返回空列表（非 null、不报错）</td></tr>
+        </table>
+      </div>
+    </details>
+
+  </div>
+
+  <!-- ══════════ 对外接口 / 契约 ══════════ -->
+  <div class="panel" id="p-contract">
+
+    <h2>对外接口（TodosService · Interface）</h2>
+    <pre><code>public interface TodosService {
+    Todo add(String title, String description);   // S1；E_INVALID_TITLE
+    Todo get(String id);                          // S2；E_NOT_FOUND
+    List&lt;Todo&gt; list(Status filter);               // S3；filter=null 返回全部，createdAt 升序
+    Todo update(String id, String title, String description); // S4；E_NOT_FOUND / E_INVALID_TITLE
+    Todo complete(String id);                     // S5；E_NOT_FOUND；已 DONE 幂等
+    void delete(String id);                       // S6；E_NOT_FOUND
+}</code></pre>
+    <p class="figcap">公共方法主要流程注释（R3）在 Contract 工件内按 impl-guide 要求补全；本表为签名与错误约定。</p>
+
+    <h2>数据契约</h2>
+    <h3>Model：Todo</h3>
+    <table>
+      <tr><th>字段</th><th>类型</th><th>约束</th></tr>
+      <tr><td>id</td><td>String</td><td>服务端生成（UUID），全局唯一，不可变</td></tr>
+      <tr><td>title</td><td>String</td><td>非空（去首尾空白后长度 ≥ 1）</td></tr>
+      <tr><td>description</td><td>String</td><td>可空（null 允许）</td></tr>
+      <tr><td>status</td><td>Status</td><td>TODO ｜ DONE；新建固定 TODO；仅 complete 置 DONE</td></tr>
+      <tr><td>createdAt</td><td>long</td><td>创建时刻 epoch millis，不可变</td></tr>
+      <tr><td>updatedAt</td><td>long</td><td>最近修改时刻 epoch millis（add 时 = createdAt）</td></tr>
+    </table>
+    <h3>枚举：Status</h3>
+    <pre><code>public enum Status { TODO, DONE }</code></pre>
+    <h3>错误定义</h3>
+    <table>
+      <tr><th>错误</th><th>载体</th><th>触发</th></tr>
+      <tr><td>E_NOT_FOUND</td><td rowspan="2"><code>TodoException extends RuntimeException</code>，携带 <code>TodoError</code> 枚举</td><td>id 不存在（get/update/complete/delete）</td></tr>
+      <tr><td>E_INVALID_TITLE</td><td>title 为 null/空/纯空白（add/update）</td></tr>
+    </table>
+    <pre><code>public enum TodoError { E_NOT_FOUND, E_INVALID_TITLE }
+public class TodoException extends RuntimeException {
+    private final TodoError error;   // 错误码
+    public TodoException(TodoError error, String message) { ... }
+    public TodoError error() { return error; }
+}</code></pre>
+
+  </div>
+
+  <!-- ══════════ 测试 ══════════ -->
+  <div class="panel" id="p-test">
+
+    <h2>测试用例（test-case Contract 来源）</h2>
+    <table>
+      <tr><th>#</th><th>场景</th><th>输入 / 前置</th><th>期望</th></tr>
+      <tr><td>T1</td><td>add 成功</td><td>title="写周报", description=null</td><td>返回 Todo：id 非空、status=TODO、createdAt=updatedAt</td></tr>
+      <tr><td>T2</td><td>add 空标题</td><td>title="  "（纯空白）</td><td>抛 TodoException(E_INVALID_TITLE)</td></tr>
+      <tr><td>T3</td><td>get 命中</td><td>先 add，再 get(id)</td><td>返回同一 Todo（字段一致）</td></tr>
+      <tr><td>T4</td><td>get 不存在</td><td>get("missing-id")</td><td>抛 TodoException(E_NOT_FOUND)</td></tr>
+      <tr><td>T5</td><td>list 全部 + 排序</td><td>add ×3（先后有序）</td><td>3 条，按 createdAt 升序</td></tr>
+      <tr><td>T6</td><td>list 过滤</td><td>add ×2，complete 其一，list(DONE)</td><td>仅 1 条（已完成的）</td></tr>
+      <tr><td>T7</td><td>list 空结果</td><td>空服务 list(null)</td><td>空列表（非 null）</td></tr>
+      <tr><td>T8</td><td>update 成功</td><td>add 后 update(id, "新标题", "新描述")</td><td>字段更新、updatedAt ≥ createdAt、status 不变</td></tr>
+      <tr><td>T9</td><td>update 不存在 / 空标题</td><td>update("missing",…) / update(id, "",…)</td><td>E_NOT_FOUND / E_INVALID_TITLE</td></tr>
+      <tr><td>T10</td><td>complete 成功</td><td>add 后 complete(id)</td><td>status=DONE、updatedAt 刷新</td></tr>
+      <tr><td>T11</td><td>complete 幂等</td><td>对已 DONE 再 complete</td><td>返回 DONE Todo，不报错</td></tr>
+      <tr><td>T12</td><td>delete 成功 / 不存在</td><td>delete(id) 后 get(id)；delete("missing")</td><td>前者抛 E_NOT_FOUND；后者直接抛 E_NOT_FOUND</td></tr>
+    </table>
+
+    <h2>测试环境</h2>
+    <table>
+      <tr><th>项</th><th>值</th></tr>
+      <tr><td>JDK</td><td>本机 OpenJDK 24（javac 24.0.2 已验证）；语言级别建议 17+</td></tr>
+      <tr><td>构建/测试</td><td>纯 Java 零依赖优先：javac + java 直跑；测试框架 JUnit 5 可选（若执行环境可获取），否则用轻量断言 main 方法</td></tr>
+      <tr><td>落点</td><td><code>test/todos-service/</code>（contract 与 impl 分离子路径，见「实现设计」）</td></tr>
+    </table>
+
+    <h2>预设测试场景数据</h2>
+    <table>
+      <tr><th>fixture</th><th>值</th></tr>
+      <tr><td>validTitle</td><td>"写周报"</td></tr>
+      <tr><td>validDesc</td><td>"周五前提交"</td></tr>
+      <tr><td>blankTitle</td><td>"　"（全角空格）/ ""（空串）</td></tr>
+      <tr><td>missingId</td><td>"no-such-id"</td></tr>
+    </table>
+
+  </div>
+
+  <!-- ══════════ 实现设计 / 架构 ══════════ -->
+  <div class="panel" id="p-design">
+
+    <h2>架构总览</h2>
+    <div class="fig">
+      <svg viewBox="0 0 880 210" font-family="Consolas,monospace" font-size="11">
+        <defs>
+          <marker id="arwD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#8b949e"/>
+          </marker>
+        </defs>
+        <rect x="20" y="20" width="380" height="170" rx="8" fill="#0d1117" stroke="#d29922"/>
+        <text x="210" y="42" fill="#d29922" text-anchor="middle">contract 子包（Contract · R1 隔离）</text>
+        <rect x="45" y="56" width="150" height="40" rx="4" fill="#161b22" stroke="#30363d"/>
+        <text x="120" y="80" fill="#c9d1d9" text-anchor="middle">TodosService（接口）</text>
+        <rect x="225" y="56" width="150" height="40" rx="4" fill="#161b22" stroke="#30363d"/>
+        <text x="300" y="80" fill="#c9d1d9" text-anchor="middle">Todo / Status</text>
+        <rect x="45" y="112" width="330" height="40" rx="4" fill="#161b22" stroke="#30363d"/>
+        <text x="210" y="136" fill="#c9d1d9" text-anchor="middle">TodoError / TodoException</text>
+        <rect x="480" y="20" width="380" height="170" rx="8" fill="#0d1117" stroke="#58a6ff"/>
+        <text x="670" y="42" fill="#58a6ff" text-anchor="middle">impl 子包（Impl）</text>
+        <rect x="505" y="56" width="330" height="40" rx="4" fill="#161b22" stroke="#30363d"/>
+        <text x="670" y="80" fill="#c9d1d9" text-anchor="middle">InMemoryTodosService implements TodosService</text>
+        <rect x="505" y="112" width="330" height="40" rx="4" fill="#161b22" stroke="#30363d"/>
+        <text x="670" y="136" fill="#c9d1d9" text-anchor="middle">Map&lt;String, Todo&gt; 存储 + 校验/时间戳逻辑</text>
+        <line x1="505" y1="76" x2="379" y2="76" stroke="#8b949e" stroke-dasharray="4 3" marker-end="url(#arwD)"/>
+        <text x="440" y="66" fill="#8b949e" text-anchor="middle" font-size="10">依赖（单向：Impl → Contract）</text>
+      </svg>
+    </div>
+    <p class="figcap">注脚：橙=contract 子包（接口/模型/错误定义），蓝=impl 子包；虚线=单向依赖（Impl → Contract，Contract 不依赖 Impl——R1 隔离）。</p>
+
+    <h2>子模块</h2>
+    <table>
+      <tr><th>子模块</th><th>职责</th><th>关键点</th></tr>
+      <tr><td>TodosService（接口）</td><td>对外 Contract 主体</td><td>6 个公共方法；主要流程注释写在 Contract 工件（R3）</td></tr>
+      <tr><td>Todo / Status</td><td>领域模型</td><td>Todo 不可变对象（更新 = 新实例）；id/createdAt 不可变</td></tr>
+      <tr><td>TodoError / TodoException</td><td>错误契约</td><td>RuntimeException 子类，携带错误枚举</td></tr>
+      <tr><td>InMemoryTodosService</td><td>唯一实现</td><td>ConcurrentHashMap 存储；title 校验；UUID 生成；时间戳维护；list 排序</td></tr>
+    </table>
+
+    <h2>技术决策</h2>
+    <table>
+      <tr><th>#</th><th>决策</th><th>理由 / 权衡</th></tr>
+      <tr><td>D1</td><td>纯 Java、零框架</td><td>scope 约定（用户指定）；干跑测试聚焦 impl-guide 流程而非框架</td></tr>
+      <tr><td>D2</td><td>内存 Map 存储，不抽象持久层</td><td>本版本无持久化需求；避免过度设计</td></tr>
+      <tr><td>D3</td><td>错误用异常（TodoException + 枚举）而非返回码</td><td>Java 惯例；错误路径在签名注释中显式声明</td></tr>
+      <tr><td>D4</td><td>Todo 为不可变对象</td><td>更新语义清晰（返回新实例），避免共享可变状态</td></tr>
+      <tr><td>D5</td><td>complete 幂等（B3）</td><td>简化调用方重试处理；本版本无取消完成操作（B4）</td></tr>
+    </table>
+
+  </div>
+
+  <footer>生成自 spec-doc-gen · 零 CDN 单文件 · todos-service v1.0.0（sdd-impl-guide 干跑测试 scope，test-plan.md）</footer>
+
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('.tab').forEach(function(t){
+    t.addEventListener('click', function(){
+      document.querySelectorAll('.tab').forEach(function(x){ x.classList.remove('active'); });
+      document.querySelectorAll('.panel').forEach(function(x){ x.classList.remove('active'); });
+      t.classList.add('active');
+      document.getElementById('p-' + t.dataset.panel).classList.add('active');
+    });
+  });
+})();
+</script>
+</body>
+</html>

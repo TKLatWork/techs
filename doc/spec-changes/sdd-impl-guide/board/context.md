@@ -7,7 +7,7 @@
 | 术语 | 定义 |
 |---|---|
 | Contract | API定义 / Interface / Abstract class / Model / test-case 这类切面契约（用户原话，2026-10-18T11:43Z chat）；草案中一律替代「契约」 |
-| SDD spec | spec-driven-dev 产出给定 scope 的五 tab 可视化文档（概要/需求/接口契约/测试/架构） |
+| SDD spec | spec-doc-gen 产出给定 scope 的五 tab 可视化文档（概要/需求/接口契约/测试/架构） |
 | draft→test→accept | 本 spec 任务段结构：task-001/002（draft）→ task-003（manual test）→ gate③ → task-004（accept：修正+安装+README） |
 | gate③ | task-003 后的人工批准点：用户审定测试结论后方可进入 accept 段；批准兼作 task-004 写 `doc/skills/**` 的例外授权依据 |
 | manual task | `assignee: user` 的任务；完成仅认用户明确指令（本 spec task-003 为「完成-003」），协议 v0.5.0「manual task 增量」 |

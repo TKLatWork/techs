@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>spec 状态盘</title>
+<title>team 执行状态盘</title>
 <style>
   :root { --bg:#0d1117; --panel:#161b22; --border:#30363d; --fg:#e6edf3; --dim:#8b949e;
           --green:#3fb950; --amber:#d29922; --red:#f85149; --blue:#58a6ff; --gray:#6e7681; }
@@ -38,7 +38,9 @@
   .fnode { cursor:pointer; }
   .fnode:hover rect { filter:brightness(1.35); }
   .f-running rect { animation:pulse 1.2s infinite; }
+  .f-cancelled rect { opacity:.55; }
   .t-pending{color:var(--gray)} .t-running{color:var(--amber)} .t-done{color:var(--green)} .t-failed{color:var(--red)}
+  .t-cancelled{color:var(--gray); text-decoration:line-through}
   /* ── home 布局：Agents 左侧 sidebar ── */
   .home-wrap { display:flex; gap:16px; align-items:flex-start; margin-top:16px; }
   aside#sidebar { flex:0 0 250px; position:sticky; top:52px; }
@@ -55,6 +57,7 @@
   table.grid th, table.grid td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--border); }
   table.grid th { color:var(--dim); font-weight:normal; font-size:12px; }
   .t-open{color:var(--blue)} .t-claimed,.t-running{color:var(--amber)} .t-done{color:var(--green)} .t-failed{color:var(--red)}
+  .t-cancelled{color:var(--gray); text-decoration:line-through}
   .t-pending{color:var(--gray)}
   .lnk { color:var(--blue); cursor:pointer; text-decoration:underline dotted; }
   .lnk:hover { text-decoration:underline; }
@@ -63,7 +66,7 @@
   ul.msgs li:last-child { border-bottom:none; }
   .ty { display:inline-block; min-width:92px; }
   .ty-task\.assign{color:var(--blue)} .ty-task\.claim{color:var(--amber)}
-  .ty-task\.result{color:var(--green)} .ty-task\.failed{color:var(--red)}
+  .ty-task\.result{color:var(--green)} .ty-task\.failed{color:var(--red)} .ty-task\.cancelled{color:var(--gray)}
   .ty-ask{color:var(--amber)} .ty-info{color:var(--dim)}
   footer { margin-top:16px; color:var(--dim); font-size:12px; }
 
@@ -98,13 +101,13 @@
   <!-- 首页：总视图 -->
   <div class="view" id="view-home">
     <header>
-      <div><h1>spec 状态盘</h1><div class="dim" id="goal"></div></div>
+      <div><h1>team 执行状态盘</h1><div class="dim" id="goal"></div></div>
       <div><span class="badge" id="phase"></span> <span class="dim" id="updated"></span></div>
     </header>
     <section><h2>Flow（总任务流 · 点击步骤看任务详情）</h2><div class="flow" id="flow"></div>
-      <div class="dim" style="font-size:11px;margin-top:8px">注脚：节点边框色 = state——灰 pending · 琥珀 running（闪烁）· 绿 done · 红 failed；箭头 = 顺序依赖；悬停看完整 desc，点击节点打开 task 文件。</div></section>
+      <div class="dim" style="font-size:11px;margin-top:8px">注脚：节点边框色 = state——灰 pending · 琥珀 running（闪烁）· 绿 done · 红 failed · 灰 cancelled；箭头 = 顺序依赖；悬停看完整 desc，点击节点打开 task 文件。</div></section>
     <section><h2>Tasks</h2><table class="grid" id="tasks">
-      <thead><tr><th>id</th><th>标题</th><th>状态</th><th>assignee</th><th>消息</th></tr></thead>
+      <thead><tr><th>id</th><th>标题</th><th>执行状态</th><th>cell</th><th>attempt</th><th>assignee</th><th>消息</th></tr></thead>
       <tbody></tbody>
     </table></section>
     <div class="home-wrap">
@@ -184,12 +187,12 @@ async function loadHome() {
     $('err').style.display = 'none';
   } catch (e) {
     $('err').style.display = 'block';
-    $('err').textContent = '无法读取 state.json：' + e.message + '（file:// 下 fetch 被 CORS 拦截，请通过 http 服务打开本页，见 doc/skills/team-board/SKILL.md「view.html 状态盘」节）';
+    $('err').textContent = '无法读取 state.json：' + e.message + '（file:// 下 fetch 被 CORS 拦截，请通过 http 服务打开本页，见 doc/skills/team/board/SKILL.md「view.html 状态盘」节）';
   }
 }
 
 /* ══════════ Flow 图形渲染：横向步骤链（零依赖 SVG），节点色=state，点击开任务 ══════════ */
-const FST = { pending:'#6e7681', running:'#d29922', done:'#3fb950', failed:'#f85149' };
+const FST = { pending:'#6e7681', running:'#d29922', done:'#3fb950', failed:'#f85149', cancelled:'#6e7681' };
 
 /* 按显示宽度折行（CJK 计 2、ASCII 计 1），最多 2 行，超出加省略号 */
 function wrap2(s, budget) {
@@ -254,6 +257,8 @@ function renderHome(s) {
     `<tr><td><span class="lnk" onclick="openTask('${esc(t.id)}')">${esc(t.id)}</span></td>
      <td>${esc(t.title)}</td>
      <td class="t-${esc(t.status)}">${esc(t.status)}</td>
+     <td class="dim">${esc(t.cell ?? '—')}</td>
+     <td class="dim">${esc(t.attempt ?? '—')}</td>
      <td>${esc(t.assignee)}</td>
      <td class="dim">${(t.messages ?? []).map(m => `<span class="lnk" onclick="openMsg('${esc(m)}')">${esc(m)}</span>`).join(', ')}</td></tr>`
   ).join('');

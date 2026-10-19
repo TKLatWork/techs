@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-10-18T15:34:00Z",
+  "updated": "2026-10-18T15:55:00Z",
   "spec": "sdd-impl-guide",
   "runtime": "kilo-task-tool",
   "flow": {
@@ -45,7 +45,7 @@
     ]
   },
   "agents": [
-    { "name": "TeamLead", "role": "lead", "state": "waiting", "detail": "task-003 已重置（msg-0016：open，## 结果清空、原代录内容存档于消息）；协议 v0.5.0 manual 完成指令规则（msg-0017）；context.md 制度建立（protocol v0.6.0，msg-0018）；用户改模板后 context.md 已重写（msg-0019）；task-001/002 第三轮重做完成（v0.3.0 五段主干 + SKILL v1.1.0，msg-0034/0037）；test-plan.md 已产出（msg-0046，test/ 干跑待用户定 scope/技术栈/执行者）；task-003 续测中（claimed）：修正项 12 条（起点=spec-doc / 五段结构 / review=manual approve / 自动验收限两类 / 总览图拆分 v0.4.0 / 清除幻想内容 v0.5.0 / sub-steps flow 收编 v0.6.0 / 验收清单收进折叠 v0.6.1 / 合并段①② + 移除规则细节 = 四段主干 v0.7.0 / 用户补充要求 3 条 v0.8.0 / 移除顶部原话块 v0.9.0 / 移除验收清单 v0.10.0——第 5~12 条已直接落地，msg-0027~0030、0038~0045）；完成仅认「完成-003」→ gate③ → task-004" },
+    { "name": "TeamLead", "role": "lead", "state": "waiting", "detail": "task-003 已重置（msg-0016：open，## 结果清空、原代录内容存档于消息）；协议 v0.5.0 manual 完成指令规则（msg-0017）；context.md 制度建立（protocol v0.6.0，msg-0018）；用户改模板后 context.md 已重写（msg-0019）；task-001/002 第三轮重做完成（v0.3.0 五段主干 + SKILL v1.1.0，msg-0034/0037）；test-plan v0.2.0：scope=todos-service（纯 Java）已定，spec-doc 已产出 doc/spec-doc/todos-service.html v1.0.0（msg-0047）；余执行者待定；task-003 续测中（claimed）：修正项 12 条（起点=spec-doc / 五段结构 / review=manual approve / 自动验收限两类 / 总览图拆分 v0.4.0 / 清除幻想内容 v0.5.0 / sub-steps flow 收编 v0.6.0 / 验收清单收进折叠 v0.6.1 / 合并段①② + 移除规则细节 = 四段主干 v0.7.0 / 用户补充要求 3 条 v0.8.0 / 移除顶部原话块 v0.9.0 / 移除验收清单 v0.10.0——第 5~12 条已直接落地，msg-0027~0030、0038~0045）；完成仅认「完成-003」→ gate③ → task-004" },
     { "name": "team-worker-research", "role": "worker", "state": "idle", "detail": "本 spec 无 worker 调研任务（task-003 已改 manual/user，msg-0007）" },
     { "name": "team-worker-code", "role": "worker", "state": "idle", "detail": "draft 段第三轮重做完成（task-001/002 done，v0.3.0/v1.1.0，msg-0034/0037）；idle 待 gate③ 批准后 task-004" }
   ],
@@ -101,6 +101,7 @@
     { "id": "msg-0043", "type": "info", "from": "TeamLead", "to": "user", "task": "task-003", "ts": "2026-10-18T15:27:00Z" },
     { "id": "msg-0044", "type": "info", "from": "TeamLead", "to": "user", "task": "task-003", "ts": "2026-10-18T15:29:00Z" },
     { "id": "msg-0045", "type": "info", "from": "TeamLead", "to": "user", "task": "task-003", "ts": "2026-10-18T15:31:00Z" },
-    { "id": "msg-0046", "type": "info", "from": "TeamLead", "to": "user", "task": null, "ts": "2026-10-18T15:34:00Z" }
+    { "id": "msg-0046", "type": "info", "from": "TeamLead", "to": "user", "task": null, "ts": "2026-10-18T15:34:00Z" },
+    { "id": "msg-0047", "type": "info", "from": "TeamLead", "to": "user", "task": "task-003", "ts": "2026-10-18T15:55:00Z" }
   ]
 }
