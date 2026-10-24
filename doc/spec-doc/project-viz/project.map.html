@@ -1,0 +1,2143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project Map</title>
+<style>
+  :root {
+    --bg: #0a0e14;
+    --bg2: #0d1117;
+    --panel: #121a23;
+    --panel2: #161b22;
+    --bd: #232d38;
+    --bd2: #303b47;
+    --fg: #e6edf3;
+    --dim: #8b949e;
+    --faint: #6e7681;
+    --accent: #58a6ff;
+    --ok: #3fb950;
+    --warn: #d29922;
+    --bad: #f85149;
+    --violet: #bc8cff;
+    --cyan: #39c5cf;
+    --mono: ui-monospace, "Cascadia Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    --shadow: 0 18px 50px rgba(0, 0, 0, .45);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font: 13px/1.5 var(--mono);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, input { font: inherit; }
+  button { color: inherit; }
+  .hidden { display: none !important; }
+  .muted { color: var(--faint); font-size: 12px; }
+
+  #app { height: 100dvh; display: flex; flex-direction: column; }
+
+  .topbar {
+    flex: 0 0 auto;
+    min-height: 66px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--bd);
+    background:
+      radial-gradient(1200px 200px at 10% -80%, rgba(88, 166, 255, .12), transparent 60%),
+      linear-gradient(180deg, #0e141c, #0b1017);
+  }
+  .brand { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1 1 auto; }
+  .brand-mark {
+    width: 36px; height: 36px; flex: 0 0 auto;
+    border: 1px solid var(--bd2);
+    border-radius: 9px;
+    padding: 6px 6px 5px;
+    display: flex; flex-direction: column; justify-content: center; gap: 4px;
+    background: linear-gradient(160deg, #121b25, #0b1017);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04);
+  }
+  .brand-mark span { display: block; height: 3px; border-radius: 2px; background: linear-gradient(90deg, var(--accent), rgba(88, 166, 255, .05)); }
+  .brand-mark span:nth-child(2) { width: 80%; opacity: .8; }
+  .brand-mark span:nth-child(3) { width: 62%; opacity: .55; }
+  .brand-text { min-width: 0; }
+  .brand h1 { font-size: 15px; line-height: 1.2; letter-spacing: .01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .brand p { color: var(--dim); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 3px; }
+  .toolbar { margin-left: auto; display: flex; align-items: center; gap: 10px; min-width: 0; flex: 0 0 auto; }
+  .search {
+    display: flex; align-items: center; gap: 8px;
+    min-width: 260px;
+    border: 1px solid var(--bd2);
+    border-radius: 8px;
+    background: #0a0f15;
+    padding: 0 10px;
+    height: 36px;
+  }
+  .search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(88, 166, 255, .14); }
+  .search span { color: var(--faint); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+  .search input { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: var(--fg); font-size: 12px; }
+  .search input::placeholder { color: var(--faint); }
+  .btn {
+    height: 36px; padding: 0 12px;
+    border: 1px solid var(--bd2); border-radius: 8px;
+    background: #0f151d; color: var(--dim);
+    cursor: pointer; font-size: 12px;
+  }
+  .btn:hover { color: var(--fg); border-color: #46586b; background: #131c26; }
+  .view-toggle { display: inline-flex; height: 36px; border: 1px solid var(--bd2); border-radius: 8px; overflow: hidden; flex: 0 0 auto; }
+  .view-toggle button { border: 0; background: #0f151d; color: var(--dim); padding: 0 12px; font-size: 11px; cursor: pointer; }
+  .view-toggle button + button { border-left: 1px solid var(--bd2); }
+  .view-toggle button:hover { color: var(--fg); background: #131c26; }
+  .view-toggle button.active { color: var(--fg); background: rgba(88, 166, 255, .16); box-shadow: inset 0 0 0 1px rgba(88, 166, 255, .45); }
+
+  .scope-row {
+    flex: 0 0 auto;
+    min-height: 46px;
+    display: flex; align-items: center; gap: 9px;
+    padding: 7px 18px;
+    border-bottom: 1px solid var(--bd);
+    background: #0b1017;
+    overflow-x: auto;
+  }
+  .scope-label { color: var(--faint); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; flex: 0 0 auto; }
+  .chips { display: flex; align-items: center; gap: 7px; min-width: 0; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    flex: 0 0 auto;
+    padding: 4px 11px;
+    border: 1px solid var(--bd2); border-radius: 999px;
+    background: transparent; color: var(--dim);
+    font-size: 11px; cursor: pointer;
+    transition: border-color .15s, background .15s, color .15s;
+  }
+  .chip:hover { color: var(--fg); border-color: #4a5c70; }
+  .chip.active {
+    color: var(--fg);
+    border-color: var(--c, var(--accent));
+    background: color-mix(in srgb, var(--c, var(--accent)) 13%, transparent);
+  }
+  .chip .dot { width: 7px; height: 7px; border-radius: 2px; background: var(--c, var(--dim)); box-shadow: 0 0 8px color-mix(in srgb, var(--c, var(--dim)) 40%, transparent); }
+  .chip .count { color: var(--faint); font-size: 10px; }
+  .chip.active .count { color: var(--dim); }
+  .stat { margin-left: auto; flex: 0 0 auto; color: var(--faint); font-size: 10px; letter-spacing: .05em; text-transform: uppercase; padding-left: 14px; }
+
+  .stage { flex: 1; min-height: 0; display: grid; grid-template-columns: 150px minmax(0, 1fr); position: relative; }
+
+  .floor-rail {
+    position: relative;
+    display: flex; flex-direction: column; gap: 7px;
+    padding: 14px 9px 18px;
+    border-right: 1px solid var(--bd);
+    background:
+      linear-gradient(180deg, rgba(88, 166, 255, .035), transparent 45%),
+      #0b1017;
+    overflow-y: auto;
+  }
+  .rail-title { color: var(--faint); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; padding: 0 8px 7px; }
+  .floor-btn {
+    position: relative;
+    display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 8px;
+    width: 100%;
+    padding: 9px 9px 9px 8px;
+    border: 1px solid transparent; border-radius: 8px;
+    background: transparent; text-align: left; cursor: pointer;
+    transition: background .15s, border-color .15s;
+  }
+  .floor-btn:hover { background: #101821; border-color: var(--bd); }
+  .floor-btn.active {
+    background: linear-gradient(180deg, rgba(88, 166, 255, .12), rgba(88, 166, 255, .03));
+    border-color: rgba(88, 166, 255, .5);
+  }
+  .floor-btn.active::after {
+    content: "";
+    position: absolute; left: -9px; top: 9px; bottom: 9px; width: 2px;
+    border-radius: 2px; background: var(--accent);
+    box-shadow: 0 0 12px rgba(88, 166, 255, .65);
+  }
+  .floor-no { color: var(--faint); font-size: 10px; letter-spacing: .05em; padding-top: 1px; }
+  .floor-btn.active .floor-no { color: var(--accent); }
+  .floor-body { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .floor-name { font-size: 11px; font-weight: 700; letter-spacing: .03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .floor-count { color: var(--faint); font-size: 9px; letter-spacing: .04em; }
+  .rail-bar { display: flex; gap: 2px; height: 3px; margin-top: 2px; border-radius: 3px; overflow: hidden; }
+  .rail-bar span { display: block; height: 100%; background: var(--c); opacity: .75; }
+
+  .map-wrap { position: relative; min-width: 0; min-height: 0; overflow: hidden; background: #080c11; }
+  .viewport {
+    position: absolute; inset: 0;
+    overflow: hidden;
+    cursor: grab;
+    background-color: #080c11;
+    background-image:
+      linear-gradient(rgba(88, 166, 255, .045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(88, 166, 255, .045) 1px, transparent 1px),
+      radial-gradient(900px 500px at 50% 45%, rgba(88, 166, 255, .055), transparent 65%);
+    background-size: 44px 44px, 44px 44px, 100% 100%;
+    touch-action: none;
+  }
+  .viewport.panning { cursor: grabbing; }
+  #world { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+  #scene { position: relative; width: 100%; height: 100%; }
+  #zones { position: absolute; inset: 0; }
+  #nodes { position: absolute; inset: 0; z-index: 1; }
+  #edges { position: absolute; inset: 0; z-index: 0; overflow: visible; pointer-events: none; }
+
+  .zone {
+    position: absolute;
+    border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
+    border-radius: 10px;
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--c) 7%, transparent), color-mix(in srgb, var(--c) 2%, transparent));
+    box-shadow: inset 0 0 40px rgba(0, 0, 0, .22);
+    pointer-events: none;
+  }
+  .zone-label {
+    position: absolute; top: -9px; left: 12px;
+    padding: 1px 7px;
+    border: 1px solid color-mix(in srgb, var(--c) 35%, var(--bd));
+    border-radius: 4px;
+    background: #0a0f15;
+    color: color-mix(in srgb, var(--c) 80%, white);
+    font-size: 9px; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap;
+  }
+
+  .node {
+    position: absolute;
+    display: flex; flex-direction: column; gap: 3px;
+    padding: 8px 9px 7px;
+    border: 1px solid var(--bd2);
+    border-left: 3px solid var(--c);
+    border-radius: 7px;
+    background: linear-gradient(180deg, #151e28, #0f151d);
+    color: var(--fg);
+    text-align: left;
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, .28), inset 0 1px 0 rgba(255, 255, 255, .035);
+    transition: border-color .12s, box-shadow .12s, opacity .15s, transform .12s;
+  }
+  .node:hover, .node:focus-visible {
+    border-color: color-mix(in srgb, var(--c) 55%, var(--bd2));
+    box-shadow: 0 8px 22px rgba(0, 0, 0, .38), 0 0 0 1px color-mix(in srgb, var(--c) 30%, transparent);
+    outline: none;
+    transform: translateY(-1px);
+    z-index: 4;
+  }
+  .node.selected {
+    z-index: 6;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent), 0 12px 32px rgba(88, 166, 255, .22);
+  }
+  .node.related { border-color: color-mix(in srgb, var(--accent) 55%, var(--bd2)); }
+  .node.faded { opacity: .35; }
+  .node.search-dim { opacity: .22; }
+  .node.match { border-color: var(--warn); }
+  .node.hidden { display: none; }
+
+  .node-kind { display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .node-kind .kdot { width: 5px; height: 5px; border-radius: 50%; background: var(--k); flex: 0 0 auto; box-shadow: 0 0 6px color-mix(in srgb, var(--k) 50%, transparent); }
+  .node-kind .ktext { color: var(--k); font-size: 8px; letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .node-kind .cross { margin-left: auto; color: var(--faint); font-size: 9px; flex: 0 0 auto; }
+  .node-label { font-size: 11px; line-height: 1.25; font-weight: 700; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .node-sub { color: var(--dim); font-size: 9px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .node.tile { padding: 0; gap: 0; border-left-width: 2px; border-radius: 3px; background: linear-gradient(180deg, #18222d, #0f151d); }
+  .node.tile .node-kind, .node.tile .node-label, .node.tile .node-sub { display: none; }
+  .node.tile::before { content: ""; position: absolute; left: 4px; top: 4px; width: 4px; height: 4px; border-radius: 50%; background: var(--k); box-shadow: 0 0 5px color-mix(in srgb, var(--k) 60%, transparent); }
+  .node.tile::after { content: attr(data-cross); position: absolute; top: 1px; right: 3px; color: var(--faint); font-size: 7px; }
+  .node.tile.labeled { padding: 3px 5px; border-radius: 4px; }
+  .node.tile.labeled .node-label { display: -webkit-box; font-size: 8px; line-height: 1.15; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .node.tile.labeled::before { display: none; }
+
+  .edge { fill: none; stroke-linecap: round; opacity: .5; transition: opacity .12s, stroke-width .12s; }
+  .edge.hot { opacity: 1; stroke-width: 2.6; }
+  .edge.dim { opacity: .07; }
+  .edge.search-dim { opacity: .06; }
+  .edge.cross-floor { stroke-dasharray: 5 4; opacity: .68; }
+  .edge.cross-floor.hot { opacity: 1; }
+  .edge.hidden { display: none; }
+
+  .floor-plane { fill: rgba(13, 17, 23, .32); stroke: #30363d; stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .floor-plane.active { stroke-width: 2; fill: rgba(22, 32, 43, .5); }
+  .floor-label { font: 9px var(--mono); letter-spacing: .12em; text-transform: uppercase; fill: var(--dim); paint-order: stroke; stroke: #080c11; stroke-width: 3px; }
+  .floor-label.active { fill: var(--fg); }
+  .floor-spine { stroke: #30363d; stroke-width: 1; stroke-dasharray: 3 5; opacity: .38; vector-effect: non-scaling-stroke; }
+  .zone-3d { stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .zone-label-3d { font: 8px var(--mono); letter-spacing: .08em; text-transform: uppercase; fill: var(--dim); paint-order: stroke; stroke: #080c11; stroke-width: 2px; }
+  .zone-3d.hidden, .zone-label-3d.hidden { display: none; }
+
+  .floor-badge {
+    position: absolute; left: 14px; top: 14px;
+    z-index: 8;
+    padding: 5px 9px;
+    border: 1px solid var(--bd2); border-radius: 6px;
+    background: rgba(10, 14, 20, .78);
+    color: var(--dim);
+    font-size: 9px; letter-spacing: .14em; text-transform: uppercase;
+    pointer-events: none;
+    backdrop-filter: blur(6px);
+  }
+
+  .legend {
+    position: absolute; left: 14px; bottom: 14px;
+    width: 210px;
+    padding: 9px 11px;
+    border: 1px solid var(--bd); border-radius: 8px;
+    background: rgba(13, 17, 23, .86);
+    backdrop-filter: blur(8px);
+    z-index: 7;
+  }
+  .legend[hidden] { display: none; }
+  .legend-head { display: flex; align-items: baseline; gap: 6px; padding-bottom: 5px; border-bottom: 1px solid var(--bd); margin-bottom: 4px; }
+  .legend-title { color: var(--dim); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; }
+  .legend-hint { margin-left: auto; color: var(--faint); font-size: 8px; }
+  .legend-item {
+    display: flex; align-items: center; gap: 7px;
+    width: 100%; padding: 2px 0;
+    border: 0; background: none; color: var(--dim);
+    font-size: 10px; text-align: left; cursor: pointer;
+  }
+  .legend-item:hover { color: var(--fg); }
+  .legend-item.off { opacity: .35; text-decoration: line-through; }
+  .legend-sample { width: 18px; height: 2px; flex: 0 0 auto; border-radius: 2px; background: var(--c); }
+  .legend-count { margin-left: auto; color: var(--faint); font-size: 9px; }
+  .legend-note { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--bd); color: var(--faint); font-size: 9px; line-height: 1.4; }
+  .legend-note[hidden] { display: none; }
+
+  .zoom-controls { position: absolute; right: 14px; bottom: 14px; display: flex; gap: 4px; z-index: 7; }
+  .zoom-controls button {
+    width: 31px; height: 31px;
+    border: 1px solid var(--bd2); border-radius: 6px;
+    background: rgba(15, 21, 29, .9);
+    color: var(--dim); cursor: pointer;
+    backdrop-filter: blur(6px);
+  }
+  .zoom-controls button.wide { width: auto; padding: 0 9px; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+  .zoom-controls button:hover { color: var(--fg); border-color: #4a5c70; }
+
+  .node-tip {
+    position: absolute; z-index: 9;
+    max-width: 280px;
+    padding: 7px 9px;
+    border: 1px solid var(--bd2); border-radius: 6px;
+    background: rgba(13, 17, 23, .96);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, .45);
+    pointer-events: none;
+  }
+  .node-tip[hidden] { display: none; }
+  .node-tip .tip-title { color: var(--fg); font-size: 11px; font-weight: 700; line-height: 1.3; }
+  .node-tip .tip-sub { margin-top: 2px; color: var(--dim); font-size: 9px; word-break: break-all; }
+  .node-tip .tip-meta { margin-top: 4px; color: var(--faint); font-size: 8px; letter-spacing: .08em; text-transform: uppercase; }
+
+  .hint {
+    position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%);
+    color: var(--faint); font-size: 9px; letter-spacing: .04em;
+    pointer-events: none; white-space: nowrap;
+    background: rgba(8, 12, 17, .55); padding: 3px 8px; border-radius: 4px;
+  }
+
+  .empty { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 7px; text-align: center; pointer-events: none; z-index: 5; }
+  .empty[hidden] { display: none; }
+  .empty-title { color: var(--dim); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; }
+  .empty-text { color: var(--faint); font-size: 11px; max-width: 420px; }
+  .empty button { pointer-events: auto; margin-top: 5px; }
+
+  .drawer {
+    position: absolute; top: 14px; right: 14px; bottom: 14px;
+    width: min(402px, calc(100% - 28px));
+    padding: 16px 16px 20px;
+    border: 1px solid var(--bd2); border-radius: 10px;
+    background: linear-gradient(180deg, #121a23, #0d131a);
+    box-shadow: var(--shadow);
+    overflow-y: auto; overscroll-behavior: contain;
+    z-index: 10;
+    opacity: 0; pointer-events: none; transform: translateX(22px);
+    transition: opacity .16s ease, transform .16s ease;
+  }
+  .drawer.open { opacity: 1; pointer-events: auto; transform: none; }
+  .drawer::-webkit-scrollbar { width: 8px; }
+  .drawer::-webkit-scrollbar-thumb { background: #29333e; border-radius: 8px; }
+  .drawer-head { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    max-width: 55%;
+    padding: 2px 7px;
+    border: 1px solid color-mix(in srgb, var(--k, var(--dim)) 45%, var(--bd));
+    border-radius: 4px;
+    color: var(--k, var(--dim));
+    background: color-mix(in srgb, var(--k, var(--dim)) 9%, transparent);
+    font-size: 8px; letter-spacing: .1em; text-transform: uppercase;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .pill-scope { --k: var(--c, var(--dim)); }
+  .drawer-close {
+    margin-left: auto;
+    width: 27px; height: 27px; flex: 0 0 auto;
+    border: 1px solid var(--bd2); border-radius: 6px;
+    background: transparent; color: var(--dim); cursor: pointer; font-size: 16px; line-height: 1;
+  }
+  .drawer-close:hover { color: var(--fg); border-color: #4a5c70; }
+  .drawer-title { font-size: 16px; line-height: 1.3; word-break: break-word; }
+  .drawer-sub { margin-top: 4px; color: var(--dim); font-size: 10px; word-break: break-all; }
+  .drawer-desc { margin-top: 10px; color: #b7c2ce; font-size: 11px; line-height: 1.6; }
+  .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 12px; }
+  .meta-item { padding: 6px 8px; border: 1px solid var(--bd); border-radius: 6px; background: rgba(8, 12, 17, .35); min-width: 0; }
+  .meta-k { display: block; color: var(--faint); font-size: 8px; letter-spacing: .1em; text-transform: uppercase; }
+  .meta-v { display: block; margin-top: 2px; color: var(--fg); font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .meta-v.scope { color: var(--c, var(--fg)); }
+  .drawer-section { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--bd); }
+  .drawer-section h3 { margin-bottom: 7px; color: var(--dim); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; font-weight: 400; }
+  .file-row { display: flex; align-items: flex-start; gap: 6px; padding: 3px 0; }
+  .file-link { flex: 1; min-width: 0; color: var(--accent); font-size: 10px; line-height: 1.45; text-decoration: none; word-break: break-all; }
+  .file-link:hover { text-decoration: underline; }
+  .mini {
+    flex: 0 0 auto;
+    padding: 1px 6px;
+    border: 1px solid var(--bd2); border-radius: 4px;
+    background: transparent; color: var(--faint);
+    font-size: 8px; letter-spacing: .06em; text-transform: uppercase; cursor: pointer;
+  }
+  .mini:hover { color: var(--fg); border-color: #4a5c70; }
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag { padding: 1px 6px; border: 1px solid var(--bd); border-radius: 4px; background: rgba(88, 166, 255, .06); color: var(--dim); font-size: 9px; }
+  .dep-group + .dep-group { margin-top: 10px; }
+  .dep-title { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; color: var(--faint); font-size: 9px; letter-spacing: .06em; text-transform: uppercase; }
+  .dep-title .dep-n { color: var(--dim); }
+  .dep {
+    display: grid; grid-template-columns: 14px minmax(0, 1fr) auto auto; align-items: center; gap: 6px;
+    width: 100%; padding: 5px 6px;
+    border: 1px solid transparent; border-radius: 5px;
+    background: transparent; text-align: left; cursor: pointer;
+  }
+  .dep:hover { background: rgba(88, 166, 255, .07); border-color: var(--bd); }
+  .dep-dir { color: var(--c); font-size: 11px; }
+  .dep-label { min-width: 0; color: var(--fg); font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dep-kind { color: var(--c); font-size: 8px; letter-spacing: .05em; text-transform: uppercase; }
+  .dep-level { padding: 0 4px; border: 1px solid var(--bd); border-radius: 3px; color: var(--faint); font-size: 8px; }
+  .dep-level.cross { border-color: color-mix(in srgb, var(--accent) 40%, var(--bd)); color: var(--accent); }
+  .drawer-foot { margin-top: 16px; padding-top: 10px; border-top: 1px solid var(--bd); color: var(--faint); font-size: 9px; word-break: break-all; }
+
+  #scene.enter { animation: floorIn .24s ease-out; }
+  @keyframes floorIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @media (max-width: 820px) {
+    .topbar { flex-wrap: wrap; gap: 10px; padding: 10px 12px; }
+    .brand { flex: 1 1 220px; }
+    .toolbar { flex: 1 1 100%; }
+    .search { flex: 1; min-width: 0; }
+    .scope-row { padding: 7px 12px; }
+    .stat { display: none; }
+    .stage { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
+    .floor-rail { flex-direction: row; overflow-x: auto; overflow-y: hidden; padding: 8px 10px; border-right: 0; border-bottom: 1px solid var(--bd); }
+    .rail-title { display: none; }
+    .floor-btn { min-width: 124px; }
+    .floor-btn.active::after { left: 8px; right: 8px; top: auto; bottom: -8px; width: auto; height: 2px; }
+    .legend { display: none; }
+    .hint { display: none; }
+    .drawer { top: 0; right: 0; bottom: 0; width: 100%; border-radius: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="brand-text">
+        <h1 id="projectName">Project</h1>
+        <p id="projectMeta"></p>
+      </div>
+    </div>
+    <div class="toolbar">
+      <label class="search" for="search">
+        <span>Find</span>
+        <input id="search" type="search" autocomplete="off" spellcheck="false" placeholder="Filter blocks by name, file, tag...  ( / )">
+      </label>
+      <div class="view-toggle" role="group" aria-label="View mode">
+        <button id="view2d" type="button" class="active" aria-pressed="true">Plan</button>
+        <button id="view3d" type="button" aria-pressed="false">3D</button>
+      </div>
+      <button id="fitTop" class="btn" type="button" title="Fit visible blocks (F)">Fit</button>
+    </div>
+  </header>
+
+  <div class="scope-row">
+    <span class="scope-label">Scope</span>
+    <div id="scopeChips" class="chips"></div>
+    <span id="stat" class="stat"></span>
+  </div>
+
+  <main class="stage">
+    <nav id="floorRail" class="floor-rail" aria-label="Floor / level selector"></nav>
+
+    <section class="map-wrap">
+      <div id="viewport" class="viewport">
+        <div id="world">
+          <div id="scene">
+            <div id="zones"></div>
+            <svg id="edges" xmlns="http://www.w3.org/2000/svg"></svg>
+            <div id="nodes"></div>
+          </div>
+        </div>
+        <div id="floorBadge" class="floor-badge"></div>
+        <div id="empty" class="empty" hidden>
+          <div class="empty-title">No blocks</div>
+          <div id="emptyText" class="empty-text"></div>
+          <button id="emptyClear" class="btn" type="button" hidden>Show all scopes</button>
+        </div>
+      </div>
+
+      <div id="nodeTip" class="node-tip" hidden></div>
+      <div id="legend" class="legend" hidden></div>
+
+      <div class="zoom-controls">
+        <button id="zoomOut" type="button" aria-label="Zoom out">&minus;</button>
+        <button id="zoomIn" type="button" aria-label="Zoom in">+</button>
+        <button id="zoomFit" class="wide" type="button" title="Fit visible blocks">Fit</button>
+      </div>
+
+      <div id="hint" class="hint">Drag to pan &middot; Scroll to zoom &middot; Click a block for details &middot; Double-click to focus</div>
+
+      <aside id="drawer" class="drawer" aria-hidden="true" aria-label="Block details"></aside>
+    </section>
+  </main>
+</div>
+
+<script id="pv-data" type="application/json">{"schemaVersion":"1.0","project":{"name":"workflow-web","root":"E:\\code\\project\\techs\\project","description":"Spring Boot workflow service. Scope: project/** production sources plus module-local tests; target/generated excluded. Levels inferred from code responsibilities: HTTP → Application → Domain → Infrastructure (top→bottom, high abstraction to low-level).","generatedAt":"2026-10-22T16:23:55.402Z"},"levels":[{"id":"http","label":"HTTP","order":0,"description":"REST entry points, HTTP controller and transport error mapping (workflow-web)."},{"id":"application","label":"Application","order":1,"description":"Application service, lifecycle orchestration, application port and storage port (workflow-core boundary)."},{"id":"domain","label":"Domain","order":2,"description":"Immutable records, lifecycle status and exception hierarchy (workflow-api contracts)."},{"id":"infrastructure","label":"Infrastructure","order":3,"description":"In-memory repository adapter and runtime configuration (lowest-level implementation)."}],"scopes":[{"id":"web","label":"Web","description":"workflow-web module: REST, error advice, boot and configuration","color":"#58a6ff"},{"id":"core","label":"Core","description":"workflow-core module: application service, state machine and repository","color":"#3fb950"},{"id":"api","label":"API","description":"workflow-api module: records, status, exceptions and service port","color":"#d29922"},{"id":"verification","label":"Verification","description":"Module-local test suites","color":"#39c5cf"}],"nodes":[{"id":"http-post-workflows","level":"http","scope":"web","label":"POST /api/workflows","subtitle":"WorkflowController.start","kind":"endpoint","description":"Starts a workflow instance and returns 201 Created with the immutable snapshot.","files":[{"path":"workflow-web/src/main/java/com/example/workflow/web/controller/WorkflowController.java","line":25}],"symbols":["WorkflowController.start"],"tags":["http","write","public"],"metrics":{"fanOut":1},"layout":{"x":2,"y":5.95,"w":3.2,"h":2.1}},{"id":"http-advance-workflow","level":"http","scope":"web","label":"POST /api/workflows/{id}/advance","subtitle":"WorkflowController.advance","kind":"endpoint","description":"Advances a running instance by one step and returns the updated snapshot.","files":[{"path":"workflow-web/src/main/java/com/example/workflow/web/controller/WorkflowController.java","line":31}],"symbols":["WorkflowController.advance"],"tags":["http","write","public"],"metrics":{},"layout":{"x":5.75,"y":5.95,"w":3.2,"h":2.1}},{"id":"http-get-workflow","level":"http","scope":"web","label":"GET /api/workflows/{id}","subtitle":"WorkflowController.get","kind":"endpoint","description":"Returns a workflow instance snapshot or a not-found response.","files":[{"path":"workflow-web/src/main/java/com/example/workflow/web/controller/WorkflowController.java","line":36}],"symbols":["WorkflowController.get"],"tags":["http","read","public"],"metrics":{},"layout":{"x":9.5,"y":3.3,"w":3.2,"h":2.1}},{"id":"http-cancel-workflow","level":"http","scope":"web","label":"POST /api/workflows/{id}/cancel","subtitle":"WorkflowController.cancel","kind":"endpoint","description":"Cancels a running instance; cancelling an already cancelled instance is idempotent.","files":[{"path":"workflow-web/src/main/java/com/example/workflow/web/controller/WorkflowController.java","line":41}],"symbols":["WorkflowController.cancel"],"tags":["http","write","public"],"metrics":{},"layout":{"x":9.5,"y":5.95,"w":3.2,"h":2.1}},{"id":"http-controller","level":"http","scope":"web","label":"WorkflowController","subtitle":"@RestController /api/workflows","kind":"controller","description":"REST boundary. Maps HTTP requests to WorkflowService operations; it does not contain lifecycle rules.","files":[{"path":"workflow-web/src/main/java/com/example/workflow/web/controller/WorkflowController.java","line":17}],"symbols":["WorkflowController"],"tags":["spring","rest","adapter"],"metrics":{"loc":45,"operations":4},"layout":{"x":2,"y":8.600000000000001,"w":3.2,"h":2.1}},{"id":"http-exception-handler","level":"http","scope":"web","label":"ApiExceptionHandler","subtitle":"@RestControllerAdvice","kind":"middleware","description":"Maps WorkflowValidationException to 400, not-found to 404, state conflicts to 409, and unexpected workflow failures to 500.","files":[{"path":"workflow-web/src/main/java/com/example/workflow/web/error/ApiExceptionHandler.java","line":17}],"symbols":["ApiExceptionHandler.handleValidation","ApiExceptionHandler.handleNotFound","ApiExceptionHandler.handleState","ApiExceptionHandler.handleWorkflow","ApiExceptionHandler.handleUnreadableBody","ApiExceptionHandler.handleUnexpected"],"tags":["spring","errors","http"],"metrics":{"loc":70,"handlers":6},"layout":{"x":5.75,"y":3.3,"w":3.2,"h":2.1}},{"id":"http-error","level":"http","scope":"web","label":"ApiError","subtitle":"error envelope","kind":"model","description":"Transport error payload: code, message and timestamp.","files":[{"path":"workflow-web/src/main/java/com/example/workflow/web/error/ApiError.java","line":5}],"symbols":["ApiError"],"tags":["dto","http","errors"],"metrics":{"fields":3},"layout":{"x":2,"y":3.3,"w":3.2,"h":2.1}},{"id":"http-app","level":"http","scope":"web","label":"WorkflowWebApplication","subtitle":"Spring Boot composition root","kind":"application","description":"Boots Spring and scans com.example.workflow, wiring the REST controller, exception advice, application service and in-memory adapter.","files":[{"path":"workflow-web/src/main/java/com/example/workflow/web/WorkflowWebApplication.java","line":7}],"symbols":["WorkflowWebApplication.main"],"tags":["spring-boot","composition-root","entry"],"metrics":{"loc":12},"layout":{"x":5.75,"y":8.600000000000001,"w":3.2,"h":2.1}},{"id":"tests-http","level":"http","scope":"verification","label":"Web tests","subtitle":"MockMvc slice","kind":"tests","description":"MockMvc slice test for WorkflowController; mocks WorkflowService and asserts HTTP status and JSON paths.","files":[{"path":"workflow-web/src/test/java/com/example/workflow/web/controller/WorkflowControllerTest.java","line":32}],"symbols":["WorkflowControllerTest"],"tags":["junit","mockito","mockmvc"],"metrics":{"testClasses":1},"layout":{"x":16.200000000000003,"y":3.3,"w":3.2,"h":2.1}},{"id":"app-workflow-service","level":"application","scope":"api","label":"WorkflowService","subtitle":"application port","kind":"service","description":"Frozen application port with exactly four operations: start, advance, get and cancel. Implementations generate UUID ids and return immutable snapshots.","files":[{"path":"workflow-api/src/main/java/com/example/workflow/api/WorkflowService.java","line":11}],"symbols":["WorkflowService.start","WorkflowService.advance","WorkflowService.get","WorkflowService.cancel"],"tags":["port","contract","frozen"],"metrics":{"operations":4},"layout":{"x":12.450000000000001,"y":3.3,"w":3.2,"h":2.1}},{"id":"app-default-service","level":"application","scope":"core","label":"DefaultWorkflowService","subtitle":"workflow-core","kind":"service","description":"Application service implementing WorkflowService. Validates commands, generates UUIDs, delegates lifecycle transitions to WorkflowStateMachine, and serializes read-modify-write operations with synchronized advance/cancel.","files":[{"path":"workflow-core/src/main/java/com/example/workflow/core/DefaultWorkflowService.java","line":24}],"symbols":["DefaultWorkflowService.start","DefaultWorkflowService.advance","DefaultWorkflowService.get","DefaultWorkflowService.cancel"],"tags":["spring-service","orchestration","concurrency"],"metrics":{"loc":96,"operations":4},"layout":{"x":2,"y":3.3,"w":3.2,"h":2.1}},{"id":"app-state-machine","level":"application","scope":"core","label":"WorkflowStateMachine","subtitle":"package-private lifecycle","kind":"service","description":"Centralises legal transitions: RUNNING advances to the next step or COMPLETED at the last step; cancel moves RUNNING to CANCELLED; terminal states reject advance/cancel.","files":[{"path":"workflow-core/src/main/java/com/example/workflow/core/WorkflowStateMachine.java","line":15}],"symbols":["WorkflowStateMachine.advance","WorkflowStateMachine.cancel"],"tags":["lifecycle","pure","package-private"],"metrics":{"loc":57,"transitions":3},"layout":{"x":2,"y":5.95,"w":3.2,"h":2.1}},{"id":"app-repository","level":"application","scope":"core","label":"WorkflowRepository","subtitle":"storage port","kind":"repository","description":"Storage port used by the application service: save an instance and find one by id.","files":[{"path":"workflow-core/src/main/java/com/example/workflow/core/WorkflowRepository.java","line":10}],"symbols":["WorkflowRepository.save","WorkflowRepository.findById"],"tags":["port","storage","replaceable"],"metrics":{"operations":2},"layout":{"x":5.75,"y":3.3,"w":3.2,"h":2.1}},{"id":"tests-application","level":"application","scope":"verification","label":"Application tests","subtitle":"behavior + concurrency","kind":"tests","description":"Behavior and concurrency tests for DefaultWorkflowService: id generation, lifecycle transitions, idempotent cancel and concurrent advance.","files":[{"path":"workflow-core/src/test/java/com/example/workflow/core/DefaultWorkflowServiceTest.java","line":20},{"path":"workflow-core/src/test/java/com/example/workflow/core/DefaultWorkflowServiceConcurrencyTest.java","line":26}],"symbols":["DefaultWorkflowServiceTest","DefaultWorkflowServiceConcurrencyTest"],"tags":["junit","assertj","concurrency"],"metrics":{"testClasses":2},"layout":{"x":19.150000000000002,"y":3.3,"w":3.2,"h":2.1}},{"id":"domain-instance","level":"domain","scope":"api","label":"WorkflowInstance","subtitle":"immutable snapshot record","kind":"entity","description":"Immutable workflow snapshot. Defensively copies steps and variables, validates currentStep within the step range, and exposes unmodifiable collections.","files":[{"path":"workflow-api/src/main/java/com/example/workflow/api/WorkflowInstance.java","line":39}],"symbols":["WorkflowInstance","WorkflowInstance.copySteps","WorkflowInstance.copyVariables"],"tags":["record","immutable","contract"],"metrics":{"loc":87,"components":8},"layout":{"x":2,"y":5.95,"w":3.2,"h":2.1}},{"id":"domain-command","level":"domain","scope":"api","label":"StartWorkflowCommand","subtitle":"immutable command record","kind":"entity","description":"Start command with workflowType, ordered non-blank steps and optional variables. Defensively copies collections and rejects invalid input.","files":[{"path":"workflow-api/src/main/java/com/example/workflow/api/StartWorkflowCommand.java","line":26}],"symbols":["StartWorkflowCommand","StartWorkflowCommand.copySteps","StartWorkflowCommand.copyVariables"],"tags":["record","immutable","validation"],"metrics":{"loc":63,"components":3},"layout":{"x":2,"y":3.3,"w":3.2,"h":2.1}},{"id":"domain-status","level":"domain","scope":"api","label":"WorkflowStatus","subtitle":"lifecycle enum","kind":"entity","description":"Lifecycle states: RUNNING is mutable; COMPLETED and CANCELLED are terminal.","files":[{"path":"workflow-api/src/main/java/com/example/workflow/api/WorkflowStatus.java","line":11}],"symbols":["WorkflowStatus.RUNNING","WorkflowStatus.COMPLETED","WorkflowStatus.CANCELLED"],"tags":["enum","lifecycle"],"metrics":{"states":3},"layout":{"x":5.75,"y":5.95,"w":3.2,"h":2.1}},{"id":"domain-exceptions","level":"domain","scope":"api","label":"Workflow exceptions","subtitle":"base + 3 subclasses","kind":"class","description":"Unchecked error hierarchy: WorkflowException is the base; WorkflowValidationException, WorkflowNotFoundException and WorkflowStateException map to distinct HTTP statuses in the web layer.","files":[{"path":"workflow-api/src/main/java/com/example/workflow/api/WorkflowException.java","line":14},{"path":"workflow-api/src/main/java/com/example/workflow/api/WorkflowValidationException.java","line":7},{"path":"workflow-api/src/main/java/com/example/workflow/api/WorkflowNotFoundException.java","line":6},{"path":"workflow-api/src/main/java/com/example/workflow/api/WorkflowStateException.java","line":8}],"symbols":["WorkflowException","WorkflowValidationException","WorkflowNotFoundException","WorkflowStateException"],"tags":["errors","hierarchy","contract"],"metrics":{"classes":4},"layout":{"x":5.75,"y":3.3,"w":3.2,"h":2.1}},{"id":"tests-domain","level":"domain","scope":"verification","label":"Contract tests","subtitle":"records, status, exceptions, port","kind":"tests","description":"Contract and value-object tests for the four-operation WorkflowService port, record invariants, status transitions and the exception hierarchy.","files":[{"path":"workflow-api/src/test/java/com/example/workflow/api/StartWorkflowCommandTest.java","line":13},{"path":"workflow-api/src/test/java/com/example/workflow/api/WorkflowExceptionTest.java","line":7},{"path":"workflow-api/src/test/java/com/example/workflow/api/WorkflowInstanceTest.java","line":14},{"path":"workflow-api/src/test/java/com/example/workflow/api/WorkflowServiceContractTest.java","line":11},{"path":"workflow-api/src/test/java/com/example/workflow/api/WorkflowStatusTest.java","line":7}],"symbols":["StartWorkflowCommandTest","WorkflowExceptionTest","WorkflowInstanceTest","WorkflowServiceContractTest","WorkflowStatusTest"],"tags":["junit","assertj","contract"],"metrics":{"testClasses":5},"layout":{"x":12.450000000000001,"y":3.3,"w":3.2,"h":2.1}},{"id":"infra-inmemory","level":"infrastructure","scope":"core","label":"InMemoryWorkflowRepository","subtitle":"@Repository ConcurrentHashMap","kind":"repository","description":"Thread-safe in-memory adapter for WorkflowRepository. Instances are lost on process restart; persistence is intended to replace this adapter behind the port.","files":[{"path":"workflow-core/src/main/java/com/example/workflow/core/InMemoryWorkflowRepository.java","line":15}],"symbols":["InMemoryWorkflowRepository.save","InMemoryWorkflowRepository.findById"],"tags":["adapter","in-memory","thread-safe"],"metrics":{"loc":33},"layout":{"x":8.7,"y":3.3,"w":3.2,"h":2.1}},{"id":"infra-config","level":"infrastructure","scope":"web","label":"Runtime config","subtitle":"application.yml","kind":"config","description":"Application name, HTTP port 8080, and actuator endpoint exposure limited to health and info.","files":[{"path":"workflow-web/src/main/resources/application.yml","line":1}],"symbols":["spring.application.name","server.port","management.endpoints.web.exposure.include"],"tags":["configuration","actuator"],"metrics":{"port":8080},"layout":{"x":2,"y":3.3,"w":3.2,"h":2.1}},{"id":"tests-infrastructure","level":"infrastructure","scope":"verification","label":"Repository tests","subtitle":"in-memory adapter","kind":"tests","description":"Unit tests for InMemoryWorkflowRepository save/find semantics and null-id handling.","files":[{"path":"workflow-core/src/test/java/com/example/workflow/core/InMemoryWorkflowRepositoryTest.java","line":15}],"symbols":["InMemoryWorkflowRepositoryTest"],"tags":["junit","assertj","adapter"],"metrics":{"testClasses":1},"layout":{"x":15.4,"y":3.3,"w":3.2,"h":2.1}}],"edges":[{"id":"http-post-workflows--http-controller--handles","from":"http-post-workflows","to":"http-controller","kind":"handles","label":""},{"id":"http-advance-workflow--http-controller--handles","from":"http-advance-workflow","to":"http-controller","kind":"handles","label":""},{"id":"http-get-workflow--http-controller--handles","from":"http-get-workflow","to":"http-controller","kind":"handles","label":""},{"id":"http-cancel-workflow--http-controller--handles","from":"http-cancel-workflow","to":"http-controller","kind":"handles","label":""},{"id":"http-exception-handler--http-error--creates","from":"http-exception-handler","to":"http-error","kind":"creates","label":""},{"id":"http-app--http-controller--boots","from":"http-app","to":"http-controller","kind":"boots","label":""},{"id":"http-app--http-exception-handler--boots","from":"http-app","to":"http-exception-handler","kind":"boots","label":""},{"id":"http-app--app-default-service--boots","from":"http-app","to":"app-default-service","kind":"boots","label":""},{"id":"http-app--infra-inmemory--boots","from":"http-app","to":"infra-inmemory","kind":"boots","label":""},{"id":"http-app--infra-config--reads","from":"http-app","to":"infra-config","kind":"reads","label":""},{"id":"tests-http--http-controller--verifies","from":"tests-http","to":"http-controller","kind":"verifies","label":""},{"id":"http-controller--app-workflow-service--calls","from":"http-controller","to":"app-workflow-service","kind":"calls","label":""},{"id":"http-controller--domain-command--uses","from":"http-controller","to":"domain-command","kind":"uses","label":""},{"id":"http-controller--domain-instance--uses","from":"http-controller","to":"domain-instance","kind":"uses","label":""},{"id":"http-exception-handler--domain-exceptions--handles","from":"http-exception-handler","to":"domain-exceptions","kind":"handles","label":""},{"id":"tests-http--app-workflow-service--verifies","from":"tests-http","to":"app-workflow-service","kind":"verifies","label":""},{"id":"tests-http--domain-command--verifies","from":"tests-http","to":"domain-command","kind":"verifies","label":""},{"id":"app-default-service--app-workflow-service--implements","from":"app-default-service","to":"app-workflow-service","kind":"implements","label":""},{"id":"app-default-service--app-state-machine--calls","from":"app-default-service","to":"app-state-machine","kind":"calls","label":""},{"id":"app-default-service--app-repository--calls","from":"app-default-service","to":"app-repository","kind":"calls","label":""},{"id":"app-default-service--domain-command--uses","from":"app-default-service","to":"domain-command","kind":"uses","label":""},{"id":"app-default-service--domain-instance--creates","from":"app-default-service","to":"domain-instance","kind":"creates","label":""},{"id":"app-default-service--domain-exceptions--throws","from":"app-default-service","to":"domain-exceptions","kind":"throws","label":""},{"id":"app-state-machine--domain-instance--creates","from":"app-state-machine","to":"domain-instance","kind":"creates","label":""},{"id":"app-state-machine--domain-status--uses","from":"app-state-machine","to":"domain-status","kind":"uses","label":""},{"id":"app-state-machine--domain-exceptions--throws","from":"app-state-machine","to":"domain-exceptions","kind":"throws","label":""},{"id":"app-repository--domain-instance--uses","from":"app-repository","to":"domain-instance","kind":"uses","label":""},{"id":"tests-application--app-default-service--verifies","from":"tests-application","to":"app-default-service","kind":"verifies","label":""},{"id":"tests-application--domain-instance--verifies","from":"tests-application","to":"domain-instance","kind":"verifies","label":""},{"id":"tests-application--domain-command--verifies","from":"tests-application","to":"domain-command","kind":"verifies","label":""},{"id":"tests-application--domain-status--verifies","from":"tests-application","to":"domain-status","kind":"verifies","label":""},{"id":"tests-application--domain-exceptions--verifies","from":"tests-application","to":"domain-exceptions","kind":"verifies","label":""},{"id":"tests-domain--domain-instance--verifies","from":"tests-domain","to":"domain-instance","kind":"verifies","label":""},{"id":"tests-domain--domain-command--verifies","from":"tests-domain","to":"domain-command","kind":"verifies","label":""},{"id":"tests-domain--domain-status--verifies","from":"tests-domain","to":"domain-status","kind":"verifies","label":""},{"id":"tests-domain--domain-exceptions--verifies","from":"tests-domain","to":"domain-exceptions","kind":"verifies","label":""},{"id":"tests-domain--app-workflow-service--verifies","from":"tests-domain","to":"app-workflow-service","kind":"verifies","label":""},{"id":"tests-infrastructure--infra-inmemory--verifies","from":"tests-infrastructure","to":"infra-inmemory","kind":"verifies","label":""},{"id":"infra-inmemory--app-repository--implements","from":"infra-inmemory","to":"app-repository","kind":"implements","label":""},{"id":"infra-inmemory--domain-instance--stores","from":"infra-inmemory","to":"domain-instance","kind":"stores","label":""}],"view":{"generator":"project-visual","cell":44,"floors":{"http":{"width":22.400000000000002,"height":13.700000000000001,"zones":[{"scope":"web","x":1,"y":1,"w":12.700000000000001,"h":10.700000000000001,"count":8},{"scope":"verification","x":15.200000000000001,"y":1,"w":5.2,"h":5.4,"count":1}],"nodeCount":9},"application":{"width":25.35,"height":11.05,"zones":[{"scope":"core","x":1,"y":1,"w":8.950000000000001,"h":8.05,"count":3},{"scope":"api","x":11.450000000000001,"y":1,"w":5.2,"h":5.4,"count":1},{"scope":"verification","x":18.150000000000002,"y":1,"w":5.2,"h":5.4,"count":1}],"nodeCount":5},"domain":{"width":18.650000000000002,"height":11.05,"zones":[{"scope":"api","x":1,"y":1,"w":8.950000000000001,"h":8.05,"count":4},{"scope":"verification","x":11.450000000000001,"y":1,"w":5.2,"h":5.4,"count":1}],"nodeCount":5},"infrastructure":{"width":21.6,"height":8.4,"zones":[{"scope":"web","x":1,"y":1,"w":5.2,"h":5.4,"count":1},{"scope":"core","x":7.7,"y":1,"w":5.2,"h":5.4,"count":1},{"scope":"verification","x":14.4,"y":1,"w":5.2,"h":5.4,"count":1}],"nodeCount":3}}}}</script>
+<script>
+(function () {
+  'use strict';
+
+  var dataEl = document.getElementById('pv-data');
+  var DATA;
+  try {
+    DATA = JSON.parse(dataEl.textContent);
+  } catch (error) {
+    document.body.textContent = 'Project map data is missing or invalid. Re-run the renderer.';
+    console.error(error);
+    return;
+  }
+
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  var NODES = Array.isArray(DATA.nodes) ? DATA.nodes : [];
+  var EDGES = Array.isArray(DATA.edges) ? DATA.edges : [];
+  var LEVELS = Array.isArray(DATA.levels) ? DATA.levels : [];
+  var SCOPES = Array.isArray(DATA.scopes) ? DATA.scopes : [];
+  var FLOORS = (DATA.view && DATA.view.floors) || {};
+  var CELL = (DATA.view && DATA.view.cell) || 44;
+
+  if (!LEVELS.length) {
+    document.body.textContent = 'Project map has no levels.';
+    return;
+  }
+
+  var nodeById = new Map(NODES.map(function (node) { return [node.id, node]; }));
+  var edgeById = new Map(EDGES.map(function (edge) { return [edge.id, edge]; }));
+  var levelById = new Map(LEVELS.map(function (level) { return [level.id, level]; }));
+  var scopeById = new Map(SCOPES.map(function (scope) { return [scope.id, scope]; }));
+
+  var KIND_COLORS = {
+    endpoint: '#58a6ff', route: '#58a6ff', controller: '#58a6ff', handler: '#58a6ff',
+    service: '#3fb950', usecase: '#3fb950', use_case: '#3fb950',
+    class: '#d29922', entity: '#d29922', model: '#d29922',
+    function: '#39c5cf', method: '#39c5cf', module: '#bc8cff',
+    repository: '#ffa657', store: '#ffa657', database: '#ffa657',
+    component: '#7ee787', middleware: '#bc8cff', job: '#39c5cf',
+    application: '#7ee787', tests: '#39c5cf', test: '#39c5cf',
+    external: '#8b949e', config: '#8b949e'
+  };
+  var EDGE_COLORS = {
+    calls: '#58a6ff', uses: '#58a6ff', handles: '#7ee787', routes: '#58a6ff',
+    imports: '#d29922', depends: '#8b949e', extends: '#ffa657',
+    implements: '#bc8cff', reads: '#3fb950', writes: '#f85149',
+    creates: '#ffa657', throws: '#f85149', boots: '#7ee787',
+    verifies: '#39c5cf', stores: '#bc8cff',
+    emits: '#39c5cf', publishes: '#39c5cf', subscribes: '#39c5cf'
+  };
+  var FALLBACK_COLORS = ['#58a6ff', '#3fb950', '#d29922', '#f85149', '#bc8cff', '#39c5cf', '#ffa657', '#7ee787'];
+  var LEVEL_COLORS = ['#58a6ff', '#3fb950', '#d29922', '#bc8cff', '#39c5cf', '#ffa657'];
+  var FLOOR_GAP = 300;
+  var NODE_3D_SCALE = 0.8;
+
+  var NEIGHBORS = new Map(NODES.map(function (node) { return [node.id, new Set()]; }));
+  var CROSS_FLOOR = new Map(NODES.map(function (node) { return [node.id, 0]; }));
+  EDGES.forEach(function (edge) {
+    var from = nodeById.get(edge.from);
+    var to = nodeById.get(edge.to);
+    if (!from || !to) return;
+    NEIGHBORS.get(edge.from).add(edge.to);
+    NEIGHBORS.get(edge.to).add(edge.from);
+    if (from.level !== to.level) {
+      CROSS_FLOOR.set(edge.from, (CROSS_FLOOR.get(edge.from) || 0) + 1);
+      CROSS_FLOOR.set(edge.to, (CROSS_FLOOR.get(edge.to) || 0) + 1);
+    }
+  });
+
+  var nodeSearch = new Map();
+  NODES.forEach(function (node) {
+    var scope = scopeById.get(node.scope);
+    var text = [
+      node.id, node.label, node.subtitle, node.kind, node.description,
+      scope ? scope.label : '',
+      (node.tags || []).join(' '),
+      (node.symbols || []).join(' '),
+      (node.files || []).map(function (file) { return file.path; }).join(' ')
+    ].join(' ').toLowerCase();
+    nodeSearch.set(node.id, text);
+  });
+
+  var appEls = {
+    projectName: document.getElementById('projectName'),
+    projectMeta: document.getElementById('projectMeta'),
+    search: document.getElementById('search'),
+    view2d: document.getElementById('view2d'),
+    view3d: document.getElementById('view3d'),
+    hint: document.getElementById('hint'),
+    fitTop: document.getElementById('fitTop'),
+    scopeChips: document.getElementById('scopeChips'),
+    stat: document.getElementById('stat'),
+    floorRail: document.getElementById('floorRail'),
+    viewport: document.getElementById('viewport'),
+    world: document.getElementById('world'),
+    scene: document.getElementById('scene'),
+    zones: document.getElementById('zones'),
+    edges: document.getElementById('edges'),
+    nodes: document.getElementById('nodes'),
+    floorBadge: document.getElementById('floorBadge'),
+    empty: document.getElementById('empty'),
+    emptyText: document.getElementById('emptyText'),
+    emptyClear: document.getElementById('emptyClear'),
+    legend: document.getElementById('legend'),
+    nodeTip: document.getElementById('nodeTip'),
+    zoomIn: document.getElementById('zoomIn'),
+    zoomOut: document.getElementById('zoomOut'),
+    zoomFit: document.getElementById('zoomFit'),
+    drawer: document.getElementById('drawer')
+  };
+
+  var initialLevel = LEVELS.find(function (level) {
+    return (FLOORS[level.id] && FLOORS[level.id].nodeCount) > 0;
+  }) || LEVELS[0];
+
+  var state = {
+    view: '2d',
+    level: initialLevel.id,
+    scope: 'all',
+    query: '',
+    selected: null,
+    hover: null,
+    hiddenKinds: new Set(),
+    scale: 1,
+    tx: 0,
+    ty: 0,
+    yaw: -0.58,
+    pitch: 1.18
+  };
+
+  var activeNodes = [];
+  var activeEdges = [];
+  var floorNodes = [];
+  var nodeEls = new Map();
+  var edgeEls = new Map();
+  var currentFloor = { width: 12, height: 8, zones: [], nodeCount: 0 };
+  var scene3d = null;
+  var drag = null;
+
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  function elem(tag, className, text) {
+    var node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text != null) node.textContent = text;
+    return node;
+  }
+
+  function hashColor(value) {
+    var hash = 0;
+    var text = String(value || '');
+    for (var i = 0; i < text.length; i += 1) hash = ((hash * 31) + text.charCodeAt(i)) >>> 0;
+    return FALLBACK_COLORS[hash % FALLBACK_COLORS.length];
+  }
+
+  function kindColor(kind) {
+    var key = String(kind || '').toLowerCase();
+    return KIND_COLORS[key] || EDGE_COLORS[key] || hashColor(key);
+  }
+
+  function edgeColor(kind) {
+    var key = String(kind || '').toLowerCase();
+    return EDGE_COLORS[key] || KIND_COLORS[key] || hashColor(key);
+  }
+
+  function scopeColor(id) {
+    var scope = scopeById.get(id);
+    return scope && scope.color ? scope.color : '#8b949e';
+  }
+
+  function scopeLabel(id) {
+    var scope = scopeById.get(id);
+    return scope ? scope.label : String(id || 'default');
+  }
+
+  function levelLabel(id) {
+    var level = levelById.get(id);
+    return level ? level.label : String(id || '');
+  }
+
+  function levelNumber(id) {
+    var index = LEVELS.findIndex(function (level) { return level.id === id; });
+    return index < 0 ? '--' : String(LEVELS.length - index).padStart(2, '0');
+  }
+
+  function kindLabel(kind) {
+    return String(kind || 'node').replace(/[-_]+/g, ' ').toUpperCase();
+  }
+
+  function setHeader() {
+    var project = DATA.project || {};
+    var name = project.name || 'Project';
+    var meta = [];
+    if (project.description) meta.push(project.description);
+    meta.push(NODES.length + ' blocks');
+    meta.push(EDGES.length + ' links');
+    if (project.generatedAt) meta.push('generated ' + String(project.generatedAt).slice(0, 10));
+
+    appEls.projectName.textContent = name;
+    appEls.projectMeta.textContent = meta.join(' \u00b7 ');
+    if (project.root) appEls.projectMeta.title = 'Source root: ' + project.root;
+    document.title = name + ' \u00b7 Project Map';
+  }
+
+  function buildFloorRail() {
+    appEls.floorRail.textContent = '';
+    appEls.floorRail.appendChild(elem('div', 'rail-title', 'Levels \u00b7 high\u2192low'));
+
+    LEVELS.forEach(function (level) {
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'floor-btn';
+      button.dataset.level = level.id;
+      button.title = level.description || level.label;
+
+      var no = elem('span', 'floor-no', levelNumber(level.id));
+      var body = elem('span', 'floor-body');
+      var name = elem('span', 'floor-name', level.label);
+      var count = elem('span', 'floor-count');
+      var bar = elem('span', 'rail-bar');
+
+      var total = 0;
+      var counts = Object.create(null);
+      NODES.forEach(function (node) {
+        if (node.level !== level.id) return;
+        total += 1;
+        counts[node.scope] = (counts[node.scope] || 0) + 1;
+      });
+      count.textContent = total + (total === 1 ? ' block' : ' blocks');
+
+      SCOPES.forEach(function (scope) {
+        var value = counts[scope.id] || 0;
+        if (!value) return;
+        var segment = document.createElement('span');
+        segment.style.setProperty('--c', scope.color || '#8b949e');
+        segment.style.flexGrow = String(value);
+        segment.title = scope.label + ': ' + value;
+        bar.appendChild(segment);
+      });
+
+      body.append(name, count, bar);
+      button.append(no, body);
+      button.addEventListener('click', function () { switchFloor(level.id); });
+      appEls.floorRail.appendChild(button);
+    });
+
+    updateFloorRail();
+  }
+
+  function updateFloorRail() {
+    appEls.floorRail.querySelectorAll('.floor-btn').forEach(function (button) {
+      var active = button.dataset.level === state.level;
+      button.classList.toggle('active', active);
+      if (active) button.setAttribute('aria-current', 'true');
+      else button.removeAttribute('aria-current');
+    });
+  }
+
+  function buildScopeChips() {
+    appEls.scopeChips.textContent = '';
+
+    var counts = Object.create(null);
+    NODES.forEach(function (node) { counts[node.scope] = (counts[node.scope] || 0) + 1; });
+
+    var all = makeChip('all', 'All scopes', '#8b949e', NODES.length);
+    appEls.scopeChips.appendChild(all);
+
+    SCOPES.forEach(function (scope) {
+      var count = counts[scope.id] || 0;
+      if (!count) return;
+      appEls.scopeChips.appendChild(makeChip(scope.id, scope.label, scope.color, count));
+    });
+
+    updateScopeChips();
+  }
+
+  function makeChip(id, label, color, count) {
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'chip';
+    button.dataset.scope = id;
+    button.style.setProperty('--c', color);
+    button.setAttribute('aria-pressed', 'false');
+
+    var dot = elem('span', 'dot');
+    var text = elem('span', '', label);
+    var number = elem('span', 'count', String(count));
+    button.append(dot, text, number);
+    button.addEventListener('click', function () { setScope(id); });
+    return button;
+  }
+
+  function updateScopeChips() {
+    appEls.scopeChips.querySelectorAll('.chip').forEach(function (chip) {
+      var active = chip.dataset.scope === state.scope;
+      chip.classList.toggle('active', active);
+      chip.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
+  function buildLegend() {
+    appEls.legend.textContent = '';
+    var counts = Object.create(null);
+    EDGES.forEach(function (edge) { counts[edge.kind] = (counts[edge.kind] || 0) + 1; });
+    var kinds = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; });
+    if (!kinds.length) {
+      appEls.legend.hidden = true;
+      return;
+    }
+    appEls.legend.hidden = false;
+
+    var head = elem('div', 'legend-head');
+    head.append(elem('span', 'legend-title', 'Links'), elem('span', 'legend-hint', 'click to toggle'));
+    appEls.legend.appendChild(head);
+
+    kinds.forEach(function (kind) {
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'legend-item';
+      button.dataset.kind = kind;
+      button.style.setProperty('--c', edgeColor(kind));
+      button.setAttribute('aria-pressed', 'true');
+      button.append(
+        elem('span', 'legend-sample'),
+        elem('span', '', kind),
+        elem('span', 'legend-count', String(counts[kind]))
+      );
+      button.addEventListener('click', function () { toggleEdgeKind(kind); });
+      appEls.legend.appendChild(button);
+    });
+
+    var note = elem('div', 'legend-note', 'Dashed = cross-floor link (3D)');
+    note.hidden = true;
+    appEls.legend.appendChild(note);
+  }
+
+  function toggleEdgeKind(kind) {
+    if (state.hiddenKinds.has(kind)) state.hiddenKinds.delete(kind);
+    else state.hiddenKinds.add(kind);
+    appEls.legend.querySelectorAll('.legend-item').forEach(function (button) {
+      if (button.dataset.kind !== kind) return;
+      var hidden = state.hiddenKinds.has(kind);
+      button.classList.toggle('off', hidden);
+      button.setAttribute('aria-pressed', hidden ? 'false' : 'true');
+    });
+    applyFilter();
+  }
+
+  function setScope(id) {
+    if (state.scope === id) return;
+    state.scope = id;
+    hideNodeTip();
+    updateScopeChips();
+
+    var selectedNode = state.selected ? nodeById.get(state.selected) : null;
+    if (selectedNode && id !== 'all' && selectedNode.scope !== id) clearSelection();
+
+    applyFilter();
+    fitView();
+  }
+
+  function switchFloor(id) {
+    if (!levelById.has(id) || state.level === id) return;
+    state.level = id;
+    state.selected = null;
+    state.hover = null;
+    hideNodeTip();
+    closeDrawer();
+    updateFloorRail();
+    if (state.view === '3d') {
+      appEls.floorBadge.textContent = '3D \u00b7 ' + LEVELS.length + ' floors \u00b7 ' + levelLabel(id);
+      paintHighlight();
+      layout3D();
+      return;
+    }
+    renderFloor();
+    fitView();
+  }
+
+  function createNodeButton(node, width, height, tile) {
+    var color = scopeColor(node.scope);
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'node' + (tile ? ' tile' : '');
+    button.dataset.cross = CROSS_FLOOR.get(node.id) ? '\u2195' : '';
+    button.dataset.id = node.id;
+    button.dataset.scope = node.scope;
+    button.dataset.level = node.level;
+    button.style.setProperty('--c', color);
+    button.style.setProperty('--k', kindColor(node.kind));
+    button.style.width = width + 'px';
+    button.style.height = height + 'px';
+    button.title = node.label + (node.subtitle ? '\n' + node.subtitle : '') + '\nClick for details';
+    button.setAttribute('aria-label', node.label + ', ' + kindLabel(node.kind) + ', ' + scopeLabel(node.scope) + ' scope, ' + levelLabel(node.level) + ' level');
+
+    var kindRow = elem('span', 'node-kind');
+    var kdot = elem('span', 'kdot');
+    var ktext = elem('span', 'ktext', kindLabel(node.kind));
+    kindRow.append(kdot, ktext);
+    var cross = CROSS_FLOOR.get(node.id) || 0;
+    if (cross) {
+      var crossEl = elem('span', 'cross', '\u2195 ' + cross);
+      crossEl.title = cross + ' cross-floor link' + (cross === 1 ? '' : 's');
+      kindRow.appendChild(crossEl);
+    }
+
+    button.append(kindRow, elem('span', 'node-label', node.label));
+    if (node.subtitle) button.appendChild(elem('span', 'node-sub', node.subtitle));
+
+    button.addEventListener('click', function (event) {
+      event.stopPropagation();
+      selectNode(node.id);
+    });
+    button.addEventListener('dblclick', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      selectNode(node.id);
+      focusNode(node.id);
+    });
+    button.addEventListener('pointerenter', function (event) {
+      setHover(node.id);
+      showNodeTip(node, event);
+    });
+    button.addEventListener('pointermove', function (event) { positionNodeTip(event); });
+    button.addEventListener('pointerleave', function () {
+      setHover(null);
+      hideNodeTip();
+    });
+    button.addEventListener('focus', function () { setHover(node.id); });
+    button.addEventListener('blur', function () {
+      setHover(null);
+      hideNodeTip();
+    });
+
+    appEls.nodes.appendChild(button);
+    nodeEls.set(node.id, button);
+    return button;
+  }
+
+  function renderFloor() {
+    var level = levelById.get(state.level) || LEVELS[0];
+    currentFloor = FLOORS[level.id] || { width: 12, height: 8, zones: [], nodeCount: 0 };
+    floorNodes = NODES.filter(function (node) { return node.level === level.id; });
+    activeNodes = floorNodes;
+    state.hover = null;
+
+    var width = Math.max(currentFloor.width || 12, 12) * CELL;
+    var height = Math.max(currentFloor.height || 8, 8) * CELL;
+
+    appEls.world.style.width = width + 'px';
+    appEls.world.style.height = height + 'px';
+    appEls.scene.style.width = width + 'px';
+    appEls.scene.style.height = height + 'px';
+    appEls.zones.textContent = '';
+    appEls.nodes.textContent = '';
+    appEls.edges.textContent = '';
+    appEls.edges.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+    appEls.edges.setAttribute('width', String(width));
+    appEls.edges.setAttribute('height', String(height));
+
+    nodeEls = new Map();
+    edgeEls = new Map();
+
+    var defs = document.createElementNS(SVGNS, 'defs');
+    appEls.edges.appendChild(defs);
+
+    (currentFloor.zones || []).forEach(function (zone) {
+      var scope = scopeById.get(zone.scope);
+      var color = scope && scope.color ? scope.color : '#8b949e';
+      var zoneEl = elem('div', 'zone');
+      zoneEl.dataset.scope = zone.scope;
+      zoneEl.style.setProperty('--c', color);
+      zoneEl.style.left = (zone.x * CELL) + 'px';
+      zoneEl.style.top = (zone.y * CELL) + 'px';
+      zoneEl.style.width = (zone.w * CELL) + 'px';
+      zoneEl.style.height = (zone.h * CELL) + 'px';
+      zoneEl.appendChild(elem('span', 'zone-label', (scope ? scope.label : zone.scope) + ' \u00b7 ' + zone.count));
+      appEls.zones.appendChild(zoneEl);
+    });
+
+    floorNodes.forEach(function (node) {
+      var layout = node.layout || { x: 1, y: 1, w: 3.2, h: 2.1 };
+      var button = createNodeButton(node, layout.w * CELL, layout.h * CELL);
+      button.style.left = (layout.x * CELL) + 'px';
+      button.style.top = (layout.y * CELL) + 'px';
+    });
+
+    var kinds = new Set();
+    var levelEdges = EDGES.filter(function (edge) {
+      var from = nodeById.get(edge.from);
+      var to = nodeById.get(edge.to);
+      return from && to && from.level === level.id && to.level === level.id;
+    });
+    activeEdges = levelEdges;
+    levelEdges.forEach(function (edge) { kinds.add(edge.kind); });
+
+    var markerIds = new Map();
+    kinds.forEach(function (kind, index) {
+      var markerId = 'arrow-' + index + '-' + safeId(kind);
+      markerIds.set(kind, markerId);
+      var marker = document.createElementNS(SVGNS, 'marker');
+      marker.setAttribute('id', markerId);
+      marker.setAttribute('viewBox', '0 0 10 10');
+      marker.setAttribute('refX', '9');
+      marker.setAttribute('refY', '5');
+      marker.setAttribute('markerWidth', '7');
+      marker.setAttribute('markerHeight', '7');
+      marker.setAttribute('orient', 'auto-start-reverse');
+      var arrow = document.createElementNS(SVGNS, 'path');
+      arrow.setAttribute('d', 'M0,0 L10,5 L0,10 z');
+      arrow.setAttribute('fill', edgeColor(kind));
+      marker.appendChild(arrow);
+      defs.appendChild(marker);
+    });
+
+    levelEdges.forEach(function (edge) {
+      var from = nodeById.get(edge.from);
+      var to = nodeById.get(edge.to);
+      var start = anchorPoint(from, centerOf(to));
+      var end = anchorPoint(to, centerOf(from));
+      var dx = end.x - start.x;
+      var dy = end.y - start.y;
+      var bend = 0.13;
+      var controlX = (start.x + end.x) / 2 - dy * bend;
+      var controlY = (start.y + end.y) / 2 + dx * bend;
+
+      var path = document.createElementNS(SVGNS, 'path');
+      path.setAttribute('class', 'edge');
+      path.setAttribute('d', 'M ' + round(start.x) + ' ' + round(start.y) + ' Q ' + round(controlX) + ' ' + round(controlY) + ' ' + round(end.x) + ' ' + round(end.y));
+      path.setAttribute('stroke', edgeColor(edge.kind));
+      path.setAttribute('stroke-width', '1.4');
+      path.setAttribute('marker-end', 'url(#' + markerIds.get(edge.kind) + ')');
+      path.dataset.id = edge.id;
+      path.dataset.kind = edge.kind;
+      path.dataset.from = edge.from;
+      path.dataset.to = edge.to;
+
+      var title = document.createElementNS(SVGNS, 'title');
+      title.textContent = from.label + ' \u2192 ' + to.label + ' (' + edge.kind + ')';
+      path.appendChild(title);
+
+      appEls.edges.appendChild(path);
+      edgeEls.set(edge.id, path);
+    });
+
+    appEls.floorBadge.textContent = 'Floor ' + levelNumber(level.id) + ' \u00b7 ' + level.label;
+    appEls.floorBadge.title = level.description || '';
+    applyFilter();
+    paintHighlight();
+
+    appEls.scene.classList.remove('enter');
+    void appEls.scene.offsetWidth;
+    appEls.scene.classList.add('enter');
+  }
+
+  function levelIndex(id) {
+    return LEVELS.findIndex(function (level) { return level.id === id; });
+  }
+
+  function levelColor(id) {
+    var index = levelIndex(id);
+    return LEVEL_COLORS[(index < 0 ? 0 : index) % LEVEL_COLORS.length];
+  }
+
+  function floorMetrics(id) {
+    var floor = FLOORS[id] || { width: 12, height: 8 };
+    var w = Math.max(floor.width || 12, 12) * CELL;
+    var h = Math.max(floor.height || 8, 8) * CELL;
+    var index = levelIndex(id);
+    return {
+      w: w,
+      h: h,
+      cx: w / 2,
+      cy: h / 2,
+      z: Math.max(0, LEVELS.length - 1 - (index < 0 ? 0 : index)) * FLOOR_GAP
+    };
+  }
+
+  function projectRaw(x, y, z) {
+    var cosYaw = Math.cos(state.yaw);
+    var sinYaw = Math.sin(state.yaw);
+    var rx = x * cosYaw - y * sinYaw;
+    var ry = x * sinYaw + y * cosYaw;
+    var cosPitch = Math.cos(state.pitch);
+    var sinPitch = Math.sin(state.pitch);
+    return {
+      x: rx,
+      y: ry * cosPitch - z * sinPitch,
+      depth: ry * sinPitch + z * cosPitch
+    };
+  }
+
+  function screenOf(point) {
+    return {
+      x: point.x * state.scale + state.tx,
+      y: point.y * state.scale + state.ty,
+      depth: point.depth
+    };
+  }
+
+  function nodeRawPoint(node) {
+    var entry = scene3d && scene3d.floors.get(node.level);
+    var metrics = entry ? entry.metrics : floorMetrics(node.level);
+    var layout = node.layout || { x: 1, y: 1, w: 3.2, h: 2.1 };
+    return projectRaw(
+      (layout.x + layout.w / 2) * CELL - metrics.cx,
+      (layout.y + layout.h / 2) * CELL - metrics.cy,
+      metrics.z
+    );
+  }
+
+  function pointsAttr(points) {
+    return points.map(function (point) {
+      return round(point.x) + ',' + round(point.y);
+    }).join(' ');
+  }
+
+  function addArrowMarkers(defs, prefix) {
+    var kinds = new Set();
+    EDGES.forEach(function (edge) { kinds.add(edge.kind); });
+    var markerIds = new Map();
+    kinds.forEach(function (kind, index) {
+      var markerId = prefix + '-' + index + '-' + safeId(kind);
+      markerIds.set(kind, markerId);
+      var marker = document.createElementNS(SVGNS, 'marker');
+      marker.setAttribute('id', markerId);
+      marker.setAttribute('viewBox', '0 0 10 10');
+      marker.setAttribute('refX', '9');
+      marker.setAttribute('refY', '5');
+      marker.setAttribute('markerWidth', '7');
+      marker.setAttribute('markerHeight', '7');
+      marker.setAttribute('orient', 'auto-start-reverse');
+      var arrow = document.createElementNS(SVGNS, 'path');
+      arrow.setAttribute('d', 'M0,0 L10,5 L0,10 z');
+      arrow.setAttribute('fill', edgeColor(kind));
+      marker.appendChild(arrow);
+      defs.appendChild(marker);
+    });
+    return markerIds;
+  }
+
+  function render3D() {
+    state.hover = null;
+    activeNodes = NODES;
+    activeEdges = EDGES;
+    nodeEls = new Map();
+    edgeEls = new Map();
+
+    var vw = appEls.viewport.clientWidth || 900;
+    var vh = appEls.viewport.clientHeight || 600;
+    appEls.world.style.width = vw + 'px';
+    appEls.world.style.height = vh + 'px';
+    appEls.scene.style.width = vw + 'px';
+    appEls.scene.style.height = vh + 'px';
+    appEls.world.style.transform = 'none';
+    appEls.zones.textContent = '';
+    appEls.nodes.textContent = '';
+    appEls.edges.textContent = '';
+    appEls.edges.setAttribute('viewBox', '0 0 ' + vw + ' ' + vh);
+    appEls.edges.setAttribute('width', String(vw));
+    appEls.edges.setAttribute('height', String(vh));
+
+    var defs = document.createElementNS(SVGNS, 'defs');
+    appEls.edges.appendChild(defs);
+    var markerIds = addArrowMarkers(defs, 'arrow3d');
+
+    var connectorGroup = document.createElementNS(SVGNS, 'g');
+    connectorGroup.setAttribute('class', 'floor-connectors');
+    appEls.edges.appendChild(connectorGroup);
+
+    var entries = [];
+    LEVELS.slice().reverse().forEach(function (level) {
+      var group = document.createElementNS(SVGNS, 'g');
+      group.dataset.level = level.id;
+
+      var plane = document.createElementNS(SVGNS, 'polygon');
+      plane.setAttribute('class', 'floor-plane');
+      plane.dataset.level = level.id;
+      plane.setAttribute('stroke', levelColor(level.id));
+      group.appendChild(plane);
+
+      var label = document.createElementNS(SVGNS, 'text');
+      label.setAttribute('class', 'floor-label');
+      label.textContent = level.label + ' \u00b7 ' + ((FLOORS[level.id] && FLOORS[level.id].nodeCount) || 0);
+      group.appendChild(label);
+
+      var zones = [];
+      var floor = FLOORS[level.id] || { zones: [] };
+      (floor.zones || []).forEach(function (zone) {
+        var scope = scopeById.get(zone.scope);
+        var color = scope && scope.color ? scope.color : '#8b949e';
+        var polygon = document.createElementNS(SVGNS, 'polygon');
+        polygon.setAttribute('class', 'zone-3d');
+        polygon.dataset.scope = zone.scope;
+        polygon.setAttribute('fill', color);
+        polygon.setAttribute('fill-opacity', '0.075');
+        polygon.setAttribute('stroke', color);
+        polygon.setAttribute('stroke-opacity', '0.42');
+        group.appendChild(polygon);
+
+        var zoneLabel = document.createElementNS(SVGNS, 'text');
+        zoneLabel.setAttribute('class', 'zone-label-3d');
+        zoneLabel.dataset.scope = zone.scope;
+        zoneLabel.textContent = scope ? scope.label : zone.scope;
+        zoneLabel.setAttribute('fill', color);
+        group.appendChild(zoneLabel);
+
+        zones.push({ zone: zone, polygon: polygon, label: zoneLabel });
+      });
+
+      appEls.edges.appendChild(group);
+      var entry = {
+        level: level,
+        group: group,
+        plane: plane,
+        label: label,
+        zones: zones,
+        metrics: floorMetrics(level.id),
+        corners: []
+      };
+      entries.push(entry);
+    });
+
+    var spines = [];
+    for (var i = 0; i < entries.length - 1; i += 1) {
+      for (var corner = 0; corner < 4; corner += 1) {
+        var spine = document.createElementNS(SVGNS, 'line');
+        spine.setAttribute('class', 'floor-spine');
+        connectorGroup.appendChild(spine);
+        spines.push({ lower: entries[i], upper: entries[i + 1], corner: corner, el: spine });
+      }
+    }
+
+    scene3d = {
+      floors: new Map(entries.map(function (entry) { return [entry.level.id, entry]; })),
+      entries: entries,
+      spines: spines,
+      markerIds: markerIds,
+      edges: [],
+      nodes: new Map()
+    };
+
+    EDGES.forEach(function (edge) {
+      var path = document.createElementNS(SVGNS, 'path');
+      path.setAttribute('class', 'edge');
+      path.setAttribute('stroke', edgeColor(edge.kind));
+      path.setAttribute('stroke-width', '1.4');
+      path.setAttribute('marker-end', 'url(#' + markerIds.get(edge.kind) + ')');
+      path.dataset.id = edge.id;
+      path.dataset.kind = edge.kind;
+      path.dataset.from = edge.from;
+      path.dataset.to = edge.to;
+      var from = nodeById.get(edge.from);
+      var to = nodeById.get(edge.to);
+      var title = document.createElementNS(SVGNS, 'title');
+      title.textContent = (from ? from.label : edge.from) + ' \u2192 ' + (to ? to.label : edge.to) + ' (' + edge.kind + ')';
+      path.appendChild(title);
+      appEls.edges.appendChild(path);
+      edgeEls.set(edge.id, path);
+      scene3d.edges.push({ edge: edge, path: path });
+    });
+
+    NODES.forEach(function (node) {
+      var layout = node.layout || { w: 3.2, h: 2.1 };
+      var button = createNodeButton(
+        node,
+        layout.w * CELL * NODE_3D_SCALE,
+        layout.h * CELL * NODE_3D_SCALE,
+        true
+      );
+      scene3d.nodes.set(node.id, { node: node, el: button });
+    });
+
+    appEls.floorBadge.textContent = '3D \u00b7 ' + LEVELS.length + ' floors';
+    appEls.floorBadge.title = 'Drag to orbit. Dashed lines are cross-floor links.';
+    layout3D();
+    applyFilter();
+    paintHighlight();
+  }
+
+  function layout3D() {
+    if (!scene3d) return;
+
+    var vw = appEls.viewport.clientWidth || 900;
+    var vh = appEls.viewport.clientHeight || 600;
+    appEls.world.style.width = vw + 'px';
+    appEls.world.style.height = vh + 'px';
+    appEls.scene.style.width = vw + 'px';
+    appEls.scene.style.height = vh + 'px';
+    appEls.world.style.transform = 'none';
+    appEls.edges.setAttribute('viewBox', '0 0 ' + vw + ' ' + vh);
+    appEls.edges.setAttribute('width', String(vw));
+    appEls.edges.setAttribute('height', String(vh));
+
+    scene3d.entries.forEach(function (entry) {
+      var metrics = entry.metrics;
+      var corners = [
+        [0, 0], [metrics.w, 0], [metrics.w, metrics.h], [0, metrics.h]
+      ].map(function (point) {
+        return screenOf(projectRaw(point[0] - metrics.cx, point[1] - metrics.cy, metrics.z));
+      });
+      entry.corners = corners;
+      entry.plane.setAttribute('points', pointsAttr(corners));
+      entry.plane.classList.toggle('active', entry.level.id === state.level);
+      var top = corners.reduce(function (best, point) { return point.y < best.y ? point : best; }, corners[0]);
+      entry.label.setAttribute('x', round(top.x));
+      entry.label.setAttribute('y', round(top.y - 8));
+      entry.label.setAttribute('text-anchor', 'middle');
+      entry.label.classList.toggle('active', entry.level.id === state.level);
+
+      entry.zones.forEach(function (item) {
+        var zone = item.zone;
+        var x1 = zone.x * CELL;
+        var y1 = zone.y * CELL;
+        var x2 = (zone.x + zone.w) * CELL;
+        var y2 = (zone.y + zone.h) * CELL;
+        var points = [
+          [x1, y1], [x2, y1], [x2, y2], [x1, y2]
+        ].map(function (point) {
+          return screenOf(projectRaw(point[0] - metrics.cx, point[1] - metrics.cy, metrics.z));
+        });
+        item.polygon.setAttribute('points', pointsAttr(points));
+        var centerX = (points[0].x + points[2].x) / 2;
+        var centerY = (points[0].y + points[2].y) / 2;
+        item.label.setAttribute('x', round(centerX));
+        item.label.setAttribute('y', round(centerY));
+        item.label.setAttribute('text-anchor', 'middle');
+      });
+    });
+
+    scene3d.spines.forEach(function (spine) {
+      var a = spine.lower.corners[spine.corner];
+      var b = spine.upper.corners[spine.corner];
+      if (!a || !b) return;
+      spine.el.setAttribute('x1', round(a.x));
+      spine.el.setAttribute('y1', round(a.y));
+      spine.el.setAttribute('x2', round(b.x));
+      spine.el.setAttribute('y2', round(b.y));
+    });
+
+    scene3d.edges.forEach(function (item) {
+      var from = nodeById.get(item.edge.from);
+      var to = nodeById.get(item.edge.to);
+      if (!from || !to) return;
+      var start = screenOf(nodeRawPoint(from));
+      var end = screenOf(nodeRawPoint(to));
+      var dx = end.x - start.x;
+      var dy = end.y - start.y;
+      var length = Math.sqrt(dx * dx + dy * dy) || 1;
+      var startPad = clamp(24 * state.scale, 7, 26);
+      var endPad = clamp(32 * state.scale, 9, 34);
+      var sx = start.x + (dx / length) * startPad;
+      var sy = start.y + (dy / length) * startPad;
+      var ex = end.x - (dx / length) * endPad;
+      var ey = end.y - (dy / length) * endPad;
+      var cross = from.level !== to.level;
+      var d;
+
+      if (cross) {
+        var midY = (sy + ey) / 2;
+        d = 'M ' + round(sx) + ' ' + round(sy)
+          + ' C ' + round(sx) + ' ' + round(midY) + ', '
+          + round(ex) + ' ' + round(midY) + ', '
+          + round(ex) + ' ' + round(ey);
+      } else {
+        var bend = 0.12;
+        var controlX = (sx + ex) / 2 - (ey - sy) * bend;
+        var controlY = (sy + ey) / 2 + (ex - sx) * bend;
+        d = 'M ' + round(sx) + ' ' + round(sy)
+          + ' Q ' + round(controlX) + ' ' + round(controlY)
+          + ' ' + round(ex) + ' ' + round(ey);
+      }
+
+      item.path.setAttribute('d', d);
+      item.path.classList.toggle('cross-floor', cross);
+    });
+
+    scene3d.nodes.forEach(function (item) {
+      var raw = nodeRawPoint(item.node);
+      var point = screenOf(raw);
+      var el = item.el;
+      var layout = item.node.layout || { w: 3.2, h: 2.1 };
+      var width = clamp(layout.w * CELL * state.scale * 0.3, 26, 72);
+      var height = clamp(layout.h * CELL * state.scale * 0.3, 17, 48);
+      el.style.width = width + 'px';
+      el.style.height = height + 'px';
+      el.classList.toggle('labeled', width >= 58);
+      el.style.left = (point.x - width / 2) + 'px';
+      el.style.top = (point.y - height / 2) + 'px';
+      el.style.zIndex = String(Math.round(1000 + raw.depth));
+    });
+  }
+
+  function fit3D() {
+    if (!scene3d) {
+      render3D();
+      return;
+    }
+    var vw = appEls.viewport.clientWidth || 900;
+    var vh = appEls.viewport.clientHeight || 600;
+    var drawerWidth = appEls.drawer.classList.contains('open') ? Math.min(420, vw * 0.45) : 0;
+    var availW = Math.max(220, vw - drawerWidth);
+    var points = [];
+
+    var visibleNodes = activeNodes.filter(function (node) {
+      var el = nodeEls.get(node.id);
+      return el && !el.classList.contains('hidden');
+    });
+    var levelsToShow = new Set(visibleNodes.map(function (node) { return node.level; }));
+    if (!levelsToShow.size) LEVELS.forEach(function (level) { levelsToShow.add(level.id); });
+
+    levelsToShow.forEach(function (id) {
+      var entry = scene3d.floors.get(id);
+      if (!entry) return;
+      var metrics = entry.metrics;
+      [[0, 0], [metrics.w, 0], [metrics.w, metrics.h], [0, metrics.h]].forEach(function (corner) {
+        points.push(projectRaw(corner[0] - metrics.cx, corner[1] - metrics.cy, metrics.z));
+      });
+    });
+    visibleNodes.forEach(function (node) { points.push(nodeRawPoint(node)); });
+    if (!points.length) return;
+
+    var minX = Math.min.apply(null, points.map(function (point) { return point.x; }));
+    var maxX = Math.max.apply(null, points.map(function (point) { return point.x; }));
+    var minY = Math.min.apply(null, points.map(function (point) { return point.y; }));
+    var maxY = Math.max.apply(null, points.map(function (point) { return point.y; }));
+    var pad = 88;
+    var scale = clamp(Math.min(
+      (availW - pad * 2) / Math.max(1, maxX - minX),
+      (vh - pad * 2) / Math.max(1, maxY - minY)
+    ), 0.15, 1.05);
+
+    state.scale = scale;
+    state.tx = (availW - (maxX - minX) * scale) / 2 - minX * scale;
+    state.ty = (vh - (maxY - minY) * scale) / 2 - minY * scale;
+    layout3D();
+  }
+
+  function focus3D(id) {
+    var node = nodeById.get(id);
+    if (!node || !scene3d) return;
+    var raw = nodeRawPoint(node);
+    var vw = appEls.viewport.clientWidth || 900;
+    var vh = appEls.viewport.clientHeight || 600;
+    var drawerWidth = appEls.drawer.classList.contains('open') ? Math.min(420, vw * 0.45) : 0;
+    var availW = Math.max(220, vw - drawerWidth);
+    state.scale = clamp(Math.max(state.scale, 0.82), 0.15, 2.2);
+    state.tx = availW / 2 - raw.x * state.scale;
+    state.ty = vh / 2 - raw.y * state.scale;
+    layout3D();
+  }
+
+  function setView(mode) {
+    if (mode !== '2d' && mode !== '3d') return;
+    if (state.view === mode) return;
+    state.view = mode;
+    hideNodeTip();
+    clearSelection();
+    updateViewButtons();
+
+    if (mode === '3d') {
+      appEls.hint.textContent = 'Drag to orbit \u00b7 Scroll to zoom \u00b7 Hover a tile for its name \u00b7 Dashed links cross floors';
+      render3D();
+      fit3D();
+    } else {
+      appEls.hint.textContent = 'Drag to pan \u00b7 Scroll to zoom \u00b7 Click a block for details \u00b7 Double-click to focus';
+      renderFloor();
+      fitView();
+    }
+  }
+
+  function updateViewButtons() {
+    var is2d = state.view === '2d';
+    appEls.view2d.classList.toggle('active', is2d);
+    appEls.view2d.setAttribute('aria-pressed', is2d ? 'true' : 'false');
+    appEls.view3d.classList.toggle('active', !is2d);
+    appEls.view3d.setAttribute('aria-pressed', is2d ? 'false' : 'true');
+    var note = appEls.legend.querySelector('.legend-note');
+    if (note) note.hidden = is2d;
+  }
+
+  function safeId(value) {
+    return String(value).replace(/[^a-z0-9_-]/gi, '-');
+  }
+
+  function round(value) {
+    return Math.round(value * 10) / 10;
+  }
+
+  function centerOf(node) {
+    var layout = node.layout || { x: 0, y: 0, w: 1, h: 1 };
+    return {
+      x: (layout.x + layout.w / 2) * CELL,
+      y: (layout.y + layout.h / 2) * CELL
+    };
+  }
+
+  function anchorPoint(node, toward) {
+    var center = centerOf(node);
+    var layout = node.layout || { w: 1, h: 1 };
+    var dx = toward.x - center.x;
+    var dy = toward.y - center.y;
+    if (!dx && !dy) return center;
+    var hw = (layout.w * CELL) / 2;
+    var hh = (layout.h * CELL) / 2;
+    var sx = dx ? hw / Math.abs(dx) : Infinity;
+    var sy = dy ? hh / Math.abs(dy) : Infinity;
+    var scale = Math.min(sx, sy);
+    return { x: center.x + dx * scale, y: center.y + dy * scale };
+  }
+
+  function applyFilter() {
+    var query = state.query.trim().toLowerCase();
+    var visible = new Set();
+    var visibleEdges = 0;
+    var matches = 0;
+
+    activeNodes.forEach(function (node) {
+      var element = nodeEls.get(node.id);
+      if (!element) return;
+      var inScope = state.scope === 'all' || node.scope === state.scope;
+      element.classList.toggle('hidden', !inScope);
+      if (inScope) {
+        visible.add(node.id);
+        var isMatch = !query || nodeSearch.get(node.id).indexOf(query) !== -1;
+        element.classList.toggle('search-dim', Boolean(query) && !isMatch);
+        element.classList.toggle('match', Boolean(query) && isMatch);
+        if (query && isMatch) matches += 1;
+      } else {
+        element.classList.remove('search-dim', 'match');
+      }
+    });
+
+    appEls.zones.querySelectorAll('.zone').forEach(function (zone) {
+      zone.classList.toggle('hidden', state.scope !== 'all' && zone.dataset.scope !== state.scope);
+    });
+    if (state.view === '3d') {
+      appEls.edges.querySelectorAll('.zone-3d, .zone-label-3d').forEach(function (zone) {
+        zone.classList.toggle('hidden', state.scope !== 'all' && zone.dataset.scope !== state.scope);
+      });
+    }
+
+    edgeEls.forEach(function (path, id) {
+      var edge = edgeById.get(id);
+      if (!edge) return;
+      var shown = visible.has(edge.from) && visible.has(edge.to) && !state.hiddenKinds.has(edge.kind);
+      path.classList.toggle('hidden', !shown);
+      if (!shown) return;
+      visibleEdges += 1;
+      if (query) {
+        var fromMatch = nodeSearch.get(edge.from).indexOf(query) !== -1;
+        var toMatch = nodeSearch.get(edge.to).indexOf(query) !== -1;
+        path.classList.toggle('search-dim', !fromMatch && !toMatch);
+      } else {
+        path.classList.remove('search-dim');
+      }
+    });
+
+    var level = levelById.get(state.level) || { label: '' };
+    var stat = state.view === '3d'
+      ? '3D \u00b7 ALL FLOORS \u00b7 ' + visible.size + (visible.size === 1 ? ' block' : ' blocks') + ' \u00b7 ' + visibleEdges + (visibleEdges === 1 ? ' link' : ' links')
+      : level.label.toUpperCase() + ' \u00b7 ' + visible.size + (visible.size === 1 ? ' block' : ' blocks') + ' \u00b7 ' + visibleEdges + (visibleEdges === 1 ? ' link' : ' links');
+    if (query) {
+      stat += ' \u00b7 ' + matches + (matches === 1 ? ' match' : ' matches');
+      var overall = 0;
+      NODES.forEach(function (node) {
+        if (nodeSearch.get(node.id).indexOf(query) !== -1) overall += 1;
+      });
+      if (overall > matches) stat += ' \u00b7 ' + overall + ' overall';
+    }
+    appEls.stat.textContent = stat;
+    update3DLabels();
+
+    var showEmpty = visible.size === 0;
+    appEls.empty.hidden = !showEmpty;
+    if (showEmpty) {
+      if (!activeNodes.length) {
+        appEls.emptyText.textContent = 'No blocks recorded on the ' + levelLabel(state.level) + ' level.';
+      } else if (state.scope !== 'all') {
+        appEls.emptyText.textContent = 'No blocks in the "' + scopeLabel(state.scope) + '" scope' + (state.view === '3d' ? '.' : ' on this floor.');
+      } else {
+        appEls.emptyText.textContent = 'No blocks to display.';
+      }
+      appEls.emptyClear.hidden = state.scope === 'all';
+    }
+  }
+
+  function update3DLabels() {
+    if (state.view !== '3d' || !scene3d) return;
+    scene3d.entries.forEach(function (entry) {
+      var visible = 0;
+      activeNodes.forEach(function (node) {
+        var el = nodeEls.get(node.id);
+        if (node.level === entry.level.id && el && !el.classList.contains('hidden')) visible += 1;
+      });
+      var total = (FLOORS[entry.level.id] && FLOORS[entry.level.id].nodeCount) || 0;
+      entry.label.textContent = entry.level.label + ' \u00b7 ' + visible + (visible === total ? '' : '/' + total);
+    });
+  }
+
+  function setHover(id) {
+    state.hover = id;
+    paintHighlight();
+  }
+
+  function showNodeTip(node, event) {
+    if (state.view !== '3d') return;
+    var tip = appEls.nodeTip;
+    tip.textContent = '';
+    tip.appendChild(elem('div', 'tip-title', node.label));
+    if (node.subtitle) tip.appendChild(elem('div', 'tip-sub', node.subtitle));
+    tip.appendChild(elem('div', 'tip-meta', levelLabel(node.level) + ' \u00b7 ' + scopeLabel(node.scope) + ' \u00b7 ' + kindLabel(node.kind)));
+    tip.hidden = false;
+    positionNodeTip(event);
+  }
+
+  function positionNodeTip(event) {
+    var tip = appEls.nodeTip;
+    if (tip.hidden) return;
+    var rect = appEls.viewport.getBoundingClientRect();
+    var x = event.clientX - rect.left + 14;
+    var y = event.clientY - rect.top + 14;
+    tip.style.left = '0px';
+    tip.style.top = '0px';
+    var maxX = rect.width - tip.offsetWidth - 10;
+    var maxY = rect.height - tip.offsetHeight - 10;
+    tip.style.left = Math.max(8, Math.min(x, maxX)) + 'px';
+    tip.style.top = Math.max(8, Math.min(y, maxY)) + 'px';
+  }
+
+  function hideNodeTip() {
+    appEls.nodeTip.hidden = true;
+    appEls.nodeTip.textContent = '';
+  }
+
+  function paintHighlight() {
+    var activeId = state.hover || state.selected;
+    var hoverMode = Boolean(state.hover);
+
+    nodeEls.forEach(function (element, id) {
+      element.classList.remove('selected', 'related', 'faded');
+      if (state.selected === id) element.classList.add('selected');
+      if (activeId && activeId !== id && NEIGHBORS.get(activeId) && NEIGHBORS.get(activeId).has(id)) {
+        element.classList.add('related');
+      }
+      if (!hoverMode && state.selected && state.selected !== id) {
+        var neighbors = NEIGHBORS.get(state.selected);
+        if (!neighbors || !neighbors.has(id)) element.classList.add('faded');
+      }
+    });
+
+    edgeEls.forEach(function (path, id) {
+      var edge = edgeById.get(id);
+      if (!edge) return;
+      path.classList.remove('hot', 'dim');
+      if (!activeId) return;
+      var touches = edge.from === activeId || edge.to === activeId;
+      if (touches) path.classList.add('hot');
+      else path.classList.add('dim');
+    });
+  }
+
+  function selectNode(id) {
+    var node = nodeById.get(id);
+    if (!node) return;
+    state.selected = id;
+    state.hover = null;
+    hideNodeTip();
+    appEls.drawer.classList.add('open');
+    appEls.drawer.setAttribute('aria-hidden', 'false');
+    renderDrawer(node);
+    paintHighlight();
+  }
+
+  function clearSelection() {
+    state.selected = null;
+    state.hover = null;
+    closeDrawer();
+    hideNodeTip();
+    paintHighlight();
+  }
+
+  function closeDrawer() {
+    appEls.drawer.classList.remove('open');
+    appEls.drawer.setAttribute('aria-hidden', 'true');
+    appEls.drawer.textContent = '';
+  }
+
+  function goToNode(id) {
+    var node = nodeById.get(id);
+    if (!node) return;
+    var changed = false;
+
+    if (node.level !== state.level) {
+      state.level = node.level;
+      changed = true;
+    }
+    if (state.scope !== 'all' && node.scope !== state.scope) {
+      state.scope = 'all';
+      updateScopeChips();
+      changed = true;
+    }
+    if (changed) {
+      updateFloorRail();
+      if (state.view === '3d') layout3D();
+      else renderFloor();
+    }
+    applyFilter();
+    selectNode(id);
+    focusNode(id);
+  }
+
+  function renderDrawer(node) {
+    var drawer = appEls.drawer;
+    drawer.textContent = '';
+
+    var head = elem('div', 'drawer-head');
+    var kind = elem('span', 'pill', kindLabel(node.kind));
+    kind.style.setProperty('--k', kindColor(node.kind));
+    var scope = elem('span', 'pill pill-scope', scopeLabel(node.scope));
+    scope.style.setProperty('--c', scopeColor(node.scope));
+    var close = elem('button', 'drawer-close', '\u00d7');
+    close.type = 'button';
+    close.setAttribute('aria-label', 'Close block details');
+    close.addEventListener('click', clearSelection);
+    head.append(kind, scope, close);
+    drawer.appendChild(head);
+
+    drawer.appendChild(elem('h2', 'drawer-title', node.label));
+    if (node.subtitle) drawer.appendChild(elem('div', 'drawer-sub', node.subtitle));
+    if (node.description) drawer.appendChild(elem('p', 'drawer-desc', node.description));
+
+    var outgoing = EDGES.filter(function (edge) { return edge.from === node.id; });
+    var incoming = EDGES.filter(function (edge) { return edge.to === node.id; });
+
+    var grid = elem('div', 'meta-grid');
+    grid.appendChild(metaItem('Level', levelLabel(node.level)));
+    grid.appendChild(metaItem('Scope', scopeLabel(node.scope), scopeColor(node.scope)));
+    grid.appendChild(metaItem('Uses', String(outgoing.length)));
+    grid.appendChild(metaItem('Used by', String(incoming.length)));
+    Object.keys(node.metrics || {}).forEach(function (key) {
+      grid.appendChild(metaItem(key, String(node.metrics[key])));
+    });
+    drawer.appendChild(grid);
+
+    if ((node.files || []).length) {
+      var files = section('Files');
+      node.files.forEach(function (file) {
+        var row = elem('div', 'file-row');
+        var link = elem('a', 'file-link', file.path + (file.line ? ':' + file.line : ''));
+        link.href = editorHref(file);
+        link.title = 'Open in VS Code: ' + file.path + (file.line ? ':' + file.line : '');
+        var copy = elem('button', 'mini', 'Copy');
+        copy.type = 'button';
+        copy.title = 'Copy path';
+        copy.addEventListener('click', function () {
+          copyText(file.path + (file.line ? ':' + file.line : '')).then(function (ok) {
+            copy.textContent = ok ? 'Copied' : 'Failed';
+            setTimeout(function () { copy.textContent = 'Copy'; }, 1200);
+          });
+        });
+        row.append(link, copy);
+        files.appendChild(row);
+      });
+      drawer.appendChild(files);
+    } else {
+      var noFiles = section('Files');
+      noFiles.appendChild(elem('p', 'muted', 'No file evidence recorded for this block.'));
+      drawer.appendChild(noFiles);
+    }
+
+    if ((node.symbols || []).length) {
+      var symbols = section('Symbols');
+      var symbolTags = elem('div', 'tags');
+      node.symbols.forEach(function (symbol) { symbolTags.appendChild(elem('span', 'tag', symbol)); });
+      symbols.appendChild(symbolTags);
+      drawer.appendChild(symbols);
+    }
+
+    if ((node.tags || []).length) {
+      var tags = section('Tags');
+      var tagList = elem('div', 'tags');
+      node.tags.forEach(function (tag) { tagList.appendChild(elem('span', 'tag', tag)); });
+      tags.appendChild(tagList);
+      drawer.appendChild(tags);
+    }
+
+    var deps = section('Dependencies');
+    deps.appendChild(depGroup('This block uses', outgoing, 'to'));
+    deps.appendChild(depGroup('Used by', incoming, 'from'));
+    drawer.appendChild(deps);
+
+    drawer.appendChild(elem('div', 'drawer-foot', 'id: ' + node.id + ' \u00b7 double-click a block to focus it'));
+  }
+
+  function metaItem(key, value, color) {
+    var item = elem('div', 'meta-item');
+    item.appendChild(elem('span', 'meta-k', key));
+    var valueEl = elem('span', 'meta-v', value);
+    if (color) {
+      valueEl.classList.add('scope');
+      valueEl.style.setProperty('--c', color);
+    }
+    item.appendChild(valueEl);
+    return item;
+  }
+
+  function section(title) {
+    var wrapper = elem('div', 'drawer-section');
+    wrapper.appendChild(elem('h3', '', title));
+    return wrapper;
+  }
+
+  function depGroup(title, edges, targetKey) {
+    var group = elem('div', 'dep-group');
+    var heading = elem('div', 'dep-title');
+    heading.append(elem('span', '', title), elem('span', 'dep-n', String(edges.length)));
+    group.appendChild(heading);
+
+    if (!edges.length) {
+      group.appendChild(elem('p', 'muted', 'None recorded.'));
+      return group;
+    }
+
+    edges.forEach(function (edge) {
+      var target = nodeById.get(edge[targetKey]);
+      if (!target) return;
+      var row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'dep';
+      row.style.setProperty('--c', edgeColor(edge.kind));
+      row.title = edge.from + ' \u2192 ' + edge.to + ' (' + edge.kind + ')';
+
+      var dir = elem('span', 'dep-dir', targetKey === 'to' ? '\u2192' : '\u2190');
+      var label = elem('span', 'dep-label', target.label);
+      var kind = elem('span', 'dep-kind', edge.kind);
+      var level = elem('span', 'dep-level', levelLabel(target.level));
+      if (target.level !== state.level) level.classList.add('cross');
+
+      row.append(dir, label, kind, level);
+      row.addEventListener('click', function () { goToNode(target.id); });
+      group.appendChild(row);
+    });
+
+    return group;
+  }
+
+  function encodePath(filePath) {
+    return filePath.split('/').map(function (segment, index) {
+      if (index === 0 && /^[A-Za-z]:$/.test(segment)) return segment;
+      return encodeURIComponent(segment);
+    }).join('/');
+  }
+
+  function editorHref(file) {
+    var root = String((DATA.project && DATA.project.root) || '').replace(/\\/g, '/').replace(/\/+$/, '');
+    var path = String(file.path || '').replace(/\\/g, '/');
+    if (!/^([A-Za-z]:\/|\/)/.test(path) && root) path = root + '/' + path;
+    var suffix = file.line ? ':' + file.line : '';
+    return 'vscode://file/' + encodePath(path) + suffix;
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).then(function () { return true; }).catch(function () {
+        return fallbackCopy(text);
+      });
+    }
+    return Promise.resolve(fallbackCopy(text));
+  }
+
+  function fallbackCopy(text) {
+    var area = document.createElement('textarea');
+    area.value = text;
+    area.style.position = 'fixed';
+    area.style.opacity = '0';
+    document.body.appendChild(area);
+    area.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (error) { ok = false; }
+    area.remove();
+    return ok;
+  }
+
+  function applyTransform() {
+    if (state.view === '3d') {
+      layout3D();
+      return;
+    }
+    appEls.world.style.transform = 'translate(' + state.tx + 'px, ' + state.ty + 'px) scale(' + state.scale + ')';
+  }
+
+  function fitView() {
+    if (state.view === '3d') {
+      fit3D();
+      return;
+    }
+    fit2D();
+  }
+
+  function fit2D() {
+    var nodes = floorNodes.filter(function (node) {
+      var element = nodeEls.get(node.id);
+      return element && !element.classList.contains('hidden');
+    });
+
+    var minX = 0;
+    var minY = 0;
+    var maxX = currentFloor.width || 12;
+    var maxY = currentFloor.height || 8;
+
+    if (nodes.length) {
+      minX = Math.min.apply(null, nodes.map(function (node) { return node.layout.x; }));
+      minY = Math.min.apply(null, nodes.map(function (node) { return node.layout.y; }));
+      maxX = Math.max.apply(null, nodes.map(function (node) { return node.layout.x + node.layout.w; }));
+      maxY = Math.max.apply(null, nodes.map(function (node) { return node.layout.y + node.layout.h; }));
+    }
+
+    var vw = appEls.viewport.clientWidth || 900;
+    var vh = appEls.viewport.clientHeight || 600;
+    var drawerWidth = appEls.drawer.classList.contains('open') ? Math.min(420, vw * 0.45) : 0;
+    var availW = Math.max(200, vw - drawerWidth);
+    var pad = 82;
+    var worldW = Math.max(1, (maxX - minX) * CELL);
+    var worldH = Math.max(1, (maxY - minY) * CELL);
+    var scale = clamp(Math.min((availW - pad * 2) / worldW, (vh - pad * 2) / worldH), 0.12, 1.15);
+
+    state.scale = scale;
+    state.tx = (availW - worldW * scale) / 2 - minX * CELL * scale;
+    state.ty = (vh - worldH * scale) / 2 - minY * CELL * scale;
+    applyTransform();
+  }
+
+  function focusNode(id) {
+    if (state.view === '3d') {
+      focus3D(id);
+      return;
+    }
+    focus2D(id);
+  }
+
+  function focus2D(id) {
+    var node = nodeById.get(id);
+    if (!node || !node.layout) return;
+    var center = centerOf(node);
+    var vw = appEls.viewport.clientWidth || 900;
+    var vh = appEls.viewport.clientHeight || 600;
+    var drawerWidth = appEls.drawer.classList.contains('open') ? Math.min(420, vw * 0.45) : 0;
+    var availW = Math.max(200, vw - drawerWidth);
+
+    state.scale = clamp(Math.max(state.scale, 1.05), 0.15, 2.6);
+    state.tx = availW / 2 - center.x * state.scale;
+    state.ty = vh / 2 - center.y * state.scale;
+    applyTransform();
+  }
+
+  function zoomAt(px, py, factor) {
+    var next = clamp(state.scale * factor, 0.15, 2.6);
+    if (next === state.scale) return;
+    var worldX = (px - state.tx) / state.scale;
+    var worldY = (py - state.ty) / state.scale;
+    state.scale = next;
+    state.tx = px - worldX * next;
+    state.ty = py - worldY * next;
+    applyTransform();
+  }
+
+  function bindInteractions() {
+    appEls.search.addEventListener('input', function () {
+      state.query = appEls.search.value;
+      applyFilter();
+    });
+
+    appEls.search.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter') {
+        var query = state.query.trim().toLowerCase();
+        if (!query) return;
+        var match = activeNodes.find(function (node) {
+          var element = nodeEls.get(node.id);
+          var inScope = state.scope === 'all' || node.scope === state.scope;
+          return inScope && element && nodeSearch.get(node.id).indexOf(query) !== -1;
+        });
+        if (match) {
+          selectNode(match.id);
+          focusNode(match.id);
+          return;
+        }
+        var global = NODES.find(function (node) {
+          return nodeSearch.get(node.id).indexOf(query) !== -1;
+        });
+        if (global) goToNode(global.id);
+      } else if (event.key === 'Escape') {
+        appEls.search.value = '';
+        state.query = '';
+        applyFilter();
+        appEls.search.blur();
+      }
+    });
+
+    appEls.view2d.addEventListener('click', function () { setView('2d'); });
+    appEls.view3d.addEventListener('click', function () { setView('3d'); });
+
+    appEls.fitTop.addEventListener('click', fitView);
+    appEls.zoomFit.addEventListener('click', fitView);
+    appEls.zoomIn.addEventListener('click', function () {
+      zoomAt(appEls.viewport.clientWidth / 2, appEls.viewport.clientHeight / 2, 1.22);
+    });
+    appEls.zoomOut.addEventListener('click', function () {
+      zoomAt(appEls.viewport.clientWidth / 2, appEls.viewport.clientHeight / 2, 1 / 1.22);
+    });
+
+    appEls.emptyClear.addEventListener('click', function () { setScope('all'); });
+
+    appEls.viewport.addEventListener('wheel', function (event) {
+      if (event.ctrlKey && Math.abs(event.deltaY) < 2) return;
+      event.preventDefault();
+      var rect = appEls.viewport.getBoundingClientRect();
+      zoomAt(event.clientX - rect.left, event.clientY - rect.top, Math.exp(-event.deltaY * 0.0014));
+    }, { passive: false });
+
+    appEls.viewport.addEventListener('pointerdown', function (event) {
+      if (event.button !== 0) return;
+      if (event.target.closest('.node')) return;
+      if (state.view === '3d') {
+        drag = {
+          mode: 'orbit',
+          x: event.clientX,
+          y: event.clientY,
+          yaw: state.yaw,
+          pitch: state.pitch,
+          moved: false
+        };
+      } else {
+        drag = { mode: 'pan', x: event.clientX, y: event.clientY, tx: state.tx, ty: state.ty, moved: false };
+      }
+      appEls.viewport.setPointerCapture(event.pointerId);
+    });
+
+    appEls.viewport.addEventListener('pointermove', function (event) {
+      if (!drag) return;
+      var dx = event.clientX - drag.x;
+      var dy = event.clientY - drag.y;
+      if (!drag.moved && Math.abs(dx) + Math.abs(dy) > 3) {
+        drag.moved = true;
+        appEls.viewport.classList.add('panning');
+      }
+      if (drag.mode === 'orbit') {
+        state.yaw = drag.yaw + dx * 0.006;
+        state.pitch = clamp(drag.pitch + dy * 0.004, 0.65, 1.35);
+        layout3D();
+        return;
+      }
+      state.tx = drag.tx + dx;
+      state.ty = drag.ty + dy;
+      applyTransform();
+    });
+
+    function endDrag(event) {
+      if (!drag) return;
+      var moved = drag.moved;
+      drag = null;
+      appEls.viewport.classList.remove('panning');
+      if (appEls.viewport.hasPointerCapture(event.pointerId)) {
+        appEls.viewport.releasePointerCapture(event.pointerId);
+      }
+      if (!moved && !event.target.closest('.node') && state.selected) clearSelection();
+    }
+
+    appEls.viewport.addEventListener('pointerup', endDrag);
+    appEls.viewport.addEventListener('pointercancel', endDrag);
+
+    document.addEventListener('keydown', function (event) {
+      var target = event.target;
+      var typing = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
+
+      if (event.key === 'Escape') {
+        if (appEls.drawer.classList.contains('open')) {
+          clearSelection();
+        } else if (state.query) {
+          appEls.search.value = '';
+          state.query = '';
+          applyFilter();
+        }
+        return;
+      }
+      if (typing) return;
+      if (event.key === '/') {
+        event.preventDefault();
+        appEls.search.focus();
+        appEls.search.select();
+        return;
+      }
+      if (event.key === 'f' || event.key === 'F') {
+        fitView();
+        return;
+      }
+      if (event.key === 'v' || event.key === 'V') {
+        setView(state.view === '3d' ? '2d' : '3d');
+        return;
+      }
+      var number = parseInt(event.key, 10);
+      if (number >= 1 && number <= LEVELS.length) switchFloor(LEVELS[number - 1].id);
+    });
+
+    var resizeTimer = null;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(fitView, 120);
+    });
+  }
+
+  setHeader();
+  buildFloorRail();
+  buildScopeChips();
+  buildLegend();
+  bindInteractions();
+  updateViewButtons();
+  renderFloor();
+  requestAnimationFrame(fitView);
+})();
+</script>
+</body>
+</html>

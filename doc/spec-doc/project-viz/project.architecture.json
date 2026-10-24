@@ -1,0 +1,530 @@
+{
+  "schemaVersion": "1.0",
+  "project": {
+    "name": "workflow-web",
+    "root": "../../../project",
+    "description": "Spring Boot workflow service. Scope: project/** production sources plus module-local tests; target/generated excluded. Levels inferred from code responsibilities: HTTP → Application → Domain → Infrastructure (top→bottom, high abstraction to low-level)."
+  },
+  "levels": [
+    {
+      "id": "http",
+      "label": "HTTP",
+      "order": 0,
+      "description": "REST entry points, HTTP controller and transport error mapping (workflow-web)."
+    },
+    {
+      "id": "application",
+      "label": "Application",
+      "order": 1,
+      "description": "Application service, lifecycle orchestration, application port and storage port (workflow-core boundary)."
+    },
+    {
+      "id": "domain",
+      "label": "Domain",
+      "order": 2,
+      "description": "Immutable records, lifecycle status and exception hierarchy (workflow-api contracts)."
+    },
+    {
+      "id": "infrastructure",
+      "label": "Infrastructure",
+      "order": 3,
+      "description": "In-memory repository adapter and runtime configuration (lowest-level implementation)."
+    }
+  ],
+  "scopes": [
+    {
+      "id": "web",
+      "label": "Web",
+      "color": "#58a6ff",
+      "description": "workflow-web module: REST, error advice, boot and configuration"
+    },
+    {
+      "id": "core",
+      "label": "Core",
+      "color": "#3fb950",
+      "description": "workflow-core module: application service, state machine and repository"
+    },
+    {
+      "id": "api",
+      "label": "API",
+      "color": "#d29922",
+      "description": "workflow-api module: records, status, exceptions and service port"
+    },
+    {
+      "id": "verification",
+      "label": "Verification",
+      "color": "#39c5cf",
+      "description": "Module-local test suites"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "http-post-workflows",
+      "level": "http",
+      "scope": "web",
+      "label": "POST /api/workflows",
+      "subtitle": "WorkflowController.start",
+      "kind": "endpoint",
+      "description": "Starts a workflow instance and returns 201 Created with the immutable snapshot.",
+      "files": [
+        {
+          "path": "workflow-web/src/main/java/com/example/workflow/web/controller/WorkflowController.java",
+          "line": 25
+        }
+      ],
+      "symbols": ["WorkflowController.start"],
+      "tags": ["http", "write", "public"],
+      "metrics": { "fanOut": 1 }
+    },
+    {
+      "id": "http-advance-workflow",
+      "level": "http",
+      "scope": "web",
+      "label": "POST /api/workflows/{id}/advance",
+      "subtitle": "WorkflowController.advance",
+      "kind": "endpoint",
+      "description": "Advances a running instance by one step and returns the updated snapshot.",
+      "files": [
+        {
+          "path": "workflow-web/src/main/java/com/example/workflow/web/controller/WorkflowController.java",
+          "line": 31
+        }
+      ],
+      "symbols": ["WorkflowController.advance"],
+      "tags": ["http", "write", "public"]
+    },
+    {
+      "id": "http-get-workflow",
+      "level": "http",
+      "scope": "web",
+      "label": "GET /api/workflows/{id}",
+      "subtitle": "WorkflowController.get",
+      "kind": "endpoint",
+      "description": "Returns a workflow instance snapshot or a not-found response.",
+      "files": [
+        {
+          "path": "workflow-web/src/main/java/com/example/workflow/web/controller/WorkflowController.java",
+          "line": 36
+        }
+      ],
+      "symbols": ["WorkflowController.get"],
+      "tags": ["http", "read", "public"]
+    },
+    {
+      "id": "http-cancel-workflow",
+      "level": "http",
+      "scope": "web",
+      "label": "POST /api/workflows/{id}/cancel",
+      "subtitle": "WorkflowController.cancel",
+      "kind": "endpoint",
+      "description": "Cancels a running instance; cancelling an already cancelled instance is idempotent.",
+      "files": [
+        {
+          "path": "workflow-web/src/main/java/com/example/workflow/web/controller/WorkflowController.java",
+          "line": 41
+        }
+      ],
+      "symbols": ["WorkflowController.cancel"],
+      "tags": ["http", "write", "public"]
+    },
+    {
+      "id": "http-controller",
+      "level": "http",
+      "scope": "web",
+      "label": "WorkflowController",
+      "subtitle": "@RestController /api/workflows",
+      "kind": "controller",
+      "description": "REST boundary. Maps HTTP requests to WorkflowService operations; it does not contain lifecycle rules.",
+      "files": [
+        {
+          "path": "workflow-web/src/main/java/com/example/workflow/web/controller/WorkflowController.java",
+          "line": 17
+        }
+      ],
+      "symbols": ["WorkflowController"],
+      "tags": ["spring", "rest", "adapter"],
+      "metrics": { "loc": 45, "operations": 4 }
+    },
+    {
+      "id": "http-exception-handler",
+      "level": "http",
+      "scope": "web",
+      "label": "ApiExceptionHandler",
+      "subtitle": "@RestControllerAdvice",
+      "kind": "middleware",
+      "description": "Maps WorkflowValidationException to 400, not-found to 404, state conflicts to 409, and unexpected workflow failures to 500.",
+      "files": [
+        {
+          "path": "workflow-web/src/main/java/com/example/workflow/web/error/ApiExceptionHandler.java",
+          "line": 17
+        }
+      ],
+      "symbols": [
+        "ApiExceptionHandler.handleValidation",
+        "ApiExceptionHandler.handleNotFound",
+        "ApiExceptionHandler.handleState",
+        "ApiExceptionHandler.handleWorkflow",
+        "ApiExceptionHandler.handleUnreadableBody",
+        "ApiExceptionHandler.handleUnexpected"
+      ],
+      "tags": ["spring", "errors", "http"],
+      "metrics": { "loc": 70, "handlers": 6 }
+    },
+    {
+      "id": "http-error",
+      "level": "http",
+      "scope": "web",
+      "label": "ApiError",
+      "subtitle": "error envelope",
+      "kind": "model",
+      "description": "Transport error payload: code, message and timestamp.",
+      "files": [
+        {
+          "path": "workflow-web/src/main/java/com/example/workflow/web/error/ApiError.java",
+          "line": 5
+        }
+      ],
+      "symbols": ["ApiError"],
+      "tags": ["dto", "http", "errors"],
+      "metrics": { "fields": 3 }
+    },
+    {
+      "id": "http-app",
+      "level": "http",
+      "scope": "web",
+      "label": "WorkflowWebApplication",
+      "subtitle": "Spring Boot composition root",
+      "kind": "application",
+      "description": "Boots Spring and scans com.example.workflow, wiring the REST controller, exception advice, application service and in-memory adapter.",
+      "files": [
+        {
+          "path": "workflow-web/src/main/java/com/example/workflow/web/WorkflowWebApplication.java",
+          "line": 7
+        }
+      ],
+      "symbols": ["WorkflowWebApplication.main"],
+      "tags": ["spring-boot", "composition-root", "entry"],
+      "metrics": { "loc": 12 }
+    },
+    {
+      "id": "tests-http",
+      "level": "http",
+      "scope": "verification",
+      "label": "Web tests",
+      "subtitle": "MockMvc slice",
+      "kind": "tests",
+      "description": "MockMvc slice test for WorkflowController; mocks WorkflowService and asserts HTTP status and JSON paths.",
+      "files": [
+        {
+          "path": "workflow-web/src/test/java/com/example/workflow/web/controller/WorkflowControllerTest.java",
+          "line": 32
+        }
+      ],
+      "symbols": ["WorkflowControllerTest"],
+      "tags": ["junit", "mockito", "mockmvc"],
+      "metrics": { "testClasses": 1 }
+    },
+    {
+      "id": "app-workflow-service",
+      "level": "application",
+      "scope": "api",
+      "label": "WorkflowService",
+      "subtitle": "application port",
+      "kind": "service",
+      "description": "Frozen application port with exactly four operations: start, advance, get and cancel. Implementations generate UUID ids and return immutable snapshots.",
+      "files": [
+        {
+          "path": "workflow-api/src/main/java/com/example/workflow/api/WorkflowService.java",
+          "line": 11
+        }
+      ],
+      "symbols": [
+        "WorkflowService.start",
+        "WorkflowService.advance",
+        "WorkflowService.get",
+        "WorkflowService.cancel"
+      ],
+      "tags": ["port", "contract", "frozen"],
+      "metrics": { "operations": 4 }
+    },
+    {
+      "id": "app-default-service",
+      "level": "application",
+      "scope": "core",
+      "label": "DefaultWorkflowService",
+      "subtitle": "workflow-core",
+      "kind": "service",
+      "description": "Application service implementing WorkflowService. Validates commands, generates UUIDs, delegates lifecycle transitions to WorkflowStateMachine, and serializes read-modify-write operations with synchronized advance/cancel.",
+      "files": [
+        {
+          "path": "workflow-core/src/main/java/com/example/workflow/core/DefaultWorkflowService.java",
+          "line": 24
+        }
+      ],
+      "symbols": [
+        "DefaultWorkflowService.start",
+        "DefaultWorkflowService.advance",
+        "DefaultWorkflowService.get",
+        "DefaultWorkflowService.cancel"
+      ],
+      "tags": ["spring-service", "orchestration", "concurrency"],
+      "metrics": { "loc": 96, "operations": 4 }
+    },
+    {
+      "id": "app-state-machine",
+      "level": "application",
+      "scope": "core",
+      "label": "WorkflowStateMachine",
+      "subtitle": "package-private lifecycle",
+      "kind": "service",
+      "description": "Centralises legal transitions: RUNNING advances to the next step or COMPLETED at the last step; cancel moves RUNNING to CANCELLED; terminal states reject advance/cancel.",
+      "files": [
+        {
+          "path": "workflow-core/src/main/java/com/example/workflow/core/WorkflowStateMachine.java",
+          "line": 15
+        }
+      ],
+      "symbols": ["WorkflowStateMachine.advance", "WorkflowStateMachine.cancel"],
+      "tags": ["lifecycle", "pure", "package-private"],
+      "metrics": { "loc": 57, "transitions": 3 }
+    },
+    {
+      "id": "app-repository",
+      "level": "application",
+      "scope": "core",
+      "label": "WorkflowRepository",
+      "subtitle": "storage port",
+      "kind": "repository",
+      "description": "Storage port used by the application service: save an instance and find one by id.",
+      "files": [
+        {
+          "path": "workflow-core/src/main/java/com/example/workflow/core/WorkflowRepository.java",
+          "line": 10
+        }
+      ],
+      "symbols": ["WorkflowRepository.save", "WorkflowRepository.findById"],
+      "tags": ["port", "storage", "replaceable"],
+      "metrics": { "operations": 2 }
+    },
+    {
+      "id": "tests-application",
+      "level": "application",
+      "scope": "verification",
+      "label": "Application tests",
+      "subtitle": "behavior + concurrency",
+      "kind": "tests",
+      "description": "Behavior and concurrency tests for DefaultWorkflowService: id generation, lifecycle transitions, idempotent cancel and concurrent advance.",
+      "files": [
+        {
+          "path": "workflow-core/src/test/java/com/example/workflow/core/DefaultWorkflowServiceTest.java",
+          "line": 20
+        },
+        {
+          "path": "workflow-core/src/test/java/com/example/workflow/core/DefaultWorkflowServiceConcurrencyTest.java",
+          "line": 26
+        }
+      ],
+      "symbols": ["DefaultWorkflowServiceTest", "DefaultWorkflowServiceConcurrencyTest"],
+      "tags": ["junit", "assertj", "concurrency"],
+      "metrics": { "testClasses": 2 }
+    },
+    {
+      "id": "domain-instance",
+      "level": "domain",
+      "scope": "api",
+      "label": "WorkflowInstance",
+      "subtitle": "immutable snapshot record",
+      "kind": "entity",
+      "description": "Immutable workflow snapshot. Defensively copies steps and variables, validates currentStep within the step range, and exposes unmodifiable collections.",
+      "files": [
+        {
+          "path": "workflow-api/src/main/java/com/example/workflow/api/WorkflowInstance.java",
+          "line": 39
+        }
+      ],
+      "symbols": ["WorkflowInstance", "WorkflowInstance.copySteps", "WorkflowInstance.copyVariables"],
+      "tags": ["record", "immutable", "contract"],
+      "metrics": { "loc": 87, "components": 8 }
+    },
+    {
+      "id": "domain-command",
+      "level": "domain",
+      "scope": "api",
+      "label": "StartWorkflowCommand",
+      "subtitle": "immutable command record",
+      "kind": "entity",
+      "description": "Start command with workflowType, ordered non-blank steps and optional variables. Defensively copies collections and rejects invalid input.",
+      "files": [
+        {
+          "path": "workflow-api/src/main/java/com/example/workflow/api/StartWorkflowCommand.java",
+          "line": 26
+        }
+      ],
+      "symbols": ["StartWorkflowCommand", "StartWorkflowCommand.copySteps", "StartWorkflowCommand.copyVariables"],
+      "tags": ["record", "immutable", "validation"],
+      "metrics": { "loc": 63, "components": 3 }
+    },
+    {
+      "id": "domain-status",
+      "level": "domain",
+      "scope": "api",
+      "label": "WorkflowStatus",
+      "subtitle": "lifecycle enum",
+      "kind": "entity",
+      "description": "Lifecycle states: RUNNING is mutable; COMPLETED and CANCELLED are terminal.",
+      "files": [
+        {
+          "path": "workflow-api/src/main/java/com/example/workflow/api/WorkflowStatus.java",
+          "line": 11
+        }
+      ],
+      "symbols": ["WorkflowStatus.RUNNING", "WorkflowStatus.COMPLETED", "WorkflowStatus.CANCELLED"],
+      "tags": ["enum", "lifecycle"],
+      "metrics": { "states": 3 }
+    },
+    {
+      "id": "domain-exceptions",
+      "level": "domain",
+      "scope": "api",
+      "label": "Workflow exceptions",
+      "subtitle": "base + 3 subclasses",
+      "kind": "class",
+      "description": "Unchecked error hierarchy: WorkflowException is the base; WorkflowValidationException, WorkflowNotFoundException and WorkflowStateException map to distinct HTTP statuses in the web layer.",
+      "files": [
+        { "path": "workflow-api/src/main/java/com/example/workflow/api/WorkflowException.java", "line": 14 },
+        { "path": "workflow-api/src/main/java/com/example/workflow/api/WorkflowValidationException.java", "line": 7 },
+        { "path": "workflow-api/src/main/java/com/example/workflow/api/WorkflowNotFoundException.java", "line": 6 },
+        { "path": "workflow-api/src/main/java/com/example/workflow/api/WorkflowStateException.java", "line": 8 }
+      ],
+      "symbols": [
+        "WorkflowException",
+        "WorkflowValidationException",
+        "WorkflowNotFoundException",
+        "WorkflowStateException"
+      ],
+      "tags": ["errors", "hierarchy", "contract"],
+      "metrics": { "classes": 4 }
+    },
+    {
+      "id": "tests-domain",
+      "level": "domain",
+      "scope": "verification",
+      "label": "Contract tests",
+      "subtitle": "records, status, exceptions, port",
+      "kind": "tests",
+      "description": "Contract and value-object tests for the four-operation WorkflowService port, record invariants, status transitions and the exception hierarchy.",
+      "files": [
+        { "path": "workflow-api/src/test/java/com/example/workflow/api/StartWorkflowCommandTest.java", "line": 13 },
+        { "path": "workflow-api/src/test/java/com/example/workflow/api/WorkflowExceptionTest.java", "line": 7 },
+        { "path": "workflow-api/src/test/java/com/example/workflow/api/WorkflowInstanceTest.java", "line": 14 },
+        { "path": "workflow-api/src/test/java/com/example/workflow/api/WorkflowServiceContractTest.java", "line": 11 },
+        { "path": "workflow-api/src/test/java/com/example/workflow/api/WorkflowStatusTest.java", "line": 7 }
+      ],
+      "symbols": [
+        "StartWorkflowCommandTest",
+        "WorkflowExceptionTest",
+        "WorkflowInstanceTest",
+        "WorkflowServiceContractTest",
+        "WorkflowStatusTest"
+      ],
+      "tags": ["junit", "assertj", "contract"],
+      "metrics": { "testClasses": 5 }
+    },
+    {
+      "id": "infra-inmemory",
+      "level": "infrastructure",
+      "scope": "core",
+      "label": "InMemoryWorkflowRepository",
+      "subtitle": "@Repository ConcurrentHashMap",
+      "kind": "repository",
+      "description": "Thread-safe in-memory adapter for WorkflowRepository. Instances are lost on process restart; persistence is intended to replace this adapter behind the port.",
+      "files": [
+        {
+          "path": "workflow-core/src/main/java/com/example/workflow/core/InMemoryWorkflowRepository.java",
+          "line": 15
+        }
+      ],
+      "symbols": ["InMemoryWorkflowRepository.save", "InMemoryWorkflowRepository.findById"],
+      "tags": ["adapter", "in-memory", "thread-safe"],
+      "metrics": { "loc": 33 }
+    },
+    {
+      "id": "infra-config",
+      "level": "infrastructure",
+      "scope": "web",
+      "label": "Runtime config",
+      "subtitle": "application.yml",
+      "kind": "config",
+      "description": "Application name, HTTP port 8080, and actuator endpoint exposure limited to health and info.",
+      "files": [
+        {
+          "path": "workflow-web/src/main/resources/application.yml",
+          "line": 1
+        }
+      ],
+      "symbols": ["spring.application.name", "server.port", "management.endpoints.web.exposure.include"],
+      "tags": ["configuration", "actuator"],
+      "metrics": { "port": 8080 }
+    },
+    {
+      "id": "tests-infrastructure",
+      "level": "infrastructure",
+      "scope": "verification",
+      "label": "Repository tests",
+      "subtitle": "in-memory adapter",
+      "kind": "tests",
+      "description": "Unit tests for InMemoryWorkflowRepository save/find semantics and null-id handling.",
+      "files": [
+        {
+          "path": "workflow-core/src/test/java/com/example/workflow/core/InMemoryWorkflowRepositoryTest.java",
+          "line": 15
+        }
+      ],
+      "symbols": ["InMemoryWorkflowRepositoryTest"],
+      "tags": ["junit", "assertj", "adapter"],
+      "metrics": { "testClasses": 1 }
+    }
+  ],
+  "edges": [
+    { "from": "http-post-workflows", "to": "http-controller", "kind": "handles" },
+    { "from": "http-advance-workflow", "to": "http-controller", "kind": "handles" },
+    { "from": "http-get-workflow", "to": "http-controller", "kind": "handles" },
+    { "from": "http-cancel-workflow", "to": "http-controller", "kind": "handles" },
+    { "from": "http-exception-handler", "to": "http-error", "kind": "creates" },
+    { "from": "http-app", "to": "http-controller", "kind": "boots" },
+    { "from": "http-app", "to": "http-exception-handler", "kind": "boots" },
+    { "from": "http-app", "to": "app-default-service", "kind": "boots" },
+    { "from": "http-app", "to": "infra-inmemory", "kind": "boots" },
+    { "from": "http-app", "to": "infra-config", "kind": "reads" },
+    { "from": "tests-http", "to": "http-controller", "kind": "verifies" },
+    { "from": "http-controller", "to": "app-workflow-service", "kind": "calls" },
+    { "from": "http-controller", "to": "domain-command", "kind": "uses" },
+    { "from": "http-controller", "to": "domain-instance", "kind": "uses" },
+    { "from": "http-exception-handler", "to": "domain-exceptions", "kind": "handles" },
+    { "from": "tests-http", "to": "app-workflow-service", "kind": "verifies" },
+    { "from": "tests-http", "to": "domain-command", "kind": "verifies" },
+    { "from": "app-default-service", "to": "app-workflow-service", "kind": "implements" },
+    { "from": "app-default-service", "to": "app-state-machine", "kind": "calls" },
+    { "from": "app-default-service", "to": "app-repository", "kind": "calls" },
+    { "from": "app-default-service", "to": "domain-command", "kind": "uses" },
+    { "from": "app-default-service", "to": "domain-instance", "kind": "creates" },
+    { "from": "app-default-service", "to": "domain-exceptions", "kind": "throws" },
+    { "from": "app-state-machine", "to": "domain-instance", "kind": "creates" },
+    { "from": "app-state-machine", "to": "domain-status", "kind": "uses" },
+    { "from": "app-state-machine", "to": "domain-exceptions", "kind": "throws" },
+    { "from": "app-repository", "to": "domain-instance", "kind": "uses" },
+    { "from": "tests-application", "to": "app-default-service", "kind": "verifies" },
+    { "from": "tests-application", "to": "domain-instance", "kind": "verifies" },
+    { "from": "tests-application", "to": "domain-command", "kind": "verifies" },
+    { "from": "tests-application", "to": "domain-status", "kind": "verifies" },
+    { "from": "tests-application", "to": "domain-exceptions", "kind": "verifies" },
+    { "from": "tests-domain", "to": "domain-instance", "kind": "verifies" },
+    { "from": "tests-domain", "to": "domain-command", "kind": "verifies" },
+    { "from": "tests-domain", "to": "domain-status", "kind": "verifies" },
+    { "from": "tests-domain", "to": "domain-exceptions", "kind": "verifies" },
+    { "from": "tests-domain", "to": "app-workflow-service", "kind": "verifies" },
+    { "from": "tests-infrastructure", "to": "infra-inmemory", "kind": "verifies" },
+    { "from": "infra-inmemory", "to": "app-repository", "kind": "implements" },
+    { "from": "infra-inmemory", "to": "domain-instance", "kind": "stores" }
+  ]
+}

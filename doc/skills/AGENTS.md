@@ -21,5 +21,6 @@
 | spec-doc-gen | `spec-doc-gen/` | **代码 → SDD spec HTML + 状态页**：`spec-doc-template.html` + `process-status-template.html`，分别由 `spec-doc.json` / `status.json` 驱动；每条结论带 `path:line` 锚点，只生成文档与状态页、不实现 |
 | spec-driven-dev | `spec-driven-dev/` | **SDD 二维交付**：模块/子模块 × 需求/Contract/实现/验证矩阵，逐格推进、下游锥失效与可重试；定义 Contract/版本/checkpoint/回滚，并向 team 发出 WorkOrder |
 | hub | `hub/` | **单一入口**：NavTabs 聚合 SDD 交付状态、模块树、模块文档与 Team 执行；由 `hub.json` 驱动，不复制 SDD/team 规则 |
+| project-visual | `project-visual/` | **代码 scope → 建筑式交互地图**：按代码与 scope 推定层级名称/数量（自上而下高抽象→底层），`architecture.json` 描述楼层与模块 scope，`render.mjs` 生成零依赖单文件 HTML（2D/3D 切换、楼层堆叠、跨层连线、范围过滤、可点击块、依赖抽屉） |
 
 > 文档规范不在本目录：`doc/rule/doc-format/`（格式/结构/必含 Terminology/版本管理）+ `doc/rule/doc-viz/`（可视化/mermaid 优先/图型选择/view.html 渲染规则）。
